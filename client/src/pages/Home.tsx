@@ -175,7 +175,7 @@ export default function Home() {
               >
                 {lightMode ? <Moon className="size-4" /> : <Sun className="size-4" />}
               </button>
-              <button className="button-ghost" onClick={() => actionToast("Dashboard Login")}>Dashboard Login <ArrowUpRight className="size-4" /></button>
+              <button className="button-ghost" onClick={() => { window.location.href = "/dashboard"; }}>Dashboard Login <ArrowUpRight className="size-4" /></button>
             </div>
 
             <button className="icon-button md:hidden" onClick={() => setMenuOpen((value) => !value)} aria-label="Toggle navigation menu">
@@ -189,7 +189,7 @@ export default function Home() {
                 <button onClick={() => navigate("features")} className="mobile-nav-link">Features <ChevronRight className="size-4" /></button>
                 <button onClick={() => navigate("pricing")} className="mobile-nav-link">Pricing <ChevronRight className="size-4" /></button>
                 <button onClick={() => navigate("demo")} className="mobile-nav-link">Demo <ChevronRight className="size-4" /></button>
-                <button className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-500 px-5 py-3 text-sm font-semibold text-white" onClick={() => actionToast("Dashboard Login")}>Dashboard Login <ArrowUpRight className="size-4" /></button>
+                <button className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-500 px-5 py-3 text-sm font-semibold text-white" onClick={() => { window.location.href = "/dashboard"; }}>Dashboard Login <ArrowUpRight className="size-4" /></button>
               </div>
             </div>
           )}
