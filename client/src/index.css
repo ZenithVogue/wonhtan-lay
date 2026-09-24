@@ -172,3 +172,11 @@ button:not(:disabled), a[href] { cursor: pointer; }
   .dashboard-panel { margin-left: -1px; margin-right: -1px; border-radius: 14px; }
   .dashboard-stat-card { padding: 15px; }
 }
+
+/* Bot connection settings */
+.bot-token-input { width: 100%; height: 46px; border: 1px solid rgba(129,140,248,.22); border-radius: 10px; background: rgba(4,12,24,.45); padding: 0 58px 0 13px; color: #e2e8f0; font-family: "DM Sans", monospace; font-size: 12px; outline: none; transition: 180ms ease; }
+.bot-token-input::placeholder { color: #536278; }
+.bot-token-input:focus { border-color: rgba(129,140,248,.65); box-shadow: 0 0 0 3px rgba(99,102,241,.12); }
+.tooltip-button { display: inline-flex; align-items: center; justify-content: center; color: #7888a1; transition: 180ms ease; }
+.tooltip-button:hover { color: #c7d2fe; }
+@media (max-width: 1023px) { .dashboard-header { margin-left: 0 !important; } }

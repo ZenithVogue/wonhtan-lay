@@ -101,6 +101,10 @@ export default function Dashboard() {
 
   const chooseNav = (label: string) => {
     setMobileNav(false);
+    if (label === "Bot Connections") {
+      window.location.href = "/dashboard/bots";
+      return;
+    }
     if (label !== "Dashboard") toast(`${label} section`, { description: "ဒီ dashboard flow ကို မကြာခင် အသုံးပြုနိုင်ပါမယ်။" });
   };
 
