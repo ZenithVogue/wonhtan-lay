@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTheme } from "../contexts/ThemeContext";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -134,7 +135,8 @@ function featureStyles(accent: string) {
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [lightMode, setLightMode] = useState(false);
+  const { theme, toggleTheme } = useTheme();
+  const lightMode = theme === "light";
 
   const navigate = (id: string) => {
     setMenuOpen(false);
@@ -169,7 +171,7 @@ export default function Home() {
             <div className="hidden items-center gap-3 md:flex">
               <button
                 className="icon-button"
-                onClick={() => setLightMode((value) => !value)}
+                onClick={() => toggleTheme?.()}
                 aria-label={lightMode ? "Use dark mode" : "Use light mode"}
                 aria-pressed={lightMode}
               >
@@ -225,7 +227,7 @@ export default function Home() {
                   <span className="flex items-center gap-1.5 text-[11px] font-medium text-emerald-300"><span className="size-1.5 rounded-full bg-emerald-300" /> Live</span>
                 </div>
                 <div className="grid gap-3 pt-4 sm:grid-cols-[0.9fr_1.1fr]">
-                  <div className="rounded-2xl border border-sky-400/10 bg-[#091524] p-4">
+                  <div className="hero-incoming rounded-2xl border border-sky-400/10 bg-[#091524] p-4">
                     <div className="mb-4 flex items-center justify-between"><span className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">Incoming message</span><span className="rounded-md bg-sky-400/10 px-2 py-1 text-[10px] text-sky-300">Telegram</span></div>
                     <div className="flex items-start gap-2.5"><span className="mt-1 flex size-7 shrink-0 items-center justify-center rounded-lg bg-sky-400/15 text-sky-300"><Send className="size-3.5" /></span><div className="rounded-2xl rounded-tl-md bg-[#152a42] px-3.5 py-3 text-[12px] leading-5 text-slate-200">မင်္ဂလာပါရှင့်။<br />Cica Toner ၂ ဘူး<br />ရန်ကုန်မြို့တွင်း ပို့ပေးပါနော်။<span className="mt-2 block text-[10px] text-slate-500">10:42 AM</span></div></div>
                     <div className="mt-5 flex items-center gap-2 border-t border-white/[0.06] pt-4 text-[11px] text-slate-500"><span className="flex size-5 items-center justify-center rounded-full bg-emerald-400/10 text-emerald-300"><Check className="size-3" /></span> Message understood</div>

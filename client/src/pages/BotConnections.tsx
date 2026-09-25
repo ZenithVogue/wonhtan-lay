@@ -54,7 +54,7 @@ export default function BotConnections() {
   };
 
   return (
-    <div className="min-h-screen bg-[#07111f] text-slate-100">
+    <div className="bot-settings-shell min-h-screen bg-[#07111f] text-slate-100">
       <header className="dashboard-header !ml-0 lg:!pl-8"><div className="flex items-center gap-3"><a className="dashboard-menu inline-flex" href="/dashboard" aria-label="Back to dashboard"><ArrowLeft className="size-4" /></a><div className="hidden items-center gap-2 text-xs text-slate-500 sm:flex"><span>Workspace</span><ChevronRight className="size-3" /><span>Settings</span><ChevronRight className="size-3" /><span className="font-medium text-slate-300">Bot Connections</span></div><h1 className="font-display text-base font-semibold text-white sm:hidden">Bot ချိတ်ဆက်ရန်</h1></div><div className="ml-auto flex items-center gap-3"><div className="hidden items-center gap-2 text-xs text-slate-500 sm:flex"><span className="size-1.5 rounded-full bg-emerald-300" /> KPay Verified Shop</div><span className="flex size-8 items-center justify-center rounded-lg bg-indigo-400/10 text-indigo-300"><Store className="size-4" /></span></div></header>
 
       <main className="mx-auto max-w-5xl px-5 py-8 sm:px-8 sm:py-12">
