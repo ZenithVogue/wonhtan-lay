@@ -11,8 +11,8 @@ import Orders from "./pages/Orders";
 import Products from "./pages/Products";
 import SlipVerifier from "./pages/SlipVerifier";
 
-
 function Router() {
+  // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
       <Route path={"/"} component={Home} />

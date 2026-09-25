@@ -38,13 +38,34 @@ export default function BotConnections() {
     }
 
     setConnecting(true);
-    await new Promise((resolve) => window.setTimeout(resolve, 1100));
-    setConnecting(false);
-    setBotUsername(normalizedUsername);
-    setConnected(true);
-    setToken("");
-    setShowToken(false);
-    toast("Bot ချိတ်ဆက်ပြီးပါပြီ", { description: `@${normalizedUsername} ကို ဝန်ထမ်းလေးနဲ့ ချိတ်ဆက်ပြီးပါပြီ။`, icon: <Check className="size-4 text-emerald-600 dark:text-emerald-300" /> });
+    try {
+      const response = await fetch("/api/telegram/set-webhook", {
+        method: "POST",
+        headers: { "content-type": "application/json", accept: "application/json" },
+        body: JSON.stringify({ token: token.trim() }),
+      });
+      const responseText = await response.text();
+      let telegramResult: { ok?: boolean; description?: string } = {};
+      try {
+        telegramResult = JSON.parse(responseText) as typeof telegramResult;
+      } catch {
+        telegramResult = { ok: response.ok, description: responseText };
+      }
+
+      if (!response.ok || telegramResult.ok !== true) {
+        throw new Error(telegramResult.description || "Telegram webhook ချိတ်ဆက်မှု မအောင်မြင်ပါ။");
+      }
+
+      setBotUsername(normalizedUsername);
+      setConnected(true);
+      setToken("");
+      setShowToken(false);
+      toast("Telegram Bot Webhook ချိတ်ဆက်မှု အောင်မြင်ပါသည်။", { description: `@${normalizedUsername} ကို ဝန်ထမ်းလေးနဲ့ ချိတ်ဆက်ပြီးပါပြီ။`, icon: <Check className="size-4 text-emerald-600 dark:text-emerald-300" /> });
+    } catch (error) {
+      toast("Telegram Bot Webhook ချိတ်ဆက်မှု မအောင်မြင်ပါ။", { description: error instanceof Error ? error.message : "Telegram server ကို မရောက်နိုင်ပါ။" });
+    } finally {
+      setConnecting(false);
+    }
   };
 
   const previewConnected = () => {
