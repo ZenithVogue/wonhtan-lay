@@ -63,6 +63,7 @@ const navItems = [
   { label: "Orders", burmese: "အော်ဒါများ", icon: ClipboardList },
   { label: "Bot Connections", burmese: "Bot ချိတ်ဆက်ရန်", icon: Bot, count: "2" },
   { label: "Products / Menu", burmese: "ပစ္စည်းစာရင်း", icon: ShoppingBag },
+  { label: "Slip Verifier", burmese: "ငွေလွှဲစလစ်စစ်ရန်", icon: FileCheck2 },
   { label: "Settings", burmese: "ဆက်တင်များ", icon: Settings },
 ];
 
@@ -108,6 +109,14 @@ export default function Dashboard() {
     }
     if (label === "Orders") {
       window.location.href = "/dashboard/orders";
+      return;
+    }
+    if (label === "Products / Menu") {
+      window.location.href = "/dashboard/products";
+      return;
+    }
+    if (label === "Slip Verifier") {
+      window.location.href = "/dashboard/slip-verifier";
       return;
     }
     if (label !== "Dashboard") toast(`${label} section`, { description: "ဒီ dashboard flow ကို မကြာခင် အသုံးပြုနိုင်ပါမယ်။" });

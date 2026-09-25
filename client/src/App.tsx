@@ -8,6 +8,8 @@ import BotConnections from "./pages/BotConnections";
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
 import Orders from "./pages/Orders";
+import Products from "./pages/Products";
+import SlipVerifier from "./pages/SlipVerifier";
 
 
 function Router() {
@@ -17,6 +19,8 @@ function Router() {
       <Route path={"/workspace"} component={Dashboard} />
       <Route path={"/dashboard"} component={Dashboard} />
       <Route path={"/dashboard/orders"} component={Orders} />
+      <Route path={"/dashboard/products"} component={Products} />
+      <Route path={"/dashboard/slip-verifier"} component={SlipVerifier} />
       <Route path={"/dashboard/bots"} component={BotConnections} />
       <Route path={"/dashboard/bot-settings"} component={BotConnections} />
       <Route path={"/404"} component={NotFound} />
