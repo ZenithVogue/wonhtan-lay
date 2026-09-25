@@ -110,24 +110,28 @@ function actionToast(message: string) {
 function featureStyles(accent: string) {
   const styles = {
     indigo: {
-      icon: "bg-indigo-400/10 text-indigo-300 ring-indigo-400/20",
-      line: "bg-indigo-400",
+      icon: "bg-indigo-50 text-indigo-600 border border-indigo-100 dark:bg-indigo-400/10 dark:text-indigo-300 dark:border-indigo-400/20",
+      line: "bg-indigo-500",
+      category: "text-indigo-600 dark:text-indigo-300",
       glow: "from-indigo-500/10",
     },
     emerald: {
-      icon: "bg-emerald-400/10 text-emerald-300 ring-emerald-400/20",
-      line: "bg-emerald-400",
+      icon: "bg-emerald-50 text-emerald-600 border border-emerald-100 dark:bg-emerald-400/10 dark:text-emerald-300 dark:border-emerald-400/20",
+      line: "bg-emerald-500",
+      category: "text-emerald-600 dark:text-emerald-300",
       glow: "from-emerald-500/10",
     },
     amber: {
-      icon: "bg-amber-400/10 text-amber-300 ring-amber-400/20",
-      line: "bg-amber-400",
+      icon: "bg-amber-50 text-amber-600 border border-amber-100 dark:bg-amber-400/10 dark:text-amber-300 dark:border-amber-400/20",
+      line: "bg-amber-500",
+      category: "text-amber-600 dark:text-amber-300",
       glow: "from-amber-500/10",
     },
     cyan: {
-      icon: "bg-cyan-400/10 text-cyan-300 ring-cyan-400/20",
-      line: "bg-cyan-400",
-      glow: "from-cyan-500/10",
+      icon: "bg-sky-50 text-sky-600 border border-sky-100 dark:bg-sky-400/10 dark:text-sky-300 dark:border-sky-400/20",
+      line: "bg-sky-500",
+      category: "text-sky-600 dark:text-sky-300",
+      glow: "from-sky-500/10",
     },
   } as const;
   return styles[accent as keyof typeof styles] ?? styles.indigo;
@@ -256,7 +260,7 @@ export default function Home() {
             <div className="grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:gap-20">
               <div className="lg:sticky lg:top-28 lg:h-fit"><div className="section-kicker"><span className="size-1.5 rounded-full bg-emerald-300" /> Everything you need</div><h2 className="section-title mt-5">သင့်ဆိုင်ကို<br /><span className="text-indigo-600 dark:text-indigo-400">ပိုမြန်အောင်</span> လုပ်ပါ</h2><p className="section-copy mt-5">အော်ဒါတစ်ခုချင်းစီကို လိုက်မှတ်နေတဲ့အချိန်တွေကို လျှော့ပြီး၊ သင့် customer နဲ့ business ကို ပိုအာရုံစိုက်ပါ။</p><button className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 transition hover:gap-3 dark:text-emerald-300" onClick={() => navigate("pricing")}>စတင်အသုံးပြုရန် <ArrowRight className="size-4" /></button></div>
               <div className="grid gap-4 sm:grid-cols-2">
-                {features.map((feature, index) => { const Icon = feature.icon; const styles = featureStyles(feature.accent); return <article key={feature.title} className="feature-card group bg-slate-50 dark:bg-slate-900 text-slate-100 dark:bg-slate-900 dark:text-white" style={{ animationDelay: `${index * 60}ms` }}><div className={`mb-8 flex size-12 items-center justify-center rounded-2xl ring-1 ${styles.icon}`}><Icon className="size-5 transition-transform duration-300 group-hover:scale-110" /></div><div className="mb-3 flex items-center gap-2"><span className={`size-1.5 rounded-full ${styles.line}`} /><span className="text-[10px] font-bold tracking-[0.14em] text-indigo-300 dark:text-indigo-400">{feature.eyebrow}</span></div><h3 className="font-display text-xl font-semibold leading-snug text-white dark:text-white">{feature.title}</h3><p className="mt-2 text-sm font-medium leading-6 text-slate-300 dark:text-slate-300">{feature.burmese}</p><p className="mt-4 text-sm leading-6 text-slate-500 dark:text-slate-400">{feature.description}</p><div className={`pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t ${styles.glow} to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100`} /></article>; })}
+                {features.map((feature, index) => { const Icon = feature.icon; const styles = featureStyles(feature.accent); return <article key={feature.title} className="feature-card group rounded-3xl border border-slate-200/80 bg-white/80 p-8 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900/80" style={{ animationDelay: `${index * 60}ms` }}><div className={`mb-8 flex size-12 items-center justify-center rounded-2xl ${styles.icon}`}><Icon className="size-5 transition-transform duration-300 group-hover:scale-110" /></div><div className="mb-3 flex items-center gap-2"><span className={`size-1.5 animate-pulse rounded-full ${styles.line}`} /><span className={`text-[11px] font-bold uppercase tracking-widest ${styles.category}`}>{feature.eyebrow}</span></div><h3 className="mt-3 mb-1 font-display text-xl font-bold leading-snug text-slate-900 dark:text-white">{feature.title}</h3><p className="mb-3 text-sm font-semibold leading-6 text-slate-700 dark:text-slate-300">{feature.burmese}</p><p className="text-xs font-normal leading-relaxed text-slate-500 dark:text-slate-400">{feature.description}</p><div className={`pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t ${styles.glow} to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100`} /></article>; })}
               </div>
             </div>
           </section>
