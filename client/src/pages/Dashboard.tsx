@@ -106,6 +106,10 @@ export default function Dashboard() {
       window.location.href = "/dashboard/bot-settings";
       return;
     }
+    if (label === "Orders") {
+      window.location.href = "/dashboard/orders";
+      return;
+    }
     if (label !== "Dashboard") toast(`${label} section`, { description: "ဒီ dashboard flow ကို မကြာခင် အသုံးပြုနိုင်ပါမယ်။" });
   };
 

@@ -328,3 +328,14 @@ html:not(.dark) .dashboard-shell .bg-sky-400\/10 { background: #f0f9ff; }
 html:not(.dark) .dashboard-shell .border-emerald-400\/20 { border-color: #a7f3d0; }
 html:not(.dark) .dashboard-shell .border-amber-400\/20 { border-color: #fde68a; }
 html:not(.dark) .dashboard-shell .border-sky-400\/20 { border-color: #bae6fd; }
+
+
+@media print {
+  body * { visibility: hidden !important; }
+  .waybill-modal, .waybill-modal * { visibility: visible !important; }
+  .waybill-modal { position: absolute !important; inset: 0 !important; width: 100% !important; max-width: none !important; border: 0 !important; box-shadow: none !important; }
+  .waybill-modal > div:first-child,
+  .waybill-modal > div:last-child { display: none !important; }
+  .waybill-modal > div:nth-child(2) { max-height: none !important; overflow: visible !important; padding: 0 !important; }
+  .waybill-modal > div:nth-child(2) > div { border: 0 !important; box-shadow: none !important; }
+}
