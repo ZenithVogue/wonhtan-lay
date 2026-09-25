@@ -329,6 +329,38 @@ html:not(.dark) .dashboard-shell .border-emerald-400\/20 { border-color: #a7f3d0
 html:not(.dark) .dashboard-shell .border-amber-400\/20 { border-color: #fde68a; }
 html:not(.dark) .dashboard-shell .border-sky-400\/20 { border-color: #bae6fd; }
 
+/* Dark-mode foreground contract: keep primary and muted copy readable on every dashboard surface. */
+.dark .dashboard-shell .text-slate-900,
+.dark .bot-settings-shell .text-slate-900,
+.dark .page-surface .text-slate-900 { color: #f8fafc; }
+.dark .dashboard-shell .text-slate-800,
+.dark .bot-settings-shell .text-slate-800,
+.dark .page-surface .text-slate-800 { color: #f1f5f9; }
+.dark .dashboard-shell .text-slate-700,
+.dark .bot-settings-shell .text-slate-700,
+.dark .page-surface .text-slate-700 { color: #e2e8f0; }
+.dark .dashboard-shell .text-slate-600,
+.dark .bot-settings-shell .text-slate-600,
+.dark .page-surface .text-slate-600 { color: #cbd5e1; }
+.dark .dashboard-shell .text-slate-500,
+.dark .bot-settings-shell .text-slate-500,
+.dark .page-surface .text-slate-500 { color: #94a3b8; }
+
+/* Delivery receipts intentionally stay white for printing in dark mode. */
+.dark .dashboard-shell .receipt-paper .text-slate-900 { color: #0f172a; }
+.dark .dashboard-shell .receipt-paper .text-slate-800 { color: #1e293b; }
+.dark .dashboard-shell .receipt-paper .text-slate-700 { color: #334155; }
+.dark .dashboard-shell .receipt-paper .text-slate-600 { color: #475569; }
+.dark .dashboard-shell .receipt-paper .text-slate-500 { color: #64748b; }
+
+.form-label { display: block; margin-bottom: 0.45rem; color: #334155; font-size: 0.7rem; font-weight: 700; }
+.form-input { width: 100%; border: 1px solid #cbd5e1; border-radius: 0.75rem; background: #fff; color: #0f172a; padding: 0.7rem 0.8rem; font-size: 0.75rem; outline: none; transition: 180ms ease; }
+.form-input:focus { border-color: #818cf8; box-shadow: 0 0 0 3px rgb(99 102 241 / 0.12); }
+.form-input::placeholder { color: #94a3b8; }
+.dark .form-label { color: #e2e8f0; }
+.dark .form-input { border-color: #475569; background: #0f172a; color: #f8fafc; }
+.dark .form-input::placeholder { color: #64748b; }
+
 
 @media print {
   body * { visibility: hidden !important; }
