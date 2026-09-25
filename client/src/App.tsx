@@ -15,6 +15,7 @@ function Router() {
       <Route path={"/"} component={Home} />
       <Route path={"/dashboard"} component={Dashboard} />
       <Route path={"/dashboard/bots"} component={BotConnections} />
+      <Route path={"/dashboard/bot-settings"} component={BotConnections} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
