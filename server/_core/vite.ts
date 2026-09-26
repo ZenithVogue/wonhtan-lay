@@ -43,7 +43,13 @@ export async function setupVite(app: Express, server: Server) {
         `src="/src/main.tsx?v=${nanoid()}"`
       );
       const page = await vite.transformIndexHtml(url, template);
-      const hostedPage = page.replace('<script type="module" src="/@vite/client"></script>', "");
+      // The hosted preview terminates Vite's HMR socket, so do not send the
+      // client script. Match Vite's generated tag regardless of attribute order
+      // or formatting so it cannot open a socket before the page renders.
+      const hostedPage = page.replace(
+        /<script\b[^>]*\bsrc=["']\/@vite\/client["'][^>]*><\/script>/gi,
+        "",
+      );
       res.status(200).set({ "Content-Type": "text/html" }).end(hostedPage);
     } catch (e) {
       vite.ssrFixStacktrace(e as Error);
