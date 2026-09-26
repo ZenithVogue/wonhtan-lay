@@ -1,4 +1,5 @@
 import "dotenv/config";
+import { config as loadLocalEnv } from "dotenv";
 import express from "express";
 import { createServer } from "http";
 import net from "net";
@@ -9,6 +10,8 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { registerTelegramRoutes } from "../telegramRoutes";
+
+loadLocalEnv({ path: ".env.local" });
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {

@@ -1,4 +1,5 @@
 import type { Express, Request, Response } from "express";
+import { createTelegramOrder, ensureTelegramShop } from "./supabase";
 
 const TELEGRAM_TOKEN_PATTERN = /^\d{7,12}:[A-Za-z0-9_-]{20,}$/;
 const DEFAULT_WELCOME_PREFIX = "မင်္ဂလာပါရှင်၊ ဝန်ထမ်းလေးမှ ကြိုဆိုပါတယ်။ သင်၏ စာကို လက်ခံရရှိပါသည်: ";
@@ -6,7 +7,7 @@ const DEFAULT_WELCOME_PREFIX = "မင်္ဂလာပါရှင်၊ ဝ�
 // The latest token is kept in memory so a webhook can reply immediately after
 // the set-webhook request. TELEGRAM_BOT_TOKEN is the durable production fallback
 // for deployments that restart between webhook registrations.
-let configuredTelegramToken = process.env.TELEGRAM_BOT_TOKEN?.trim() || "";
+let configuredTelegramToken = "";
 
 function getForwardedValue(value: string | string[] | undefined) {
   const first = Array.isArray(value) ? value[0] : value;
@@ -72,7 +73,19 @@ export function registerTelegramRoutes(app: Express) {
       if (telegramResponse.ok) {
         try {
           const parsed = JSON.parse(responseBody) as { ok?: boolean };
-          if (parsed.ok === true) rememberTelegramToken(token);
+          if (parsed.ok === true) {
+            rememberTelegramToken(token);
+            try {
+              const shopResult = await ensureTelegramShop(token);
+              if (!shopResult.configured) {
+                console.warn("[Supabase] Credentials are not configured; shop registration skipped.");
+              }
+            } catch (error) {
+              // Telegram webhook setup still succeeded; report persistence setup
+              // separately so the user receives Telegram's actual response.
+              console.error("[Supabase] Shop registration failed:", error instanceof Error ? error.message : error);
+            }
+          }
         } catch {
           // The raw response is still returned below if Telegram sends non-JSON.
         }
@@ -88,6 +101,7 @@ export function registerTelegramRoutes(app: Express) {
     const update = req.body as {
       message?: {
         chat?: { id?: number | string };
+        from?: { id?: number | string; username?: string; first_name?: string };
         text?: string;
       };
     };
@@ -98,6 +112,18 @@ export function registerTelegramRoutes(app: Express) {
 
     if (chatId !== undefined && token) {
       const replyText = `${DEFAULT_WELCOME_PREFIX}${userMessageText}`;
+      const sender = message?.from;
+      try {
+        await createTelegramOrder({
+          telegramToken: token,
+          customerName: sender?.username || sender?.first_name || "Telegram customer",
+          customerTelegramId: String(sender?.id ?? chatId),
+          items: [{ message: userMessageText }],
+          totalAmount: 0,
+        });
+      } catch (error) {
+        console.error("[Supabase] Order creation failed:", error instanceof Error ? error.message : error);
+      }
       try {
         const telegramResponse = await fetch(getTelegramApiUrl(token, "sendMessage"), {
           method: "POST",
