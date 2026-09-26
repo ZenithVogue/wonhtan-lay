@@ -9,11 +9,13 @@ import viteConfig from "../../vite.config";
 export async function setupVite(app: Express, server: Server) {
   const serverOptions = {
     middlewareMode: true,
-    // The hosted WebDev proxy serves HTTP publicly but does not tunnel the
-    // Vite dev WebSocket to the internal middleware port. Let the project
-    // restart/reload through WebDev instead of injecting a broken localhost
-    // HMR client connection into the public page.
-    hmr: false,
+    // Keep HMR on the public secure endpoint in Manus. `clientPort: 443`
+    // prevents the browser from attempting to connect to an internal port.
+    hmr: {
+      protocol: "wss",
+      clientPort: 443,
+      overlay: false,
+    },
     allowedHosts: true as const,
   };
 
@@ -43,11 +45,7 @@ export async function setupVite(app: Express, server: Server) {
         `src="/src/main.tsx?v=${nanoid()}"`
       );
       const page = await vite.transformIndexHtml(url, template);
-      // `transformIndexHtml` injects /@vite/client even when HMR is disabled.
-      // The hosted WebDev proxy cannot tunnel that client’s WebSocket, so omit
-      // only the dev client while preserving the app entrypoint and debug tools.
-      const hostedPage = page.replace('<script type="module" src="/@vite/client"></script>', "");
-      res.status(200).set({ "Content-Type": "text/html" }).end(hostedPage);
+      res.status(200).set({ "Content-Type": "text/html" }).end(page);
     } catch (e) {
       vite.ssrFixStacktrace(e as Error);
       next(e);
