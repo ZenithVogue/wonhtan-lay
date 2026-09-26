@@ -9,13 +9,9 @@ import viteConfig from "../../vite.config";
 export async function setupVite(app: Express, server: Server) {
   const serverOptions = {
     middlewareMode: true,
-    // Keep HMR on the public secure endpoint in Manus. `clientPort: 443`
-    // prevents the browser from attempting to connect to an internal port.
-    hmr: {
-      protocol: "wss",
-      clientPort: 443,
-      overlay: false,
-    },
+    // The Manus proxy does not provide a stable Vite WebSocket tunnel.
+    // Disable HMR so the browser cannot show disconnect overlays.
+    hmr: false,
     allowedHosts: true as const,
   };
 
@@ -45,7 +41,8 @@ export async function setupVite(app: Express, server: Server) {
         `src="/src/main.tsx?v=${nanoid()}"`
       );
       const page = await vite.transformIndexHtml(url, template);
-      res.status(200).set({ "Content-Type": "text/html" }).end(page);
+      const hostedPage = page.replace('<script type="module" src="/@vite/client"></script>', "");
+      res.status(200).set({ "Content-Type": "text/html" }).end(hostedPage);
     } catch (e) {
       vite.ssrFixStacktrace(e as Error);
       next(e);

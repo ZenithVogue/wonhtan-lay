@@ -170,14 +170,9 @@ export default defineConfig({
   },
   server: {
     host: true,
-    // Manus serves the app through an HTTPS reverse proxy. Keep the browser
-    // HMR client on the public secure WebSocket endpoint instead of an
-    // internal localhost port.
-    hmr: {
-      protocol: "wss",
-      clientPort: 443,
-      overlay: false,
-    },
+    // Manus' hosted proxy does not provide a stable Vite WebSocket tunnel.
+    // Disable HMR completely so the browser cannot show disconnect overlays.
+    hmr: false,
     watch: {
       usePolling: true,
       interval: 300,
