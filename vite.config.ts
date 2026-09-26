@@ -154,6 +154,7 @@ const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(
 
 export default defineConfig({
   plugins,
+  clearScreen: false,
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "client", "src"),
@@ -170,9 +171,11 @@ export default defineConfig({
   },
   server: {
     host: true,
-    // Manus' hosted proxy does not provide a stable Vite WebSocket tunnel.
-    // Disable HMR completely so the browser cannot show disconnect overlays.
-    hmr: false,
+    // Keep the browser from showing Vite's error overlay. The middleware
+    // renderer also strips /@vite/client below, so no HMR socket is opened.
+    hmr: {
+      overlay: false,
+    },
     watch: {
       usePolling: true,
       interval: 300,

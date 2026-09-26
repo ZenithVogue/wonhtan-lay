@@ -6,6 +6,14 @@
     <meta name="theme-color" content="#07111f" />
     <meta name="description" content="WonHtan Lay — ဝန်ထမ်းလေး။ Myanmar online shop owners အတွက် 24/7 order automation, slip verification, and delivery slip generation." />
     <title>WonHtan Lay — ဝန်ထမ်းလေး</title>
+    <script>
+      window.addEventListener("error", function (event) {
+        if (event.message && event.message.toLowerCase().includes("websocket")) {
+          event.stopImmediatePropagation();
+          event.preventDefault();
+        }
+      }, true);
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   </head>

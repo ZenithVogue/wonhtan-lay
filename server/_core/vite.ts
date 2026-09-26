@@ -9,9 +9,11 @@ import viteConfig from "../../vite.config";
 export async function setupVite(app: Express, server: Server) {
   const serverOptions = {
     middlewareMode: true,
-    // The Manus proxy does not provide a stable Vite WebSocket tunnel.
-    // Disable HMR so the browser cannot show disconnect overlays.
-    hmr: false,
+    // Suppress Vite's overlay; the rendered HTML below strips the Vite client,
+    // which prevents any HMR WebSocket from being opened in the hosted proxy.
+    hmr: {
+      overlay: false,
+    },
     allowedHosts: true as const,
   };
 
