@@ -116,13 +116,20 @@ export function registerTelegramRoutes(app: Express) {
       try {
         await createTelegramOrder({
           telegramToken: token,
-          customerName: sender?.username || sender?.first_name || "Telegram customer",
+          customerName: sender?.first_name || sender?.username || "Telegram customer",
           customerTelegramId: String(sender?.id ?? chatId),
-          items: [{ message: userMessageText }],
+          items: userMessageText,
           totalAmount: 0,
         });
+        console.log("[Supabase] Telegram order inserted successfully", {
+          chatId: String(chatId),
+          customerTelegramId: String(sender?.id ?? chatId),
+          customerName: sender?.first_name || sender?.username || "Telegram customer",
+          items: userMessageText,
+          status: "pending",
+        });
       } catch (error) {
-        console.error("[Supabase] Order creation failed:", error instanceof Error ? error.message : error);
+        console.error("[Supabase] Telegram order insert failed:", error instanceof Error ? error.message : error);
       }
       try {
         const telegramResponse = await fetch(getTelegramApiUrl(token, "sendMessage"), {
