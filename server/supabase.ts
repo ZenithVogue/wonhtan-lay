@@ -1,54 +1,40 @@
-type SupabaseRow = Record<string, unknown>;
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
-type SupabaseConfig = {
-  restUrl: string;
-  anonKey: string;
-};
+type SupabaseRpcClient = SupabaseClient;
 
-function getSupabaseConfig(): SupabaseConfig | null {
+function getProjectUrl() {
   const rawUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim();
-  if (!rawUrl || !anonKey) return null;
-
-  const restUrl = rawUrl.replace(/\/+$/, "").replace(/\/rest\/v1$/i, "") + "/rest/v1";
-  return { restUrl, anonKey };
+  if (!rawUrl) return "";
+  return rawUrl.replace(/\/+$/, "").replace(/\/rest\/v1$/i, "");
 }
 
-async function supabaseRequest<T>(path: string, init: RequestInit = {}) {
-  const config = getSupabaseConfig();
-  if (!config) return { configured: false, response: null, data: null as T | null };
+function getSupabaseClient(): SupabaseRpcClient | null {
+  const projectUrl = getProjectUrl();
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim();
+  if (!projectUrl || !anonKey) return null;
 
-  const response = await fetch(`${config.restUrl}/${path.replace(/^\//, "")}`, {
-    ...init,
-    headers: {
-      apikey: config.anonKey,
-      Authorization: `Bearer ${config.anonKey}`,
-      "Content-Type": "application/json",
-      accept: "application/json",
-      ...(init.headers || {}),
+  return createClient(projectUrl, anonKey, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+      detectSessionInUrl: false,
     },
   });
-  const text = await response.text();
-  let data: T | null = null;
-  try {
-    data = text ? (JSON.parse(text) as T) : null;
-  } catch {
-    data = null;
-  }
-  return { configured: true, response, data };
 }
 
 export async function ensureTelegramShop(token: string) {
-  const result = await supabaseRequest<string>("rpc/register_telegram_shop", {
-    method: "POST",
-    body: JSON.stringify({ p_name: "Telegram Shop", p_token: token }),
-  });
+  const supabase = getSupabaseClient();
+  if (!supabase) return { configured: false, shop: null };
 
-  if (!result.configured) return { configured: false, shop: null };
-  if (!result.response?.ok) {
-    throw new Error(`Supabase shop registration failed (${result.response?.status}): ${JSON.stringify(result.data)}`);
+  const { data, error } = await supabase.rpc("register_telegram_shop", {
+    p_name: "Telegram Shop",
+    p_token: token,
+  });
+  if (error) {
+    throw new Error(`Supabase shop registration failed: ${error.message}`);
   }
-  return { configured: true, shop: result.data ? { id: result.data } : null };
+
+  return { configured: true, shop: data ? { id: String(data) } : null };
 }
 
 export async function createTelegramOrder(order: {
@@ -58,20 +44,19 @@ export async function createTelegramOrder(order: {
   items: unknown;
   totalAmount?: number;
 }) {
-  const result = await supabaseRequest<string>("rpc/create_telegram_order", {
-    method: "POST",
-    body: JSON.stringify({
-      p_token: order.telegramToken,
-      p_customer_name: order.customerName || null,
-      p_customer_telegram_id: order.customerTelegramId,
-      p_items: order.items,
-      p_total_amount: order.totalAmount ?? 0,
-    }),
-  });
+  const supabase = getSupabaseClient();
+  if (!supabase) return { configured: false, order: null };
 
-  if (!result.configured) return { configured: false, order: null };
-  if (!result.response?.ok) {
-    throw new Error(`Supabase order insert failed (${result.response?.status}): ${JSON.stringify(result.data)}`);
+  const { data, error } = await supabase.rpc("create_telegram_order", {
+    p_token: order.telegramToken,
+    p_customer_name: order.customerName || null,
+    p_customer_telegram_id: order.customerTelegramId,
+    p_items: order.items,
+    p_total_amount: order.totalAmount ?? 0,
+  });
+  if (error) {
+    throw new Error(`Supabase order insert failed: ${error.message}`);
   }
-  return { configured: true, order: result.data ? { id: result.data } : null };
+
+  return { configured: true, order: data ? { id: String(data) } : null };
 }
