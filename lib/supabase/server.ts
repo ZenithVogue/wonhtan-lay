@@ -1,4 +1,5 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { normalizeSupabaseUrl } from "./url";
 
 /**
  * Server-side Supabase client (API routes, polling loop).
@@ -7,7 +8,7 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
  */
 export function getSupabaseUrl(): string {
   const raw = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-  return raw.trim().replace(/\/+$/, "").replace(/\/rest\/v1$/i, "");
+  return normalizeSupabaseUrl(raw);
 }
 
 export function getSupabaseAnonKey(): string {
