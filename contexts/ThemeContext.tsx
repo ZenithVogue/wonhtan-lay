@@ -23,13 +23,22 @@ export function ThemeProvider({
   defaultTheme = "light",
   switchable = false,
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(() => {
-    if (switchable && typeof window !== "undefined") {
+  // Always start from the default theme so the server render and the first
+  // client render are identical. The stored preference is applied in an
+  // effect after mount (effects never run on the server).
+  const [theme, setTheme] = useState<Theme>(defaultTheme);
+
+  useEffect(() => {
+    if (!switchable) return;
+    try {
       const stored = window.localStorage.getItem("theme");
-      return (stored as Theme) || defaultTheme;
+      if (stored === "light" || stored === "dark") {
+        setTheme(stored);
+      }
+    } catch {
+      // Storage unavailable (private mode, etc.) — keep the default theme.
     }
-    return defaultTheme;
-  });
+  }, [switchable]);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -40,7 +49,11 @@ export function ThemeProvider({
     }
 
     if (switchable) {
-      localStorage.setItem("theme", theme);
+      try {
+        localStorage.setItem("theme", theme);
+      } catch {
+        // Storage unavailable — theme still applies to this session.
+      }
     }
   }, [theme, switchable]);
 

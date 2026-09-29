@@ -1,3 +1,4 @@
+import ClientOnly from "@/components/ClientOnly";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -20,16 +21,21 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
+    // suppressHydrationWarning: browser extensions / preview tooling may stamp
+    // extra attributes (e.g. `bis_*`) onto <html>/<body> before React hydrates.
+    // App content itself renders inside <ClientOnly>, so it cannot mismatch.
     <html lang="my" suppressHydrationWarning>
-      <body>
-        <ErrorBoundary>
-          <ThemeProvider defaultTheme="light" switchable>
-            <TooltipProvider>
-              <Toaster />
-              {children}
-            </TooltipProvider>
-          </ThemeProvider>
-        </ErrorBoundary>
+      <body suppressHydrationWarning>
+        <ClientOnly>
+          <ErrorBoundary>
+            <ThemeProvider defaultTheme="light" switchable>
+              <TooltipProvider>
+                <Toaster />
+                {children}
+              </TooltipProvider>
+            </ThemeProvider>
+          </ErrorBoundary>
+        </ClientOnly>
       </body>
     </html>
   );
