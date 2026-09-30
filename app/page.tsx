@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { useTheme } from "../contexts/ThemeContext";
 import {
   ArrowRight,
@@ -31,6 +31,13 @@ import {
   X,
   Zap,
 } from "lucide-react";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 
 const features = [
@@ -98,6 +105,8 @@ const plans = [
   },
 ];
 
+type FooterModal = "about" | "help" | "status" | "privacy" | "terms" | null;
+
 function scrollToId(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
@@ -141,6 +150,7 @@ function featureStyles(accent: string) {
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [footerModal, setFooterModal] = useState<FooterModal>(null);
   const { theme, toggleTheme } = useTheme();
   const lightMode = theme === "light";
 
@@ -183,7 +193,7 @@ export default function Home() {
               >
                 {lightMode ? <Moon className="size-4" /> : <Sun className="size-4" />}
               </button>
-              <button className="button-ghost" onClick={() => { window.location.href = "/dashboard"; }}>Dashboard Login <ArrowUpRight className="size-4" /></button>
+              <button className="button-ghost" onClick={() => { window.location.href = "/sign-in"; }}>Sign In <ArrowUpRight className="size-4" /></button>
             </div>
 
             <button className="icon-button md:hidden" onClick={() => setMenuOpen((value) => !value)} aria-label="Toggle navigation menu">
@@ -197,7 +207,7 @@ export default function Home() {
                 <button onClick={() => navigate("features")} className="mobile-nav-link">Features <ChevronRight className="size-4" /></button>
                 <button onClick={() => navigate("pricing")} className="mobile-nav-link">Pricing <ChevronRight className="size-4" /></button>
                 <button onClick={() => navigate("demo")} className="mobile-nav-link">Demo <ChevronRight className="size-4" /></button>
-                <button className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-500 px-5 py-3 text-sm font-semibold text-white" onClick={() => { window.location.href = "/dashboard"; }}>Dashboard Login <ArrowUpRight className="size-4" /></button>
+                <button className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-500 px-5 py-3 text-sm font-semibold text-white" onClick={() => { window.location.href = "/sign-in"; }}>Sign In <ArrowUpRight className="size-4" /></button>
               </div>
             </div>
           )}
@@ -214,7 +224,7 @@ export default function Home() {
                 Facebook နဲ့ Telegram shop တွေအတွက် အော်ဒါလက်ခံခြင်း၊ KPay/Wave စလစ်စစ်ခြင်းနဲ့ delivery slip ထုတ်ပေးခြင်းတွေကို အလိုအလျောက် လုပ်ဆောင်ပေးမယ့် သင့်ရဲ့ digital worker ပါ။
               </p>
               <div className="mt-9 flex flex-col gap-3 sm:flex-row animate-fade-up [animation-delay:200ms]">
-                <button className="button-primary" onClick={() => { window.location.href = "/sign-up?plan=pro"; }}>Pro နဲ့ စတင်မည် <ArrowRight className="size-4" /></button>
+                <button className="button-primary" onClick={() => { window.location.href = "/sign-up?plan=free"; }}>အခမဲ့ စတင်မည် <ArrowRight className="size-4" /></button>
                 <button className="button-secondary" onClick={() => navigate("demo")}><PlayIcon /> Bot Demo စမ်းသပ်ရန်</button>
               </div>
               <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3 text-xs text-slate-500 animate-fade-up [animation-delay:260ms]">
@@ -268,23 +278,185 @@ export default function Home() {
           </section>
 
           <section className="container pb-24 sm:pb-36">
-            <div className="relative overflow-hidden rounded-[28px] border border-slate-200 bg-slate-50 px-6 py-10 dark:border-slate-800 dark:bg-slate-900/80 sm:px-12 sm:py-14"><div className="absolute -right-20 -top-32 size-72 rounded-full bg-indigo-100 blur-3xl dark:bg-indigo-400/10" /><div className="relative grid items-center gap-10 lg:grid-cols-[1fr_auto]"><div><div className="section-kicker"><Sparkles className="size-3.5 text-emerald-700 dark:text-emerald-300" /> Your new digital worker</div><h2 className="mt-5 max-w-2xl font-display text-3xl font-bold leading-tight tracking-[-0.03em] text-slate-900 dark:text-white sm:text-4xl">မနက်ဖြန်ကစပြီး<br /><span className="text-indigo-600 dark:text-indigo-400">အော်ဒါတွေက သူ့ဘာသာသူ လာပါစေ။</span></h2><p className="mt-5 max-w-xl text-sm leading-7 text-slate-600 dark:text-slate-400">သင့်ဆိုင်အတွက် အလုပ်ကြိုးစားပေးမယ့် ဝန်ထမ်းလေးကို အခမဲ့ စတင်ခေါ်လိုက်ပါ။</p></div><button className="button-primary w-full sm:w-fit" onClick={() => { window.location.href = "/sign-up?plan=pro"; }}>Pro နဲ့ စတင်မည် <ArrowRight className="size-4" /></button></div></div>
+            <div className="relative overflow-hidden rounded-[28px] border border-slate-200 bg-slate-50 px-6 py-10 dark:border-slate-800 dark:bg-slate-900/80 sm:px-12 sm:py-14"><div className="absolute -right-20 -top-32 size-72 rounded-full bg-indigo-100 blur-3xl dark:bg-indigo-400/10" /><div className="relative grid items-center gap-10 lg:grid-cols-[1fr_auto]"><div><div className="section-kicker"><Sparkles className="size-3.5 text-emerald-700 dark:text-emerald-300" /> Your new digital worker</div><h2 className="mt-5 max-w-2xl font-display text-3xl font-bold leading-tight tracking-[-0.03em] text-slate-900 dark:text-white sm:text-4xl">သင့်ဆိုင်အတွက် အလုပ်အကျိုးဆောင်ပေးမယ့် ဝန်ထမ်းလေးကို အခမဲ့ စတင်ခေါ်ယူလိုက်ပါ။</h2></div><button className="button-primary w-full sm:w-fit" onClick={() => { window.location.href = "/sign-up?plan=free"; }}>အခမဲ့ စတင်မည် <ArrowRight className="size-4" /></button></div></div>
           </section>
 
           <section id="pricing" className="container scroll-mt-20 pb-24 sm:pb-36">
-            <div className="mx-auto max-w-2xl text-center"><div className="section-kicker justify-center"><span className="size-1.5 rounded-full bg-emerald-300" /> Simple pricing</div><h2 className="section-title mt-5">သင့်ဆိုင်နဲ့ <span className="gradient-text">အတူတူကြီးထွားမယ်</span></h2><p className="section-copy mx-auto mt-5">စတင်တဲ့ဆိုင်ကနေ အော်ဒါထောင်ချီတဲ့ brand အထိ၊ Pro Plan တစ်ခုတည်းနဲ့ လိုအပ်တာအားလုံးကို ရယူလိုက်ပါ။</p></div>
-            <div className="mx-auto mt-12 grid max-w-md gap-5">
-              {plans.filter((plan) => plan.featured).map((plan) => <article key={plan.name} className={plan.featured ? "pricing-card pricing-card-featured pricing-card-glow" : "pricing-card"}>{plan.featured && <div className="absolute right-5 top-5 rounded-full bg-emerald-300 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-emerald-950">Popular</div>}<div className="flex items-start justify-between"><div><div className="font-display text-2xl font-bold text-slate-900 dark:text-white">{plan.name}</div><div className="mt-1 text-sm text-slate-600 dark:text-slate-500">{plan.label}</div></div>{plan.featured ? <span className="flex size-10 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700 dark:bg-emerald-300/10 dark:text-emerald-300"><Zap className="size-5" /></span> : <span className="flex size-10 items-center justify-center rounded-xl bg-slate-100 text-slate-500 dark:bg-white/[0.05] dark:text-slate-400"><Store className="size-5" /></span>}</div><div className="mt-8 flex items-end gap-2"><span className="font-display text-4xl font-bold tracking-tight text-slate-900 dark:text-white">{plan.price}</span><span className="mb-1 text-sm text-slate-600 dark:text-slate-500">{plan.unit}</span></div><p className="mt-3 min-h-12 text-sm leading-6 text-slate-600 dark:text-slate-400">{plan.description}</p><div className="my-7 h-px bg-slate-200 dark:bg-white/[0.08]" /><ul className="space-y-4">{plan.features.map((item) => <li key={item} className="flex items-start gap-3 text-sm text-slate-700 dark:text-slate-300"><Check className={`mt-0.5 size-4 shrink-0 ${plan.featured ? "text-emerald-700 dark:text-emerald-300" : "text-indigo-700 dark:text-indigo-300"}`} />{item}</li>)}</ul><button className={plan.featured ? "button-primary mt-8 w-full" : "button-secondary mt-8 w-full"} onClick={() => { window.location.href = `/sign-up?plan=${plan.name.toLowerCase()}`; }}>{"Pro နဲ့ စတင်မည်"} <ArrowRight className="size-4" /></button></article>)}
+            <div className="mx-auto max-w-2xl text-center"><div className="section-kicker justify-center"><span className="size-1.5 rounded-full bg-emerald-300" /> Simple pricing</div><h2 className="section-title mt-5">သင့်ဆိုင်နဲ့ <span className="gradient-text">အတူတူကြီးထွားမယ်</span></h2><p className="section-copy mx-auto mt-5">Free နဲ့ အခမဲ့ စတင်ပြီး၊ ဆိုင်ကြီးထွားလာတဲ့အခါ Pro features တွေကို ရယူလိုက်ပါ။</p></div>
+            <div className="mx-auto mt-12 grid max-w-4xl gap-5 sm:grid-cols-2">
+              {plans.map((plan) => <article key={plan.name} className={plan.featured ? "pricing-card pricing-card-featured pricing-card-glow" : "pricing-card"}>{plan.featured && <div className="absolute right-5 top-5 rounded-full bg-emerald-300 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-emerald-950">Popular</div>}<div className="flex items-start justify-between"><div><div className="font-display text-2xl font-bold text-slate-900 dark:text-white">{plan.name}</div><div className="mt-1 text-sm text-slate-600 dark:text-slate-500">{plan.label}</div></div>{plan.featured ? <span className="flex size-10 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700 dark:bg-emerald-300/10 dark:text-emerald-300"><Zap className="size-5" /></span> : <span className="flex size-10 items-center justify-center rounded-xl bg-slate-100 text-slate-500 dark:bg-white/[0.05] dark:text-slate-400"><Store className="size-5" /></span>}</div><div className="mt-8 flex items-end gap-2"><span className="font-display text-4xl font-bold tracking-tight text-slate-900 dark:text-white">{plan.price}</span><span className="mb-1 text-sm text-slate-600 dark:text-slate-500">{plan.unit}</span></div><p className="mt-3 min-h-12 text-sm leading-6 text-slate-600 dark:text-slate-400">{plan.description}</p><div className="my-7 h-px bg-slate-200 dark:bg-white/[0.08]" /><ul className="space-y-4">{plan.features.map((item) => <li key={item} className="flex items-start gap-3 text-sm text-slate-700 dark:text-slate-300"><Check className={`mt-0.5 size-4 shrink-0 ${plan.featured ? "text-emerald-700 dark:text-emerald-300" : "text-indigo-700 dark:text-indigo-300"}`} />{item}</li>)}</ul><button className={plan.featured ? "button-primary mt-8 w-full" : "button-secondary mt-8 w-full"} onClick={() => { window.location.href = `/sign-up?plan=${plan.name.toLowerCase()}`; }}>{plan.name === "Free" ? "အခမဲ့ စတင်မည်" : "Pro နဲ့ စတင်မည်"} <ArrowRight className="size-4" /></button></article>)}
             </div>
             <p className="mt-7 text-center text-xs text-slate-500">KPay / WavePay နဲ့ ပေးချေနိုင်ပါတယ်။ အချိန်မရွေး Dashboard › Settings › Billing ကနေ plan ပြောင်းနိုင်ပါတယ်။</p>
           </section>
 
-          <section className="container pb-24 sm:pb-32"><div className="grid items-center gap-8 border-t border-slate-200 pt-10 dark:border-slate-800 sm:grid-cols-[1fr_auto]"><div><div className="flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-white"><ShieldCheck className="size-4 text-emerald-700 dark:text-emerald-300" /> Local sellers အတွက် ယုံကြည်စိတ်ချရတဲ့ အလုပ်ဖော်</div><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-500">သင့်ရဲ့ customer data နဲ့ order information တွေကို လုံခြုံစွာ ထိန်းသိမ်းထားပြီး မြန်မာ online commerce အတွက် ရိုးရှင်းစွာ တည်ဆောက်ထားပါတယ်။</p></div><button className="inline-flex items-center gap-2 text-sm font-semibold text-slate-700 transition hover:text-slate-900 dark:text-slate-300 dark:hover:text-white" onClick={() => actionToast("Talk to our team")}>အဖွဲ့နဲ့ စကားပြောမယ် <ArrowUpRight className="size-4" /></button></div></section>
+          <section className="container pb-24 sm:pb-32"><div className="grid items-center gap-8 border-t border-slate-200 pt-10 dark:border-slate-800 sm:grid-cols-[1fr_auto]"><div><div className="flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-white"><ShieldCheck className="size-4 text-emerald-700 dark:text-emerald-300" /> Local sellers အတွက် ယုံကြည်စိတ်ချရတဲ့ အလုပ်ဖော်</div><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-500">သင့်ရဲ့ customer data နဲ့ order information တွေကို လုံခြုံစွာ ထိန်းသိမ်းထားပြီး မြန်မာ online commerce အတွက် ရိုးရှင်းစွာ တည်ဆောက်ထားပါတယ်။</p></div><a href="https://t.me/wonhtanlay_community" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-slate-700 transition-colors duration-200 hover:text-indigo-600 active:text-emerald-600 dark:text-slate-300 dark:hover:text-emerald-300 dark:active:text-emerald-200">အဖွဲ့နဲ့ စကားပြောမယ် <ArrowUpRight className="size-4" /></a></div></section>
         </main>
 
-        <footer className="relative z-10 border-t border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-950"><div className="container py-12"><div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1fr]"><div><div className="flex items-center gap-3"><span className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-400 to-emerald-400"><Bot className="size-4 text-white" /></span><span className="font-display font-bold text-slate-900 dark:text-white">WonHtan Lay</span></div><p className="mt-5 max-w-xs text-sm leading-6 text-slate-600 dark:text-slate-500">မြန်မာ online shop owner တွေအတွက် မနားတမ်း အလုပ်လုပ်ပေးမယ့် ဝန်ထမ်းလေး။</p><div className="mt-5 flex gap-2"><button className="social-button" onClick={() => actionToast("Facebook") } aria-label="Facebook"><Facebook className="size-4" /></button><button className="social-button" onClick={() => actionToast("Telegram") } aria-label="Telegram"><Send className="size-4" /></button><button className="social-button" onClick={() => actionToast("Messenger") } aria-label="Messenger"><MessageCircle className="size-4" /></button></div></div><FooterColumn title="Product" links={["Features", "Pricing", "Demo"]} onClick={(link) => navigate(link.toLowerCase())} /><FooterColumn title="Support" links={["Help Center", "Talk to us", "Status"]} onClick={() => actionToast("Support")} /><FooterColumn title="Company" links={["About WonHtan Lay", "Privacy", "Terms"]} onClick={() => actionToast("Company")} /></div><div className="mt-12 flex flex-col gap-3 border-t border-slate-200 pt-6 text-xs text-slate-600 dark:border-slate-800 sm:flex-row sm:items-center sm:justify-between"><span>© 2026 WonHtan Lay. All rights reserved.</span><span>Made for Myanmar sellers, with care.</span></div></div></footer>
+        <footer className="relative z-10 border-t border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-950">
+          <div className="container py-12">
+            <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1fr]">
+              <div>
+                <div className="flex items-center gap-3">
+                  <span className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-400 to-emerald-400">
+                    <Bot className="size-4 text-white" />
+                  </span>
+                  <span className="font-display font-bold text-slate-900 dark:text-white">WonHtan Lay</span>
+                </div>
+                <p className="mt-5 max-w-xs text-sm leading-6 text-slate-600 dark:text-slate-500">
+                  မြန်မာ online shop owner တွေအတွက် မနားတမ်း အလုပ်လုပ်ပေးမယ့် ဝန်ထမ်းလေး။
+                </p>
+                <div className="mt-5 flex gap-2">
+                  <button className="social-button" onClick={() => actionToast("Facebook")} aria-label="Facebook"><Facebook className="size-4" /></button>
+                  <button className="social-button" onClick={() => actionToast("Telegram")} aria-label="Telegram"><Send className="size-4" /></button>
+                  <button className="social-button" onClick={() => actionToast("Messenger")} aria-label="Messenger"><MessageCircle className="size-4" /></button>
+                </div>
+              </div>
+              <FooterColumn title="Product" links={["Features", "Pricing", "Demo"]} onClick={(link) => navigate(link.toLowerCase())} />
+              <FooterColumn
+                title="Support"
+                links={["Help Center", "Talk to us", "Status"]}
+                onClick={(link) => setFooterModal(link === "Help Center" ? "help" : link === "Status" ? "status" : null)}
+              />
+              <FooterColumn
+                title="Company"
+                links={["About WonHtan Lay", "Privacy", "Terms"]}
+                onClick={(link) => setFooterModal(link === "About WonHtan Lay" ? "about" : link === "Privacy" ? "privacy" : "terms")}
+              />
+            </div>
+            <div className="mt-12 flex flex-col gap-3 border-t border-slate-200 pt-6 text-xs text-slate-600 dark:border-slate-800 sm:flex-row sm:items-center sm:justify-between">
+              <span>© 2026 WonHtan Lay. All rights reserved.</span>
+              <span>Made for Myanmar sellers, with care.</span>
+            </div>
+          </div>
+        </footer>
+
+        <Dialog open={footerModal !== null} onOpenChange={(open) => !open && setFooterModal(null)}>
+          <DialogContent
+            showCloseButton={false}
+            className="max-h-[85vh] max-w-2xl overflow-y-auto rounded-2xl border border-slate-200 bg-white p-0 text-slate-900 shadow-2xl dark:border-slate-700 dark:bg-slate-900 dark:text-white sm:max-w-2xl"
+          >
+            <DialogHeader className="sticky top-0 z-10 border-b border-slate-200 bg-white px-6 py-5 pr-16 text-left dark:border-slate-700 dark:bg-slate-900 sm:px-8">
+              <DialogTitle className="font-display text-xl font-bold leading-snug text-slate-900 dark:text-white">
+                {footerModal === "about" && "About WonHtan Lay (ဝန်ထမ်းလေး အကြောင်း)"}
+                {footerModal === "help" && "Help Center (အကူအညီ)"}
+                {footerModal === "status" && "System Status (စနစ်အခြေအနေ)"}
+                {footerModal === "privacy" && "Privacy (ကိုယ်ရေးအချက်အလက် လုံခြုံရေး)"}
+                {footerModal === "terms" && "Terms of Service (အသုံးပြုမှု စည်းမျဉ်းများ)"}
+              </DialogTitle>
+              <DialogClose
+                aria-label="Close dialog"
+                className="absolute right-5 top-5 inline-flex size-10 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-500 transition hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-indigo-400/50 dark:hover:bg-indigo-400/10 dark:hover:text-indigo-200"
+              >
+                <X className="size-5" />
+              </DialogClose>
+            </DialogHeader>
+
+            <div className="space-y-5 px-6 py-6 text-sm leading-7 text-slate-600 dark:text-slate-300 sm:px-8">
+              {footerModal === "about" && (
+                <p>
+                  WonHtan Lay ရဲ့ ရည်ရွယ်ချက်ကတော့ မြန်မာနိုင်ငံရှိ Online Shop ပိုင်ရှင်များ အချိန်ကုန် သက်သာပြီး Order များကို ၂၄ နာရီ မနားတမ်း စနစ်တကျ လက်ခံနိုင်စေရန်ဖြစ်ပါသည်။ Facebook နှင့် Telegram Shop များအတွက် အော်ဒါလက်ခံခြင်း၊ KPay/WavePay Slip စစ်ဆေးခြင်း၊ Delivery Slip ထုတ်ပေးခြင်းများကို အလိုအလျောက် အမှားအယွင်းမရှိ ပြုလုပ်ပေးသော Digital Assistant ဖြစ်ပါသည်။
+                </p>
+              )}
+
+              {footerModal === "help" && (
+                <>
+                  <p>အောက်ပါ လမ်းညွှန်အဆင့်များအတိုင်း လုပ်ဆောင်ပြီး WonHtan Lay ကို စတင်အသုံးပြုနိုင်ပါတယ်။</p>
+                  <div className="grid gap-3">
+                    <GuideCard icon={<Bot className="size-5" />} title="Telegram Bot ချိတ်ဆက်နည်း">
+                      Telegram မှာ BotFather ကိုဖွင့်ပြီး bot အသစ်တစ်ခု ဖန်တီးပါ။ ရရှိလာတဲ့ bot token ကို Dashboard ရဲ့ Integrations မှာ ထည့်သွင်းပြီး ဆိုင်ရဲ့ Telegram group/channel ကို ချိတ်ဆက်ကာ စမ်းသပ်စာတစ်စောင် ပို့ကြည့်ပါ။
+                    </GuideCard>
+                    <GuideCard icon={<CreditCard className="size-5" />} title="KPay / WavePay Slip စစ်ဆေးနည်း">
+                      Order တစ်ခုကို ရွေးပြီး customer ပေးပို့ထားတဲ့ ငွေလွှဲစလစ်ကို တင်ပါ။ စနစ်က စလစ်ထဲက ငွေပမာဏနဲ့ အချက်အလက်တွေကို ဖတ်ပြပေးပါမယ်။ အတည်မပြုနိုင်တဲ့ စလစ်များကို ငွေလက်ခံစာရင်းနဲ့ ထပ်မံတိုက်စစ်ပါ။
+                    </GuideCard>
+                    <GuideCard icon={<FileCheck2 className="size-5" />} title="Order များ Export ထုတ်နည်း">
+                      Dashboard ရဲ့ Orders စာမျက်နှာကိုသွားပြီး လိုအပ်တဲ့ ရက်စွဲ သို့မဟုတ် အခြေအနေကို စစ်ထုတ်ပါ။ Export ကိုနှိပ်ပြီး delivery slip များကို PDF အဖြစ် ရယူနိုင်ပါတယ်။
+                    </GuideCard>
+                  </div>
+                  <div className="space-y-3 pt-2">
+                    <h3 className="font-semibold text-slate-900 dark:text-white">မေးလေ့ရှိသော မေးခွန်းများ</h3>
+                    <details className="rounded-xl border border-slate-200 px-4 py-3 dark:border-slate-700">
+                      <summary className="cursor-pointer font-medium text-slate-800 dark:text-slate-200">Bot ကို ချိတ်ဆက်ပြီးနောက် အလုပ်မလုပ်ရင် ဘာလုပ်ရမလဲ?</summary>
+                      <p className="pt-2">Bot token မှန်ကန်မှု၊ Bot ကို group ထဲထည့်ထားမှုနဲ့ ခွင့်ပြုချက်များကို စစ်ဆေးပြီး ပြန်လည်စမ်းသပ်ပါ။</p>
+                    </details>
+                    <details className="rounded-xl border border-slate-200 px-4 py-3 dark:border-slate-700">
+                      <summary className="cursor-pointer font-medium text-slate-800 dark:text-slate-200">Slip စစ်ဆေးမှုကို အမြဲတမ်း ကိုယ်တိုင်စစ်ဖို့ လိုပါသလား?</summary>
+                      <p className="pt-2">မသေချာသော သို့မဟုတ် အချက်အလက်မပြည့်စုံသော ရလဒ်များကို ငွေလက်ခံမှုနှင့် အမြဲထပ်မံတိုက်စစ်ပါ။</p>
+                    </details>
+                  </div>
+                </>
+              )}
+
+              {footerModal === "status" && (
+                <div className="space-y-5">
+                  <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 dark:border-emerald-400/20 dark:bg-emerald-400/[0.08]">
+                    <p className="flex items-center gap-2 text-base font-bold text-emerald-800 dark:text-emerald-200">
+                      <span aria-hidden="true">🟢</span> All Systems Operational
+                    </p>
+                    <p className="mt-1 text-xs text-emerald-700 dark:text-emerald-200/75">လက်ရှိတွင် ဝန်ဆောင်မှုအားလုံး ပုံမှန်လည်ပတ်နေပါသည်။</p>
+                  </div>
+                  <div className="space-y-3">
+                    {["Bot Engine", "Database", "Auto Slip Verifier"].map((service) => (
+                      <div key={service} className="flex items-center justify-between rounded-xl border border-slate-200 px-4 py-3 dark:border-slate-700">
+                        <span className="font-medium text-slate-800 dark:text-slate-200">{service}</span>
+                        <span className="flex items-center gap-2 text-xs font-semibold text-emerald-700 dark:text-emerald-300"><CircleCheck className="size-4" /> Online</span>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">ဤအခြေအနေသည် လက်ရှိပြသထားသော ဝန်ဆောင်မှု status ဖြစ်ပါသည်။</p>
+                </div>
+              )}
+
+              {footerModal === "privacy" && (
+                <div className="space-y-4">
+                  <p>ဆိုင်ပိုင်ရှင်နှင့် customer များ၏ အော်ဒါအချက်အလက်များကို တင်းကျပ်စွာ ကာကွယ်ထိန်းသိမ်းရန်နှင့် encryption ဖြင့် လုံခြုံစေရန် WonHtan Lay ၏ ကိုယ်ရေးအချက်အလက်ဆိုင်ရာ ရည်ရွယ်ချက်ထားရှိပါသည်။ အချက်အလက်များကို ဝန်ဆောင်မှုပေးရန် လိုအပ်သည့်အတိုင်းသာ အသုံးပြုသင့်ပြီး ခွင့်ပြုချက်မရှိဘဲ မျှဝေခြင်းမပြုရပါ။</p>
+                  <div>
+                    <h3 className="mb-2 font-semibold text-slate-900 dark:text-white">သိမ်းဆည်းခြင်းနှင့် အသုံးပြုခြင်း</h3>
+                    <ul className="list-disc space-y-1.5 pl-5">
+                      <li>အော်ဒါအချက်အလက်များကို order စီမံခန့်ခွဲခြင်းနှင့် delivery slip ပြုလုပ်ခြင်းအတွက်သာ အသုံးပြုပါ။</li>
+                      <li>ဆိုင်ပိုင်ရှင်သည် customer အချက်အလက်များကို လိုအပ်သည့်ကာလအတွင်းသာ ထိန်းသိမ်းပြီး မလိုအပ်တော့ပါက ဖျက်ပစ်နိုင်ပါသည်။</li>
+                      <li>အကောင့် သို့မဟုတ် ကိုယ်ရေးအချက်အလက်ဆိုင်ရာ မေးခွန်းများအတွက် Telegram support ကို ဆက်သွယ်နိုင်ပါသည်။</li>
+                    </ul>
+                  </div>
+                  <div className="rounded-xl border border-amber-300/50 bg-amber-50 p-4 text-xs leading-6 text-amber-900 dark:border-amber-300/20 dark:bg-amber-300/[0.08] dark:text-amber-100">
+                    လုံခြုံရေး အသိပေးချက် — လက်ရှိ demo သည် account အချက်အလက်အချို့ကို browser ၏ local storage ထဲတွင် သိမ်းဆည်းပြီး encryption မလုပ်ထားပါ။ ထို့ကြောင့် အမှန်တကယ် customer သို့မဟုတ် ငွေပေးချေမှု အချက်အလက်များကို demo တွင် မထည့်ပါနှင့်။ Production ဝန်ဆောင်မှုတွင် encryption နှင့် လုံခြုံရေးထိန်းချုပ်မှုများ အတည်ပြုပြီးမှသာ အကာအကွယ်ပေးထားကြောင်း အတည်ပြုနိုင်ပါသည်။
+                  </div>
+                </div>
+              )}
+
+              {footerModal === "terms" && (
+                <div className="space-y-4">
+                  <p>WonHtan Lay ကို အသုံးပြုခြင်းဖြင့် အောက်ပါ အခြေခံစည်းမျဉ်းများကို လိုက်နာရန် သဘောတူပါသည်။</p>
+                  <section>
+                    <h3 className="mb-1 font-semibold text-slate-900 dark:text-white">ဝန်ဆောင်မှု အသုံးပြုခြင်း</h3>
+                    <p>ဆိုင်နှင့် အော်ဒါအချက်အလက်များကို မှန်ကန်စွာ ထည့်သွင်းပါ။ ဝန်ဆောင်မှုကို ဥပဒေနှင့် မညီသော လုပ်ငန်းများ၊ လိမ်လည်မှုများ သို့မဟုတ် အခြားသူများ၏ အခွင့်အရေးကို ချိုးဖောက်ရန် အသုံးမပြုရပါ။</p>
+                  </section>
+                  <section>
+                    <h3 className="mb-1 font-semibold text-slate-900 dark:text-white">ငွေပေးချေမှုနှင့် အစီအစဉ်</h3>
+                    <p>အခမဲ့အစီအစဉ်နှင့် အခပေးအစီအစဉ်များတွင် ကန့်သတ်ချက်နှင့် လုပ်ဆောင်ချက်များ ကွာခြားနိုင်ပါသည်။ အခပေးအစီအစဉ် အသုံးပြုမှုကို အတည်ပြုထားသော ငွေပေးချေမှု ပြီးဆုံးပြီးမှသာ စတင်နိုင်ပါသည်။</p>
+                  </section>
+                  <section>
+                    <h3 className="mb-1 font-semibold text-slate-900 dark:text-white">ဝန်ဆောင်မှုနှင့် ပြင်ဆင်မှုများ</h3>
+                    <p>စနစ်ကို ပိုမိုကောင်းမွန်စေရန် လုပ်ဆောင်ချက်များ၊ စျေးနှုန်းများနှင့် စည်းမျဉ်းများကို အချိန်နှင့်အမျှ ပြင်ဆင်နိုင်ပါသည်။ စလစ်စစ်ဆေးမှုအပါအဝင် အလိုအလျောက် ရလဒ်များကို လိုအပ်သည့်အခါ ကိုယ်တိုင်ပြန်လည်စစ်ဆေးရန် အသုံးပြုသူတွင် တာဝန်ရှိပါသည်။</p>
+                  </section>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">ဤစာမျက်နှာတွင် အခြေခံသတ်မှတ်ချက်များကိုသာ ဖော်ပြထားပါသည်။ မေးခွန်းများရှိပါက Telegram support ကို ဆက်သွယ်ပါ။</p>
+                </div>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
+  );
+}
+
+function GuideCard({ icon, title, children }: { icon: ReactNode; title: string; children: ReactNode }) {
+  return (
+    <section className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/60">
+      <h3 className="flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
+        <span className="text-indigo-600 dark:text-indigo-300">{icon}</span>{title}
+      </h3>
+      <p className="mt-2 text-xs leading-6 text-slate-600 dark:text-slate-300">{children}</p>
+    </section>
   );
 }
 
@@ -293,5 +465,46 @@ function PlayIcon() {
 }
 
 function FooterColumn({ title, links, onClick }: { title: string; links: string[]; onClick: (link: string) => void }) {
-  return <div><h3 className="text-xs font-bold uppercase tracking-[0.14em] text-slate-400">{title}</h3><div className="mt-5 space-y-3">{links.map((link) => <button key={link} onClick={() => onClick(link)} className="block text-left text-sm text-slate-500 transition hover:text-white">{link}</button>)}</div></div>;
+  const linkClass = "block w-fit text-left text-sm text-slate-500 transition-colors duration-200 hover:text-indigo-600 active:text-emerald-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 dark:hover:text-emerald-300 dark:active:text-emerald-200 dark:focus-visible:ring-offset-slate-950";
+  const sectionIds: Record<string, string> = { Features: "features", Pricing: "pricing", Demo: "demo" };
+
+  return (
+    <div>
+      <h3 className="text-xs font-bold uppercase tracking-[0.14em] text-slate-400">{title}</h3>
+      <div className="mt-5 space-y-3">
+        {links.map((link) => {
+          if (link === "Talk to us") {
+            return (
+              <a key={link} href="https://t.me/wonhtanlay_community" target="_blank" rel="noopener noreferrer" className={linkClass}>
+                {link}
+              </a>
+            );
+          }
+
+          const sectionId = sectionIds[link];
+          if (sectionId) {
+            return (
+              <a
+                key={link}
+                href={`#${sectionId}`}
+                onClick={(event) => {
+                  event.preventDefault();
+                  onClick(link);
+                }}
+                className={linkClass}
+              >
+                {link}
+              </a>
+            );
+          }
+
+          return (
+            <button key={link} type="button" onClick={() => onClick(link)} className={linkClass}>
+              {link}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
 }
