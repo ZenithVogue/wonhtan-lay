@@ -2,6 +2,7 @@
 
 import { LiveBadge, nextStatus, OrderStatusBadge, TelegramBadge } from "@/components/orders-ui";
 import DashboardShell from "@/components/DashboardShell";
+import { usePlan } from "@/hooks/usePlan";
 import { useOrders } from "@/hooks/useOrders";
 import { formatDateTime, formatMMK, initialsOf, isToday, shortOrderId, timeAgo, todayLabel } from "@/lib/format";
 import { type Order } from "@/lib/orders";
@@ -65,6 +66,7 @@ export default function DashboardPage() {
   const [botsOnline, setBotsOnline] = useState<boolean | null>(null);
 
   const { orders, loading, error, connection, lastUpdated, updateStatus, sendTestOrder } = useOrders();
+  const { account } = usePlan();
 
   useEffect(() => {
     let cancelled = false;
@@ -198,7 +200,7 @@ export default function DashboardPage() {
               <div className="mb-2 flex items-center gap-2 text-xs text-slate-500">
                 <span>{todayLabel()}</span>
                 <span className="size-1 rounded-full bg-slate-600" />
-                <span className="text-emerald-300">Good morning, May</span>
+                <span className="text-emerald-300">Good morning, {account?.name?.split(" ")[0] || "May"}</span>
               </div>
               <h2 className="font-display text-2xl font-bold tracking-tight text-white sm:text-3xl">
                 Your shop at a glance<span className="text-indigo-300">.</span>

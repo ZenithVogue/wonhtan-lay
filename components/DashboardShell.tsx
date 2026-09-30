@@ -3,6 +3,7 @@
 import {
   Bot,
   ChevronDown,
+  Crown,
   ChevronRight,
   CircleHelp,
   ClipboardList,
@@ -16,6 +17,7 @@ import {
   X,
 } from "lucide-react";
 import Link from "next/link";
+import { usePlan } from "@/hooks/usePlan";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -57,6 +59,7 @@ type DashboardShellProps = {
 export default function DashboardShell({ children, title, titleMyanmar, actions }: DashboardShellProps) {
   const pathname = usePathname();
   const [mobileNav, setMobileNav] = useState(false);
+  const { account, isPro } = usePlan();
   const [collapsed, setCollapsed] = useState(false);
 
   // Always close the drawer when navigating to another page.
@@ -150,14 +153,30 @@ export default function DashboardShell({ children, title, titleMyanmar, actions 
                 <Store className="size-4" />
               </span>
               <span className="min-w-0">
-                <span className="block truncate text-xs font-semibold text-white">KPay Verified Shop</span>
-                <span className="mt-1 flex items-center gap-1 text-[10px] text-emerald-300">
-                  <span className="size-1.5 rounded-full bg-emerald-300" /> Pro Plan
+                <span className="block truncate text-xs font-semibold text-white">
+                  {account?.shop || "KPay Verified Shop"}
                 </span>
+                {isPro ? (
+                  <span className="mt-1 flex items-center gap-1 text-[10px] text-emerald-300">
+                    <span className="size-1.5 rounded-full bg-emerald-300" /> Pro Plan
+                  </span>
+                ) : (
+                  <span className="mt-1 flex items-center gap-1 text-[10px] text-slate-400">
+                    <span className="size-1.5 rounded-full bg-slate-500" /> Free Plan
+                  </span>
+                )}
               </span>
               <ChevronDown className="ml-auto size-4 text-slate-500" />
             </div>
             <div className="my-3 h-px bg-white/[0.07]" />
+            {!isPro && (
+              <Link
+                href="/checkout?plan=pro"
+                className="mb-2 flex w-full items-center justify-center gap-1.5 rounded-lg bg-amber-300/15 px-2 py-2 text-[11px] font-semibold text-amber-200 transition hover:bg-amber-300/25"
+              >
+                <Crown className="size-3.5" /> Upgrade to Pro
+              </Link>
+            )}
             <button
               className="flex w-full items-center gap-2 px-1 text-xs text-slate-500 transition hover:text-white"
               onClick={() => toast("Logged out", { description: "Demo account မှ ထွက်လိုက်ပါပြီ။" })}
