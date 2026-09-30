@@ -1,25 +1,17 @@
 "use client";
 
 import { LiveBadge, nextStatus, OrderStatusBadge, TelegramBadge } from "@/components/orders-ui";
+import DashboardShell from "@/components/DashboardShell";
 import { useOrders } from "@/hooks/useOrders";
 import { formatDateTime, formatMMK, initialsOf, shortOrderId, timeAgo } from "@/lib/format";
 import { type Order } from "@/lib/orders";
 import {
-  Bot,
   Check,
   ChevronRight,
-  ClipboardList,
   Download,
-  FileCheck2,
   FileText,
-  LayoutDashboard,
-  LogOut,
-  Menu,
   Printer,
   Search,
-  Settings,
-  ShoppingBag,
-  Store,
   Truck,
   X,
   Zap,
@@ -56,7 +48,6 @@ function downloadCsv(filename: string, rows: Order[]) {
 }
 
 export default function OrdersPage() {
-  const [mobileNav, setMobileNav] = useState(false);
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<Filter>("All");
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -108,97 +99,10 @@ export default function OrdersPage() {
   };
 
   return (
-    <div className="dashboard-shell min-h-screen bg-white text-slate-900 dark:bg-slate-950 dark:text-white">
-      <aside className={`dashboard-sidebar ${mobileNav ? "dashboard-sidebar-open" : ""}`}>
-        <div className="flex h-full flex-col">
-          <div className="flex items-center justify-between px-5 py-5 lg:px-6">
-            <Link href="/" className="flex items-center gap-3" aria-label="WonHtan Lay home">
-              <span className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-400 to-emerald-400 shadow-[0_8px_24px_rgba(78,84,220,0.3)]">
-                <Bot className="size-4 text-white" />
-              </span>
-              <span>
-                <span className="block font-display text-[15px] font-bold tracking-tight text-white">WonHtan Lay</span>
-                <span className="block text-[10px] font-medium tracking-[0.12em] text-slate-500">ဝန်ထမ်းလေး</span>
-              </span>
-            </Link>
-            <button className="dashboard-close lg:hidden" onClick={() => setMobileNav(false)} aria-label="Close navigation">
-              <X className="size-4" />
-            </button>
-          </div>
-          <div className="px-4 pt-5">
-            <div className="dashboard-label px-3">WORKSPACE</div>
-            <nav className="mt-3 space-y-1">
-              <SidebarLink href="/dashboard" icon={<LayoutDashboard className="size-[17px] shrink-0" />} label="Dashboard" burmese="ပင်မစာမျက်နှာ" />
-              <SidebarLink href="/dashboard/orders" icon={<ClipboardList className="size-[17px] shrink-0" />} label="Orders" burmese="အော်ဒါများ" active />
-              <SidebarLink href="/dashboard/bot-settings" icon={<Bot className="size-[17px] shrink-0" />} label="Bot Connections" burmese="Bot ချိတ်ဆက်ရန်" badge="2" />
-              <SidebarLink href="/dashboard/products" icon={<ShoppingBag className="size-[17px] shrink-0" />} label="Products / Menu" burmese="ပစ္စည်းစာရင်း" />
-              <SidebarLink href="/dashboard/slip-verifier" icon={<FileCheck2 className="size-[17px] shrink-0" />} label="Slip Verifier" burmese="ငွေလွှဲစလစ်စစ်ရန်" />
-              <button
-                className="dashboard-nav-item"
-                onClick={() => toast("Settings", { description: "ဒီ section ကို မကြာခင် အသုံးပြုနိုင်ပါမယ်။" })}
-              >
-                <Settings className="size-[17px] shrink-0" />
-                <span className="min-w-0 flex-1 text-left">
-                  <span className="block text-[13px] font-medium">Settings</span>
-                  <span className="mt-0.5 block text-[10px] text-slate-500">ဆက်တင်များ</span>
-                </span>
-              </button>
-            </nav>
-          </div>
-          <div className="mx-4 mt-auto rounded-2xl border border-white/[0.08] bg-white/[0.035] p-3.5">
-            <div className="flex items-center gap-2.5">
-              <span className="flex size-9 items-center justify-center rounded-xl bg-emerald-400/10 text-emerald-300">
-                <Store className="size-4" />
-              </span>
-              <span className="min-w-0">
-                <span className="block truncate text-xs font-semibold text-white">KPay Verified Shop</span>
-                <span className="mt-1 flex items-center gap-1 text-[10px] text-emerald-300">
-                  <span className="size-1.5 rounded-full bg-emerald-300" /> Pro Plan
-                </span>
-              </span>
-            </div>
-            <div className="my-3 h-px bg-white/[0.07]" />
-            <button
-              className="flex w-full items-center gap-2 px-1 text-xs text-slate-500 transition hover:text-white"
-              onClick={() => toast("Logged out", { description: "Demo account မှ ထွက်လိုက်ပါပြီ။" })}
-            >
-              <LogOut className="size-3.5" /> Logout
-            </button>
-          </div>
-        </div>
-      </aside>
-      {mobileNav && (
-        <button
-          className="fixed inset-0 z-40 bg-slate-950/55 backdrop-blur-sm lg:hidden"
-          onClick={() => setMobileNav(false)}
-          aria-label="Close navigation overlay"
-        />
-      )}
-
-      <div className="dashboard-main min-w-0">
-        <header className="dashboard-header">
-          <div className="flex min-w-0 items-center gap-3">
-            <button className="dashboard-menu lg:hidden" onClick={() => setMobileNav(true)} aria-label="Open navigation">
-              <Menu className="size-5" />
-            </button>
-            <div className="hidden items-center gap-2 text-xs text-slate-500 sm:flex">
-              <Link href="/dashboard" className="cursor-pointer transition hover:text-indigo-600 dark:hover:text-indigo-400">
-                Workspace
-              </Link>
-              <ChevronRight className="size-3" />
-              <span className="font-medium text-slate-300">Orders</span>
-            </div>
-            <h1 className="font-display text-base font-semibold text-white sm:hidden">အော်ဒါများ</h1>
-          </div>
-          <div className="ml-auto flex items-center gap-2">
-            <span className="hidden text-xs text-slate-500 sm:block">KPay Verified Shop</span>
-            <span className="flex size-8 items-center justify-center rounded-lg bg-indigo-400/10 text-indigo-300">
-              <Store className="size-4" />
-            </span>
-          </div>
-        </header>
-
-        <main className="dashboard-content">
+    <DashboardShell
+      title="Orders"
+      titleMyanmar="အော်ဒါများ"
+    >
           <div className="mb-7 flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
             <div>
               <div className="mb-2 flex items-center gap-2 text-xs text-slate-500">
@@ -366,42 +270,8 @@ export default function OrdersPage() {
               </span>
             </div>
           </section>
-        </main>
-      </div>
-
       {selectedOrder && <WaybillModal order={selectedOrder} onClose={() => setSelectedOrder(null)} />}
-    </div>
-  );
-}
-
-function SidebarLink({
-  href,
-  icon,
-  label,
-  burmese,
-  active = false,
-  badge,
-}: {
-  href: string;
-  icon: React.ReactNode;
-  label: string;
-  burmese: string;
-  active?: boolean;
-  badge?: string;
-}) {
-  return (
-    <Link href={href} className={`dashboard-nav-item ${active ? "dashboard-nav-active" : ""}`}>
-      {icon}
-      <span className="min-w-0 flex-1 text-left">
-        <span className="block text-[13px] font-medium">{label}</span>
-        <span className="mt-0.5 block text-[10px] text-slate-500">{burmese}</span>
-      </span>
-      {badge && (
-        <span className="rounded-md bg-indigo-400/15 px-1.5 py-0.5 text-[10px] font-semibold text-indigo-300">
-          {badge}
-        </span>
-      )}
-    </Link>
+    </DashboardShell>
   );
 }
 

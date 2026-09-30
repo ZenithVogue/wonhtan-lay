@@ -1,8 +1,9 @@
 "use client";
 
 import { FormEvent, ReactNode, useEffect, useState } from "react";
-import { ArrowLeft, ArrowRight, Bot, Check, ChevronRight, CircleHelp, ExternalLink, Info, KeyRound, Link2, Loader2, MessageCircle, Send, ShieldCheck, Store, Unlink, Webhook } from "lucide-react";
+import { ArrowRight, Bot, Check, CircleHelp, ExternalLink, Info, KeyRound, Link2, Loader2, MessageCircle, Send, ShieldCheck, Unlink, Webhook } from "lucide-react";
 import { toast } from "sonner";
+import DashboardShell from "@/components/DashboardShell";
 
 const tokenPattern = /^\d{7,12}:[A-Za-z0-9_-]{20,}$/;
 const usernamePattern = /^[A-Za-z0-9_]{5,32}$/;
@@ -128,13 +129,8 @@ export default function BotConnections() {
   };
 
   return (
-    <div className="bot-settings-shell min-h-screen bg-white text-slate-900 dark:bg-slate-950 dark:text-white">
-      <header className="dashboard-header !ml-0 border-slate-200 lg:!pl-8 dark:border-slate-800">
-        <div className="flex items-center gap-3"><a className="dashboard-menu inline-flex" href="/dashboard" aria-label="Back to dashboard"><ArrowLeft className="size-4" /></a><div className="hidden items-center gap-2 text-xs text-slate-500 sm:flex"><span>Workspace</span><ChevronRight className="size-3" /><span>Settings</span><ChevronRight className="size-3" /><span className="font-medium text-slate-700 dark:text-slate-300">Bot Connections</span></div><h1 className="font-display text-base font-semibold text-slate-900 dark:text-white sm:hidden">Bot ချိတ်ဆက်ရန်</h1></div>
-        <div className="ml-auto flex items-center gap-3"><div className="hidden items-center gap-2 text-xs text-slate-500 sm:flex"><span className="size-1.5 rounded-full bg-emerald-500 dark:bg-emerald-300" /> KPay Verified Shop</div><span className="flex size-8 items-center justify-center rounded-lg bg-indigo-100 text-indigo-700 dark:bg-indigo-400/10 dark:text-indigo-300"><Store className="size-4" /></span></div>
-      </header>
-
-      <main className="mx-auto max-w-6xl px-5 py-8 sm:px-8 sm:py-12">
+    <DashboardShell title="Bot Connections" titleMyanmar="Bot ချိတ်ဆက်ရန်">
+      <div className="mx-auto max-w-6xl px-5 py-8 sm:px-8 sm:py-12">
         <div className="max-w-3xl"><div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-indigo-100 text-indigo-700 ring-1 ring-indigo-200 dark:bg-indigo-400/15 dark:text-indigo-300 dark:ring-indigo-300/15"><Bot className="size-6" /></div><div className="dashboard-label">BOT CONNECTIONS</div><h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">Bot ချိတ်ဆက်ရန် <span className="text-indigo-600 dark:text-indigo-400">(Bot Connections)</span></h2><p className="mt-4 max-w-2xl text-sm leading-7 text-slate-600 dark:text-slate-400">Telegram သို့မဟုတ် Messenger Bot Token ကို ဖြည့်စွက်၍ ဝန်ထမ်းလေးကို စတင် အသုံးပြုပါ။ နည်းပညာအတွေ့အကြုံ မလိုဘဲ အဆင့်သုံးဆင့်နဲ့ စတင်နိုင်ပါတယ်။</p></div>
 
         <div className="mt-9 grid gap-6 lg:grid-cols-[1.08fr_0.92fr] lg:items-start">
@@ -150,8 +146,8 @@ export default function BotConnections() {
           <aside className="space-y-4"><div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:p-6"><div className="flex size-10 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700 dark:bg-emerald-400/10 dark:text-emerald-300"><ShieldCheck className="size-5" /></div><h3 className="mt-5 font-display text-lg font-semibold text-slate-900 dark:text-white">လုံခြုံစွာ ချိတ်ဆက်ပေးပါတယ်</h3><p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">WonHtan Lay က သင့် Bot token ကို လုံခြုံစွာ သိမ်းဆည်းပြီး order လက်ခံဖို့အတွက်ပဲ အသုံးပြုပါတယ်။</p><div className="mt-5 space-y-3 text-xs text-slate-600 dark:text-slate-300"><div className="flex items-center gap-2.5"><Check className="size-4 text-emerald-600 dark:text-emerald-300" /> Your token stays private</div><div className="flex items-center gap-2.5"><Check className="size-4 text-emerald-600 dark:text-emerald-300" /> Disconnect အချိန်မရွေးလုပ်နိုင်</div><div className="flex items-center gap-2.5"><Check className="size-4 text-emerald-600 dark:text-emerald-300" /> Setup ၅ မိနစ်အတွင်း ပြီးစီး</div></div></div><div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-800 dark:bg-slate-900"><div className="flex items-start gap-3"><MessageCircle className="mt-0.5 size-4 shrink-0 text-indigo-600 dark:text-indigo-300" /><div><h3 className="text-sm font-semibold text-slate-900 dark:text-white">အကူအညီလိုပါသလား?</h3><p className="mt-1 text-xs leading-5 text-slate-600 dark:text-slate-400">Token နဲ့ username ရှာတဲ့နေရာတွေကို support team က ကူညီပေးနိုင်ပါတယ်။</p><button className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-700 hover:text-indigo-800 dark:text-indigo-300 dark:hover:text-indigo-200" onClick={() => toast("Support team", { description: "မကြာခင် support ကို ဆက်သွယ်နိုင်ပါမယ်။" })}>Support ကို ဆက်သွယ်ရန် <ArrowRight className="size-3.5" /></button></div></div></div></aside>
         </div>
         <div className="mt-6 flex items-start gap-2 rounded-xl border border-sky-200 bg-sky-50 p-4 text-xs leading-6 text-sky-900 dark:border-sky-300/15 dark:bg-sky-400/[0.06] dark:text-sky-100"><Info className="mt-1 size-4 shrink-0 text-sky-600 dark:text-sky-300" /><p>Bot Token သည် သင့်ဆိုင်၏ စာပြန်စနစ်ကိုသာ ထိန်းချုပ်ပြီး ကိုယ်ရေးအချက်အလက်များကို လုံခြုံစွာ သိမ်းဆည်းထားပါသည်။</p></div>
-      </main>
-    </div>
+      </div>
+    </DashboardShell>
   );
 }
 

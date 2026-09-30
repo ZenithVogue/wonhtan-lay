@@ -185,6 +185,13 @@ button:not(:disabled), a[href] { cursor: pointer; }
   .dashboard-header { padding: 0 20px; }
   .dashboard-content { padding: 28px 20px 56px; }
 }
+/* Desktop sidebar collapse (toggled by the always-visible hamburger menu). */
+@media (min-width: 1024px) {
+  .dashboard-sidebar { transition: transform 240ms cubic-bezier(.23,1,.32,1); }
+  .dashboard-main { transition: margin-left 240ms cubic-bezier(.23,1,.32,1); }
+  .dashboard-shell-collapsed .dashboard-sidebar { transform: translateX(-102%); box-shadow: none; }
+  .dashboard-shell-collapsed .dashboard-main { margin-left: 0; }
+}
 @media (max-width: 639px) {
   .dashboard-header { height: 64px; padding: 0 16px; }
   .dashboard-content { padding: 24px 16px 48px; }
@@ -242,6 +249,9 @@ html:not(.dark) .bot-settings-shell { background: #ffffff !important; color: #0f
 html:not(.dark) .dashboard-shell .dashboard-sidebar { border-color: #e2e8f0; background: #f8fafc; }
 html:not(.dark) .dashboard-shell .dashboard-header,
 html:not(.dark) .bot-settings-shell .dashboard-header { border-color: #e2e8f0; background: rgba(255,255,255,.92); }
+/* Keep the always-visible hamburger readable in light mode. */
+html:not(.dark) .dashboard-shell .dashboard-menu { border-color: #e2e8f0; background: #f1f5f9; color: #475569; }
+html:not(.dark) .dashboard-shell .dashboard-menu:hover { background: #e2e8f0; color: #0f172a; }
 html:not(.dark) .dashboard-shell .dashboard-nav-item { color: #64748b; }
 html:not(.dark) .dashboard-shell .dashboard-nav-item:hover { background: #f1f5f9; color: #1e293b; }
 html:not(.dark) .dashboard-shell .dashboard-nav-active { background: #eef2ff; color: #4338ca; box-shadow: inset 3px 0 0 #6366f1; }

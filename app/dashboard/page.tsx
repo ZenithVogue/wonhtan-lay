@@ -1,6 +1,7 @@
 "use client";
 
 import { LiveBadge, nextStatus, OrderStatusBadge, TelegramBadge } from "@/components/orders-ui";
+import DashboardShell from "@/components/DashboardShell";
 import { useOrders } from "@/hooks/useOrders";
 import { formatDateTime, formatMMK, initialsOf, isToday, shortOrderId, timeAgo, todayLabel } from "@/lib/format";
 import { type Order } from "@/lib/orders";
@@ -12,24 +13,17 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  CircleHelp,
   ClipboardList,
   CreditCard,
   Download,
   FileCheck2,
-  LayoutDashboard,
-  LogOut,
-  Menu,
   Printer,
   Search,
-  Settings,
-  ShoppingBag,
   Store,
   Truck,
   X,
   Zap,
 } from "lucide-react";
-import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -37,14 +31,6 @@ type Filter = "All" | "Pending" | "Processing" | "Completed";
 const FILTERS: Filter[] = ["All", "Pending", "Processing", "Completed"];
 const PAGE_SIZE = 10;
 
-const NAV_ITEMS = [
-  { label: "Dashboard", burmese: "ပင်မစာမျက်နှာ", icon: LayoutDashboard, href: "/dashboard", active: true },
-  { label: "Orders", burmese: "အော်ဒါများ", icon: ClipboardList, href: "/dashboard/orders" },
-  { label: "Bot Connections", burmese: "Bot ချိတ်ဆက်ရန်", icon: Bot, href: "/dashboard/bot-settings", count: "2" },
-  { label: "Products / Menu", burmese: "ပစ္စည်းစာရင်း", icon: ShoppingBag, href: "/dashboard/products" },
-  { label: "Slip Verifier", burmese: "ငွေလွှဲစလစ်စစ်ရန်", icon: FileCheck2, href: "/dashboard/slip-verifier" },
-  { label: "Settings", burmese: "ဆက်တင်များ", icon: Settings, href: null },
-];
 
 function downloadCsv(filename: string, rows: Order[]) {
   const header = ["Order ID", "Customer", "Telegram ID", "Items", "Total MMK", "Status", "Created"];
@@ -71,7 +57,6 @@ function downloadCsv(filename: string, rows: Order[]) {
 }
 
 export default function DashboardPage() {
-  const [mobileNav, setMobileNav] = useState(false);
   const [shopMenu, setShopMenu] = useState(false);
   const [activeFilter, setActiveFilter] = useState<Filter>("All");
   const [query, setQuery] = useState("");
@@ -155,166 +140,59 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="dashboard-shell min-h-screen bg-white text-slate-900 dark:bg-slate-950 dark:text-white">
-      <aside className={`dashboard-sidebar ${mobileNav ? "dashboard-sidebar-open" : ""}`}>
-        <div className="flex h-full flex-col">
-          <div className="flex items-center justify-between px-5 py-5 lg:px-6">
-            <Link href="/" className="flex items-center gap-3" aria-label="WonHtan Lay home">
-              <span className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-400 to-emerald-400 shadow-[0_8px_24px_rgba(78,84,220,0.3)]">
-                <Bot className="size-4 text-white" />
-              </span>
-              <span>
-                <span className="block font-display text-[15px] font-bold tracking-tight text-white">WonHtan Lay</span>
-                <span className="block text-[10px] font-medium tracking-[0.12em] text-slate-500">ဝန်ထမ်းလေး</span>
-              </span>
-            </Link>
-            <button className="dashboard-close lg:hidden" onClick={() => setMobileNav(false)} aria-label="Close navigation">
-              <X className="size-4" />
-            </button>
-          </div>
-
-          <div className="px-4 pt-5">
-            <div className="dashboard-label px-3">WORKSPACE</div>
-            <nav className="mt-3 space-y-1">
-              {NAV_ITEMS.map(item => {
-                const Icon = item.icon;
-                const inner = (
-                  <>
-                    <Icon className="size-[17px] shrink-0" />
-                    <span className="min-w-0 flex-1 text-left">
-                      <span className="block text-[13px] font-medium">{item.label}</span>
-                      <span className="mt-0.5 block text-[10px] text-slate-500">{item.burmese}</span>
-                    </span>
-                    {item.count && (
-                      <span className="rounded-md bg-indigo-400/15 px-1.5 py-0.5 text-[10px] font-semibold text-indigo-300">
-                        {item.count}
-                      </span>
-                    )}
-                  </>
-                );
-                const className = `dashboard-nav-item ${item.active ? "dashboard-nav-active" : ""}`;
-                return item.href ? (
-                  <Link key={item.label} href={item.href} className={className} onClick={() => setMobileNav(false)}>
-                    {inner}
-                  </Link>
-                ) : (
-                  <button
-                    key={item.label}
-                    className={className}
-                    onClick={() => toast(`${item.label} section`, { description: "ဒီ section ကို မကြာခင် အသုံးပြုနိုင်ပါမယ်။" })}
-                  >
-                    {inner}
-                  </button>
-                );
-              })}
-            </nav>
-          </div>
-
-          <div className="mx-4 mt-auto rounded-2xl border border-white/[0.08] bg-white/[0.035] p-3.5">
-            <div className="flex items-center gap-2.5">
-              <span className="flex size-9 items-center justify-center rounded-xl bg-emerald-400/10 text-emerald-300">
-                <Store className="size-4" />
-              </span>
-              <span className="min-w-0">
-                <span className="block truncate text-xs font-semibold text-white">KPay Verified Shop</span>
-                <span className="mt-1 flex items-center gap-1 text-[10px] text-emerald-300">
-                  <span className="size-1.5 rounded-full bg-emerald-300" /> Pro Plan
-                </span>
-              </span>
-              <ChevronDown className="ml-auto size-4 text-slate-500" />
-            </div>
-            <div className="my-3 h-px bg-white/[0.07]" />
-            <button
-              className="flex w-full items-center gap-2 px-1 text-xs text-slate-500 transition hover:text-white"
-              onClick={() => toast("Logged out", { description: "Demo account မှ ထွက်လိုက်ပါပြီ။" })}
-            >
-              <LogOut className="size-3.5" /> Logout
-            </button>
-          </div>
-          <div className="flex items-center gap-2 px-5 py-5 text-[10px] text-slate-600 lg:px-6">
-            <CircleHelp className="size-3.5" /> Need help?{" "}
-            <button
-              className="text-slate-400 hover:text-white"
-              onClick={() => toast("Support", { description: "Support team ကို မကြာခင် ဆက်သွယ်နိုင်ပါမယ်။" })}
-            >
-              Contact support
-            </button>
-          </div>
-        </div>
-      </aside>
-      {mobileNav && (
-        <button
-          className="fixed inset-0 z-40 bg-slate-950/55 backdrop-blur-sm lg:hidden"
-          onClick={() => setMobileNav(false)}
-          aria-label="Close navigation overlay"
-        />
-      )}
-
-      <div className="dashboard-main min-w-0">
-        <header className="dashboard-header">
-          <div className="flex min-w-0 items-center gap-3">
-            <button className="dashboard-menu lg:hidden" onClick={() => setMobileNav(true)} aria-label="Open navigation">
-              <Menu className="size-5" />
-            </button>
-            <div className="hidden items-center gap-2 text-xs text-slate-500 sm:flex">
-              <Link href="/dashboard" className="cursor-pointer transition hover:text-indigo-600 dark:hover:text-indigo-400">
-                Workspace
-              </Link>
-              <ChevronRight className="size-3" />
-              <span className="font-medium text-slate-300">Dashboard</span>
-            </div>
-            <h1 className="font-display text-base font-semibold text-white sm:hidden">Dashboard</h1>
-          </div>
-          <div className="ml-auto flex items-center gap-2.5">
-            <div className="relative hidden md:block">
-              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-500" />
-              <input
-                value={query}
-                onChange={event => setQuery(event.target.value)}
-                className="dashboard-search"
-                placeholder="Search orders..."
-                aria-label="Search orders"
-              />
-            </div>
-            <button
-              className="dashboard-icon-button relative"
-              onClick={() => toast("You are all caught up", { description: "No new notification right now." })}
-              aria-label="Notifications"
-            >
-              <Bell className="size-[17px]" />
-              <span className="absolute right-2 top-2 size-1.5 rounded-full bg-emerald-300" />
-            </button>
-            <div className="relative">
-              <button className="shop-selector" onClick={() => setShopMenu(value => !value)}>
-                <span className="hidden text-left sm:block">
-                  <span className="block text-[10px] text-slate-500">Active shop</span>
-                  <span className="block max-w-[120px] truncate text-xs font-semibold text-white">KPay Verified Shop</span>
-                </span>
-                <span className="flex size-8 items-center justify-center rounded-lg bg-indigo-400/10 text-indigo-300 sm:hidden">
-                  <Store className="size-4" />
-                </span>
-                <ChevronDown className="size-3.5 text-slate-500" />
+    <DashboardShell
+      title="Dashboard"
+      titleMyanmar="Dashboard"
+      actions={
+        <>
+              <div className="relative hidden md:block">
+                <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-500" />
+                <input
+                  value={query}
+                  onChange={event => setQuery(event.target.value)}
+                  className="dashboard-search"
+                  placeholder="Search orders..."
+                  aria-label="Search orders"
+                />
+              </div>
+              <button
+                className="dashboard-icon-button relative"
+                onClick={() => toast("You are all caught up", { description: "No new notification right now." })}
+                aria-label="Notifications"
+              >
+                <Bell className="size-[17px]" />
+                <span className="absolute right-2 top-2 size-1.5 rounded-full bg-emerald-300" />
               </button>
-              {shopMenu && (
-                <div className="absolute right-0 top-12 z-50 w-52 rounded-xl border border-white/10 bg-white p-2 shadow-2xl dark:bg-slate-900">
-                  <button className="flex w-full items-center gap-2 rounded-lg bg-slate-100 px-3 py-2.5 text-left text-xs text-slate-900 dark:bg-slate-800 dark:text-white">
-                    <span className="size-2 rounded-full bg-emerald-300" />
-                    KPay Verified Shop
-                    <Check className="ml-auto size-3.5 text-emerald-300" />
-                  </button>
-                  <button
-                    onClick={() => toast("Add a new shop", { description: "Multi-shop support is coming soon." })}
-                    className="mt-1 flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-xs text-slate-400 hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-white"
-                  >
-                    <Store className="size-3.5" /> Add another shop
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        </header>
-
-        <main className="dashboard-content">
+              <div className="relative">
+                <button className="shop-selector" onClick={() => setShopMenu(value => !value)}>
+                  <span className="hidden text-left sm:block">
+                    <span className="block text-[10px] text-slate-500">Active shop</span>
+                    <span className="block max-w-[120px] truncate text-xs font-semibold text-white">KPay Verified Shop</span>
+                  </span>
+                  <span className="flex size-8 items-center justify-center rounded-lg bg-indigo-400/10 text-indigo-300 sm:hidden">
+                    <Store className="size-4" />
+                  </span>
+                  <ChevronDown className="size-3.5 text-slate-500" />
+                </button>
+                {shopMenu && (
+                  <div className="absolute right-0 top-12 z-50 w-52 rounded-xl border border-white/10 bg-white p-2 shadow-2xl dark:bg-slate-900">
+                    <button className="flex w-full items-center gap-2 rounded-lg bg-slate-100 px-3 py-2.5 text-left text-xs text-slate-900 dark:bg-slate-800 dark:text-white">
+                      <span className="size-2 rounded-full bg-emerald-300" />
+                      KPay Verified Shop
+                      <Check className="ml-auto size-3.5 text-emerald-300" />
+                    </button>
+                    <button
+                      onClick={() => toast("Add a new shop", { description: "Multi-shop support is coming soon." })}
+                      className="mt-1 flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-xs text-slate-400 hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-white"
+                    >
+                      <Store className="size-3.5" /> Add another shop
+                    </button>
+                  </div>
+                )}
+              </div>
+        </>
+      }
+    >
           <div className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <div className="mb-2 flex items-center gap-2 text-xs text-slate-500">
@@ -554,11 +432,8 @@ export default function DashboardPage() {
               </div>
             </div>
           </section>
-        </main>
-      </div>
-
       {selectedOrder && <DeliverySlipModal order={selectedOrder} onClose={() => setSelectedOrder(null)} />}
-    </div>
+    </DashboardShell>
   );
 }
 
