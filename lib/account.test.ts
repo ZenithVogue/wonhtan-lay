@@ -49,4 +49,8 @@ describe("landingRouteFor", () => {
   it("sends unpaid pro sign-ups to checkout", () => {
     expect(landingRouteFor({ ...base, plan: "pro", proUnlocked: false })).toBe("/checkout?plan=pro");
   });
+
+  it("sends unpaid basic upgrades to basic checkout", () => {
+    expect(landingRouteFor({ ...base, plan: "basic", proUnlocked: false })).toBe("/checkout?plan=basic");
+  });
 });

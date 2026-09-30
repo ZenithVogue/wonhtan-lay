@@ -28,6 +28,7 @@ const NAV_ITEMS = [
   { label: "Bot Connections", burmese: "Bot ချိတ်ဆက်ရန်", icon: Bot, href: "/dashboard/bot-settings", badge: "2" },
   { label: "Products / Menu", burmese: "ပစ္စည်းစာရင်း", icon: ShoppingBag, href: "/dashboard/products" },
   { label: "Slip Verifier", burmese: "ငွေလွှဲစလစ်စစ်ရန်", icon: FileCheck2, href: "/dashboard/slip-verifier" },
+  { label: "Settings", burmese: "ဆက်တင်များ", icon: Settings, href: "/dashboard/settings" },
 ] as const;
 
 const PATH_TITLES: Record<string, { title: string; myanmar: string }> = {
@@ -59,7 +60,7 @@ type DashboardShellProps = {
 export default function DashboardShell({ children, title, titleMyanmar, actions }: DashboardShellProps) {
   const pathname = usePathname();
   const [mobileNav, setMobileNav] = useState(false);
-  const { account, isPro } = usePlan();
+  const { account, plan, planLabel } = usePlan();
   const [collapsed, setCollapsed] = useState(false);
 
   // Always close the drawer when navigating to another page.
@@ -79,7 +80,17 @@ export default function DashboardShell({ children, title, titleMyanmar, actions 
   const fallback = PATH_TITLES[pathname] ?? { title: "Dashboard", myanmar: "Dashboard" };
   const headerTitle = title ?? fallback.title;
   const headerTitleMyanmar = titleMyanmar ?? fallback.myanmar;
-  const isActive = (href: string) => pathname === href || (href === "/dashboard/bot-settings" && pathname === "/dashboard/bots");
+  const isActive = (href: string) =>
+    pathname === href ||
+    (href !== "/dashboard" && pathname.startsWith(`${href}/`)) ||
+    (href === "/dashboard/bot-settings" && pathname === "/dashboard/bots");
+
+  const planStyles =
+    plan === "free"
+      ? { text: "text-slate-400", dot: "bg-slate-500" }
+      : plan === "basic"
+        ? { text: "text-sky-300", dot: "bg-sky-300" }
+        : { text: "text-emerald-300", dot: "bg-emerald-300" };
 
   return (
     <div
@@ -134,16 +145,6 @@ export default function DashboardShell({ children, title, titleMyanmar, actions 
                   </Link>
                 );
               })}
-              <button
-                className="dashboard-nav-item"
-                onClick={() => toast("Settings section", { description: "ဒီ section ကို မကြာခင် အသုံးပြုနိုင်ပါမယ်။" })}
-              >
-                <Settings className="size-[17px] shrink-0" />
-                <span className="min-w-0 flex-1 text-left">
-                  <span className="block text-[13px] font-medium">Settings</span>
-                  <span className="mt-0.5 block text-[10px] text-slate-500">ဆက်တင်များ</span>
-                </span>
-              </button>
             </nav>
           </div>
 
@@ -156,20 +157,14 @@ export default function DashboardShell({ children, title, titleMyanmar, actions 
                 <span className="block truncate text-xs font-semibold text-white">
                   {account?.shop || "KPay Verified Shop"}
                 </span>
-                {isPro ? (
-                  <span className="mt-1 flex items-center gap-1 text-[10px] text-emerald-300">
-                    <span className="size-1.5 rounded-full bg-emerald-300" /> Pro Plan
-                  </span>
-                ) : (
-                  <span className="mt-1 flex items-center gap-1 text-[10px] text-slate-400">
-                    <span className="size-1.5 rounded-full bg-slate-500" /> Free Plan
-                  </span>
-                )}
+                <span className={`mt-1 flex items-center gap-1 text-[10px] ${planStyles.text}`}>
+                  <span className={`size-1.5 rounded-full ${planStyles.dot}`} /> {planLabel}
+                </span>
               </span>
               <ChevronDown className="ml-auto size-4 text-slate-500" />
             </div>
             <div className="my-3 h-px bg-white/[0.07]" />
-            {!isPro && (
+            {(plan === "free" || plan === "basic") && (
               <Link
                 href="/checkout?plan=pro"
                 className="mb-2 flex w-full items-center justify-center gap-1.5 rounded-lg bg-amber-300/15 px-2 py-2 text-[11px] font-semibold text-amber-200 transition hover:bg-amber-300/25"

@@ -104,6 +104,7 @@ button:not(:disabled), a[href] { cursor: pointer; }
   .feature-card { @apply relative overflow-hidden rounded-2xl border border-white/[0.09] bg-white/[0.025] p-6 transition duration-300 hover:-translate-y-1 hover:border-white/[0.18] hover:bg-white/[0.045] hover:shadow-[0_18px_50px_rgba(0,0,0,0.18)]; }
   .pricing-card { @apply relative rounded-2xl border border-white/[0.1] bg-white/[0.035] p-7 transition duration-300 hover:-translate-y-1 hover:border-white/[0.2] sm:p-8; }
   .pricing-card-featured { @apply border-emerald-300/25 bg-gradient-to-br from-emerald-400/[0.09] via-white/[0.04] to-indigo-400/[0.06] shadow-[0_18px_55px_rgba(16,185,129,0.08)]; }
+  .pricing-card-glow { box-shadow: 0 0 0 1px rgba(110,231,183,.35), 0 18px 60px rgba(16,185,129,.18), 0 0 90px rgba(99,102,241,.12); }
   .social-button { @apply inline-flex size-9 items-center justify-center rounded-lg border border-white/[0.1] bg-white/[0.03] text-slate-500 transition hover:border-white/[0.2] hover:bg-white/[0.08] hover:text-white; }
 }
 
@@ -226,6 +227,7 @@ html:not(.dark) .page-surface .feature-card,
 html:not(.dark) .page-surface .pricing-card { border-color: #e2e8f0; background: #f8fafc; color: #0f172a; box-shadow: 0 10px 30px rgba(15,23,42,.04); }
 html:not(.dark) .page-surface .feature-card:hover,
 html:not(.dark) .page-surface .pricing-card:hover { border-color: #cbd5e1; background: #f8fafc; }
+html:not(.dark) .page-surface .pricing-card-featured { border-color: #6ee7b7; background: #f0fdf4; box-shadow: 0 0 0 1px rgba(16,185,129,.25), 0 18px 50px rgba(16,185,129,.15); }
 html:not(.dark) .page-surface .feature-card .text-white,
 html:not(.dark) .page-surface .pricing-card .text-white { color: #0f172a; }
 html:not(.dark) .page-surface .feature-card .text-slate-300,

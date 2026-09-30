@@ -1,13 +1,16 @@
 /**
  * Demo account + plan store (localStorage).
  *
- * Keeps the plan chosen on the pricing page (`?plan=free|pro`) through
- * sign-up and checkout, so the dashboard can show Free vs Pro state.
+ * Keeps the plan chosen on the pricing page (`?plan=`) through sign-up and
+ * checkout, so the dashboard can show Free vs paid state.
  * NOTE: demo-grade persistence — a real backend (Supabase Auth + a
  * profiles/subscriptions table) should replace this before production.
  */
 
-export type Plan = "free" | "pro";
+import { PLAN_META, type Plan } from "./plans";
+
+export type { Plan };
+export { parsePlanParam, planBadgeText } from "./plans";
 
 export type Account = {
   name: string;
@@ -16,25 +19,18 @@ export type Account = {
   /** Stored only for the demo sign-in check — never do this in production. */
   password: string;
   plan: Plan;
-  /** True for Free accounts immediately; for Pro once checkout completes. */
+  /** True for Free accounts immediately; for paid tiers once checkout completes. */
   proUnlocked: boolean;
   createdAt: string;
 };
 
-export const PRO_PRICE_MMK = 15000;
+export const PRO_PRICE_MMK = PLAN_META.pro.priceMMK ?? 15000;
 export const ACCOUNT_KEY = "wl_account";
 
-/** `?plan=pro` (any case) selects Pro, everything else falls back to Free. */
-export function parsePlanParam(value: string | null | undefined): Plan {
-  return typeof value === "string" && value.trim().toLowerCase() === "pro" ? "pro" : "free";
-}
-
-/** Badge line shown at the top of the sign-up form. */
-export function planBadgeText(plan: Plan): string {
-  if (plan === "pro") {
-    return `Pro Plan (${PRO_PRICE_MMK.toLocaleString("en-US")} MMK / လ) အတွက် အကောင့်ဖွင့်နေသည်`;
-  }
-  return "Free Plan အတွက် အကောင့်ဖွင့်နေသည်";
+function normalizePlan(value: unknown): Plan {
+  return value === "free" || value === "basic" || value === "pro" || value === "enterprise"
+    ? value
+    : "free";
 }
 
 function readStorage(): Account | null {
@@ -44,13 +40,14 @@ function readStorage(): Account | null {
     if (!raw) return null;
     const parsed = JSON.parse(raw) as Partial<Account>;
     if (!parsed || typeof parsed.phone !== "string") return null;
+    const plan = normalizePlan(parsed.plan);
     return {
       name: typeof parsed.name === "string" ? parsed.name : "",
       shop: typeof parsed.shop === "string" ? parsed.shop : "",
       phone: parsed.phone,
       password: typeof parsed.password === "string" ? parsed.password : "",
-      plan: parsed.plan === "pro" ? "pro" : "free",
-      proUnlocked: parsed.proUnlocked === true || parsed.plan !== "pro",
+      plan,
+      proUnlocked: plan === "free" ? true : parsed.proUnlocked === true,
       createdAt: typeof parsed.createdAt === "string" ? parsed.createdAt : new Date().toISOString(),
     };
   } catch {
@@ -75,16 +72,24 @@ export function saveAccount(account: Account): void {
   writeStorage(account);
 }
 
-/** Mark the stored Pro account as paid/unlocked. Returns the updated account. */
-export function unlockPro(): Account | null {
+/** Mark the stored account as paid for the given tier. Returns the updated account. */
+export function unlockPlan(plan: "basic" | "pro"): Account | null {
   const account = readStorage();
   if (!account) return null;
-  const updated: Account = { ...account, plan: "pro", proUnlocked: true };
+  const updated: Account = { ...account, plan, proUnlocked: true };
   writeStorage(updated);
   return updated;
 }
 
-/** Where a signed-in account should land: unpaid Pro goes to checkout. */
+/** Backwards-compatible alias — Pro unlock. */
+export function unlockPro(): Account | null {
+  return unlockPlan("pro");
+}
+
+/** Where a signed-in account should land: unpaid paid-tiers resume at checkout. */
 export function landingRouteFor(account: Account): string {
-  return account.plan === "pro" && !account.proUnlocked ? "/checkout?plan=pro" : "/dashboard";
+  if ((account.plan === "pro" || account.plan === "basic") && !account.proUnlocked) {
+    return `/checkout?plan=${account.plan}`;
+  }
+  return "/dashboard";
 }
