@@ -1,7 +1,7 @@
 /**
  * Single source of truth for subscription plans.
  *
- * - Landing page shows the Pro tier only (conversion-focused).
+ * - Landing page shows both Free and Pro tiers.
  * - Sign-up accepts free|pro (`?plan=`).
  * - Checkout sells the paid tiers basic|pro (`?plan=`).
  * - Dashboard > Settings > Billing shows the full Basic/Pro/Enterprise table.
