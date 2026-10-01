@@ -1,9 +1,10 @@
 "use client";
 
 import DashboardShell from "@/components/DashboardShell";
-import { getAccount, saveAccount } from "@/lib/account";
+import { useAccount } from "@/hooks/usePlan";
+import { saveAccount } from "@/lib/account";
 import { BILLING_TIERS, formatPlanPrice, PLAN_META, PLAN_RANK, type Plan } from "@/lib/plans";
-import { ArrowUpRight, BadgeCheck, Building2, Check, CreditCard, Crown, Phone, Store, UserRound, Zap } from "lucide-react";
+import { ArrowUpRight, BadgeCheck, Building2, Check, CreditCard, Crown, LogOut, Phone, Store, UserRound, Zap } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -16,7 +17,7 @@ const TIER_ICONS: Record<Plan, typeof Zap> = { free: BadgeCheck, basic: Zap, pro
 export default function SettingsPage() {
   const router = useRouter();
   const [tab, setTab] = useState<Tab>("billing");
-  const [account, setAccount] = useState(() => getAccount());
+  const account = useAccount();
   const plan: Plan = account?.plan ?? "free";
   const currentRank = PLAN_RANK[plan];
 
@@ -41,21 +42,34 @@ export default function SettingsPage() {
     // Downgrade (demo): applies immediately, no proration in demo mode.
     const updated = { ...account, plan: tier, proUnlocked: true };
     saveAccount(updated);
-    setAccount(updated);
     toast(`${PLAN_META[tier].name} Plan ကို ပြောင်းပြီးပါပြီ`, {
       description: "Demo mode ဖြစ်သောကြောင့် ချက်ချင်း သက်ရောက်သွားပါတယ်။",
     });
     window.location.reload();
   };
 
+  const logout = () => {
+    toast("Logged out", { description: "Demo account မှ ထွက်လိုက်ပါပြီ။" });
+    router.push("/sign-in");
+  };
+
   return (
     <DashboardShell title="Settings" titleMyanmar="ဆက်တင်များ">
-      <div className="mb-7">
-        <p className="dashboard-label">SETTINGS</p>
-        <h2 className="mt-2 font-display text-2xl font-bold tracking-tight text-white sm:text-3xl">
-          ဆက်တင်များ <span className="text-indigo-300">(Settings)</span>
-        </h2>
-        <p className="mt-2 text-sm text-slate-500">အကောင့်အချက်အလက်နဲ့ Subscription Plan ကို စီမံပါ။</p>
+      <div className="mb-7 flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <p className="dashboard-label">SETTINGS</p>
+          <h2 className="mt-2 font-display text-2xl font-bold tracking-tight text-white sm:text-3xl">
+            ဆက်တင်များ <span className="text-indigo-300">(Settings)</span>
+          </h2>
+          <p className="mt-2 text-sm text-slate-500">အကောင့်အချက်အလက်နဲ့ Subscription Plan ကို စီမံပါ။</p>
+        </div>
+        <button
+          type="button"
+          onClick={logout}
+          className="inline-flex shrink-0 items-center gap-2 rounded-xl border border-red-400/30 bg-red-500/10 px-4 py-2.5 text-xs font-semibold text-red-500 transition hover:bg-red-500/20 active:scale-95 dark:text-red-400"
+        >
+          <LogOut className="size-4" /> Logout
+        </button>
       </div>
 
       <div className="mb-6 flex w-fit gap-1 rounded-xl border border-white/10 bg-white/[0.03] p-1">
@@ -204,7 +218,7 @@ export default function SettingsPage() {
                   <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">
                     <Store className="size-3.5" /> ဆိုင်နာမည်
                   </p>
-                  <p className="mt-1.5 text-sm font-semibold text-white">{account.shop || "—"}</p>
+                  <p className="mt-1.5 text-sm font-semibold text-white">{account.shop || "ဆိုင်အမည် မထည့်ရသေးပါ"}</p>
                 </div>
                 <div className="rounded-xl border border-white/[0.07] bg-slate-950/50 p-4">
                   <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">

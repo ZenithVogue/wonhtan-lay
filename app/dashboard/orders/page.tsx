@@ -132,8 +132,8 @@ export default function OrdersPage() {
               >
                 <Download className="size-4" /> Export All <span className="hidden sm:inline">(CSV)</span>
               </button>
-              <button className="button-primary w-fit" onClick={handleTestOrder}>
-                <Zap className="size-4" /> Send test order
+              <button className="inline-flex w-fit items-center gap-2 rounded-xl border border-slate-300 bg-transparent px-4 py-2.5 text-xs font-semibold text-slate-600 transition hover:border-indigo-400 hover:bg-indigo-500/10 hover:text-indigo-600 active:scale-95 dark:border-slate-600 dark:text-slate-300 dark:hover:border-indigo-400 dark:hover:text-indigo-300" onClick={handleTestOrder}>
+                <Zap className="size-4" /> စမ်းသပ်အော်ဒါ ပို့ကြည့်မည်
               </button>
             </div>
           </div>

@@ -9,7 +9,7 @@ import {
   ClipboardList,
   FileCheck2,
   LayoutDashboard,
-  LogOut,
+  LifeBuoy,
   Menu,
   Settings,
   ShoppingBag,
@@ -20,7 +20,7 @@ import Link from "next/link";
 import { usePlan } from "@/hooks/usePlan";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import ShopSwitcher from "@/components/ShopSwitcher";
 
 const NAV_ITEMS = [
   { label: "Dashboard", burmese: "ပင်မစာမျက်နှာ", icon: LayoutDashboard, href: "/dashboard" },
@@ -29,6 +29,7 @@ const NAV_ITEMS = [
   { label: "Products / Menu", burmese: "ပစ္စည်းစာရင်း", icon: ShoppingBag, href: "/dashboard/products" },
   { label: "Slip Verifier", burmese: "ငွေလွှဲစလစ်စစ်ရန်", icon: FileCheck2, href: "/dashboard/slip-verifier" },
   { label: "Settings", burmese: "ဆက်တင်များ", icon: Settings, href: "/dashboard/settings" },
+  { label: "Help & Support", burmese: "အကူအညီနှင့် လမ်းညွှန်", icon: LifeBuoy, href: "/dashboard/help" },
 ] as const;
 
 const PATH_TITLES: Record<string, { title: string; myanmar: string }> = {
@@ -38,6 +39,7 @@ const PATH_TITLES: Record<string, { title: string; myanmar: string }> = {
   "/dashboard/bots": { title: "Bot Connections", myanmar: "Bot ချိတ်ဆက်ရန်" },
   "/dashboard/products": { title: "Products", myanmar: "ပစ္စည်းစာရင်းများ" },
   "/dashboard/slip-verifier": { title: "Slip Verifier", myanmar: "Slip Verifier" },
+  "/dashboard/help": { title: "Help & Support", myanmar: "အကူအညီနှင့် လမ်းညွှန်" },
 };
 
 type DashboardShellProps = {
@@ -53,29 +55,38 @@ type DashboardShellProps = {
 /**
  * Shared frame for every /dashboard/* page: sidebar navigation + sticky header.
  *
- * The hamburger Menu (☰) button is ALWAYS visible at the top-left, on every
- * screen size: on mobile it opens the sidebar drawer, on desktop it
- * collapses/expands the sidebar.
+ * The hamburger Menu (☰) button in the header is only shown while the sidebar
+ * is closed/collapsed. While the sidebar is open, only its internal Close (X)
+ * button is visible. On mobile the sidebar is a drawer; on desktop it
+ * collapses/expands.
  */
 export default function DashboardShell({ children, title, titleMyanmar, actions }: DashboardShellProps) {
   const pathname = usePathname();
   const [mobileNav, setMobileNav] = useState(false);
   const { account, plan, planLabel } = usePlan();
   const [collapsed, setCollapsed] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(
+    () => typeof window !== "undefined" && window.matchMedia("(min-width: 1024px)").matches,
+  );
+
+  useEffect(() => {
+    const query = window.matchMedia("(min-width: 1024px)");
+    const sync = () => setIsDesktop(query.matches);
+    sync();
+    query.addEventListener("change", sync);
+    return () => query.removeEventListener("change", sync);
+  }, []);
+
+  /** Whether the sidebar is currently visible, for the active breakpoint. */
+  const sidebarOpen = isDesktop ? !collapsed : mobileNav;
 
   // Always close the drawer when navigating to another page.
   useEffect(() => {
     setMobileNav(false);
   }, [pathname]);
 
-  const toggleSidebar = () => {
-    const isDesktop = typeof window !== "undefined" && window.matchMedia("(min-width: 1024px)").matches;
-    if (isDesktop) {
-      setCollapsed(value => !value);
-    } else {
-      setMobileNav(value => !value);
-    }
-  };
+  const openSidebar = () => (isDesktop ? setCollapsed(false) : setMobileNav(true));
+  const closeSidebar = () => (isDesktop ? setCollapsed(true) : setMobileNav(false));
 
   const fallback = PATH_TITLES[pathname] ?? { title: "Dashboard", myanmar: "Dashboard" };
   const headerTitle = title ?? fallback.title;
@@ -114,7 +125,7 @@ export default function DashboardShell({ children, title, titleMyanmar, actions 
                 </span>
               </span>
             </Link>
-            <button className="dashboard-close lg:hidden" onClick={() => setMobileNav(false)} aria-label="Close navigation">
+            <button className="dashboard-close" onClick={closeSidebar} aria-label="Close navigation">
               <X className="size-4" />
             </button>
           </div>
@@ -155,7 +166,7 @@ export default function DashboardShell({ children, title, titleMyanmar, actions 
               </span>
               <span className="min-w-0">
                 <span className="block truncate text-xs font-semibold text-white">
-                  {account?.shop || "KPay Verified Shop"}
+                  {account?.shop || "ဆိုင်အမည် မထည့်ရသေးပါ"}
                 </span>
                 <span className={`mt-1 flex items-center gap-1 text-[10px] ${planStyles.text}`}>
                   <span className={`size-1.5 rounded-full ${planStyles.dot}`} /> {planLabel}
@@ -163,30 +174,21 @@ export default function DashboardShell({ children, title, titleMyanmar, actions 
               </span>
               <ChevronDown className="ml-auto size-4 text-slate-500" />
             </div>
-            <div className="my-3 h-px bg-white/[0.07]" />
+            {(plan === "free" || plan === "basic") && <div className="my-3 h-px bg-white/[0.07]" />}
             {(plan === "free" || plan === "basic") && (
               <Link
                 href="/checkout?plan=pro"
-                className="mb-2 flex w-full items-center justify-center gap-1.5 rounded-lg bg-amber-300/15 px-2 py-2 text-[11px] font-semibold text-amber-200 transition hover:bg-amber-300/25"
+                className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-amber-300/15 px-2 py-2 text-[11px] font-semibold text-amber-200 transition hover:bg-amber-300/25"
               >
                 <Crown className="size-3.5" /> Upgrade to Pro
               </Link>
             )}
-            <button
-              className="flex w-full items-center gap-2 px-1 text-xs text-slate-500 transition hover:text-white"
-              onClick={() => toast("Logged out", { description: "Demo account မှ ထွက်လိုက်ပါပြီ။" })}
-            >
-              <LogOut className="size-3.5" /> Logout
-            </button>
           </div>
           <div className="flex items-center gap-2 px-5 py-5 text-[10px] text-slate-600 lg:px-6">
             <CircleHelp className="size-3.5" /> Need help?{" "}
-            <button
-              className="text-slate-400 hover:text-white"
-              onClick={() => toast("Support", { description: "Support team ကို မကြာခင် ဆက်သွယ်နိုင်ပါမယ်။" })}
-            >
+            <Link href="/dashboard/help" className="text-slate-400 hover:text-white">
               Contact support
-            </button>
+            </Link>
           </div>
         </div>
       </aside>
@@ -201,9 +203,11 @@ export default function DashboardShell({ children, title, titleMyanmar, actions 
       <div className="dashboard-main min-w-0">
         <header className="dashboard-header">
           <div className="flex min-w-0 items-center gap-3">
-            <button className="dashboard-menu" onClick={toggleSidebar} aria-label="Toggle navigation">
-              <Menu className="size-5" />
-            </button>
+            {!sidebarOpen && (
+              <button className="dashboard-menu" onClick={openSidebar} aria-label="Open navigation">
+                <Menu className="size-5" />
+              </button>
+            )}
             <div className="hidden items-center gap-2 text-xs text-slate-500 sm:flex">
               <Link href="/dashboard" className="cursor-pointer transition hover:text-indigo-600 dark:hover:text-indigo-400">
                 Workspace
@@ -217,12 +221,7 @@ export default function DashboardShell({ children, title, titleMyanmar, actions 
           </div>
           <div className="ml-auto flex items-center gap-2.5">
             {actions ?? (
-              <>
-                <span className="hidden text-xs text-slate-500 sm:block">KPay Verified Shop</span>
-                <span className="flex size-8 items-center justify-center rounded-lg bg-indigo-400/10 text-indigo-300">
-                  <Store className="size-4" />
-                </span>
-              </>
+              <ShopSwitcher />
             )}
           </div>
         </header>

@@ -26,10 +26,6 @@ export default function SignUpPage() {
       toast("နာမည်ထည့်ပေးပါ", { description: "အကောင့်အတွက် သင့်နာမည်ကို ဖြည့်ပါ။" });
       return;
     }
-    if (!cleanShop) {
-      toast("ဆိုင်နာမည်ထည့်ပေးပါ", { description: "Dashboard မှာ ပြမယ့် ဆိုင်နာမည်ကို ဖြည့်ပါ။" });
-      return;
-    }
     if (!/^09\d{7,9}$/.test(cleanPhone)) {
       toast("ဖုန်းနံပါတ် မမှန်သေးပါ", { description: "09 နဲ့စတဲ့ ၉–၁၁ လုံးပါ နံပါတ်ကို ထည့်ပါ။" });
       return;
@@ -47,6 +43,8 @@ export default function SignUpPage() {
     const account: Account = {
       name: cleanName,
       shop: cleanShop,
+      shops: cleanShop ? [{ id: "shop-1", name: cleanShop, phone: cleanPhone }] : [],
+      activeShopId: cleanShop ? "shop-1" : undefined,
       phone: cleanPhone,
       password,
       plan: "free",
@@ -95,17 +93,23 @@ export default function SignUpPage() {
           </label>
 
           <label className="block">
-            <span className="form-label">ဆိုင်နာမည်</span>
+            <span className="form-label">
+              ဆိုင်နာမည် <span className="font-normal text-slate-500">(မဖြည့်လည်းရပါသည်)</span>
+            </span>
             <span className="relative mt-1.5 block">
               <Store className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-500" />
               <input
                 className="form-input pl-10"
                 value={shop}
                 onChange={event => setShop(event.target.value)}
-                placeholder="ဥပမာ — May Fashion Shop"
+                placeholder="ဥပမာ — May Fashion Shop (မဖြည့်လည်းရပါသည်)"
                 name="organization"
                 autoComplete="organization"
+                aria-describedby="shop-hint"
               />
+            </span>
+            <span id="shop-hint" className="mt-1.5 block text-[11px] leading-5 text-slate-500">
+              ဆိုင်အမည်ကို နောက်မှ ထည့်သွင်း/ပြင်ဆင်လည်း ရရှိပါသည်။
             </span>
           </label>
 

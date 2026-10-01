@@ -25,7 +25,7 @@ export default function SignInPage() {
       return;
     }
     setSubmitting(true);
-    toast(`ပြန်လည်ကြိုဆိုပါတယ်, ${account.name}`, { description: `${account.shop} ကို ဖွင့်ပေးပါမယ်။` });
+    toast(`ပြန်လည်ကြိုဆိုပါတယ်, ${account.name}`, { description: account.shop ? `${account.shop} ကို ဖွင့်ပေးပါမယ်။` : "Dashboard ကို ဖွင့်ပေးပါမယ်။" });
     router.push(landingRouteFor(account));
   };
 

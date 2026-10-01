@@ -1,8 +1,8 @@
 "use client";
 
-import { getAccount, type Account } from "@/lib/account";
+import { ACCOUNT_EVENT, getAccount, type Account } from "@/lib/account";
 import { PLAN_META, type Plan } from "@/lib/plans";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export type PlanState = {
   account: Account | null;
@@ -21,8 +21,23 @@ export type PlanState = {
  * client render (dashboard pages render inside <ClientOnly>, so there is
  * no SSR pass to mismatch against).
  */
+/** Live view of the stored account — re-reads whenever it is saved anywhere in the app. */
+export function useAccount(): Account | null {
+  const [account, setAccount] = useState<Account | null>(() => getAccount());
+  useEffect(() => {
+    const sync = () => setAccount(getAccount());
+    window.addEventListener(ACCOUNT_EVENT, sync);
+    window.addEventListener("storage", sync);
+    return () => {
+      window.removeEventListener(ACCOUNT_EVENT, sync);
+      window.removeEventListener("storage", sync);
+    };
+  }, []);
+  return account;
+}
+
 export function usePlan(): PlanState {
-  const [account] = useState<Account | null>(() => getAccount());
+  const account = useAccount();
   const plan: Plan = account?.plan ?? "free";
   const unlocked = account?.proUnlocked ?? false;
   return {

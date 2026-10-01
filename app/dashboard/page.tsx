@@ -2,6 +2,7 @@
 
 import { LiveBadge, nextStatus, OrderStatusBadge, TelegramBadge } from "@/components/orders-ui";
 import DashboardShell from "@/components/DashboardShell";
+import ShopSwitcher from "@/components/ShopSwitcher";
 import { usePlan } from "@/hooks/usePlan";
 import { useOrders } from "@/hooks/useOrders";
 import { formatDateTime, formatMMK, initialsOf, isToday, shortOrderId, timeAgo, todayLabel } from "@/lib/format";
@@ -11,7 +12,6 @@ import {
   Bell,
   Bot,
   Check,
-  ChevronDown,
   ChevronLeft,
   ChevronRight,
   ClipboardList,
@@ -20,7 +20,6 @@ import {
   FileCheck2,
   Printer,
   Search,
-  Store,
   Truck,
   X,
   Zap,
@@ -58,7 +57,6 @@ function downloadCsv(filename: string, rows: Order[]) {
 }
 
 export default function DashboardPage() {
-  const [shopMenu, setShopMenu] = useState(false);
   const [activeFilter, setActiveFilter] = useState<Filter>("All");
   const [query, setQuery] = useState("");
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -165,33 +163,7 @@ export default function DashboardPage() {
                 <Bell className="size-[17px]" />
                 <span className="absolute right-2 top-2 size-1.5 rounded-full bg-emerald-300" />
               </button>
-              <div className="relative">
-                <button className="shop-selector" onClick={() => setShopMenu(value => !value)}>
-                  <span className="hidden text-left sm:block">
-                    <span className="block text-[10px] text-slate-500">Active shop</span>
-                    <span className="block max-w-[120px] truncate text-xs font-semibold text-white">KPay Verified Shop</span>
-                  </span>
-                  <span className="flex size-8 items-center justify-center rounded-lg bg-indigo-400/10 text-indigo-300 sm:hidden">
-                    <Store className="size-4" />
-                  </span>
-                  <ChevronDown className="size-3.5 text-slate-500" />
-                </button>
-                {shopMenu && (
-                  <div className="absolute right-0 top-12 z-50 w-52 rounded-xl border border-white/10 bg-white p-2 shadow-2xl dark:bg-slate-900">
-                    <button className="flex w-full items-center gap-2 rounded-lg bg-slate-100 px-3 py-2.5 text-left text-xs text-slate-900 dark:bg-slate-800 dark:text-white">
-                      <span className="size-2 rounded-full bg-emerald-300" />
-                      KPay Verified Shop
-                      <Check className="ml-auto size-3.5 text-emerald-300" />
-                    </button>
-                    <button
-                      onClick={() => toast("Add a new shop", { description: "Multi-shop support is coming soon." })}
-                      className="mt-1 flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-xs text-slate-400 hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-white"
-                    >
-                      <Store className="size-3.5" /> Add another shop
-                    </button>
-                  </div>
-                )}
-              </div>
+              <ShopSwitcher />
         </>
       }
     >
@@ -207,8 +179,8 @@ export default function DashboardPage() {
               </h2>
               <p className="mt-2 text-sm text-slate-500">ဒီနေ့ရဲ့ အော်ဒါနဲ့ လုပ်ဆောင်ချက်တွေကို တစ်နေရာတည်းမှာ ကြည့်ပါ။</p>
             </div>
-            <button className="button-primary w-fit" onClick={handleTestOrder}>
-              <Zap className="size-4" /> Send test order
+            <button className="inline-flex w-fit items-center gap-2 rounded-xl border border-slate-300 bg-transparent px-4 py-2.5 text-xs font-semibold text-slate-600 transition hover:border-indigo-400 hover:bg-indigo-500/10 hover:text-indigo-600 active:scale-95 dark:border-slate-600 dark:text-slate-300 dark:hover:border-indigo-400 dark:hover:text-indigo-300" onClick={handleTestOrder}>
+              <Zap className="size-4" /> စမ်းသပ်အော်ဒါ ပို့ကြည့်မည်
             </button>
           </div>
 
