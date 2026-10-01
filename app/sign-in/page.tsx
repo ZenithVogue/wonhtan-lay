@@ -84,8 +84,8 @@ export default function SignInPage() {
 
         <p className="border-t border-white/[0.07] px-6 py-4 text-center text-xs text-slate-400 sm:px-8">
           အကောင့်မရှိသေးဘူးလား?{" "}
-          <Link href="/sign-up?plan=free" className="font-semibold text-indigo-300 hover:text-indigo-200">
-            Free နဲ့ အကောင့်ဖွင့်မည်
+          <Link href="/sign-up" className="font-semibold text-indigo-300 hover:text-indigo-200">
+            အကောင့်သစ်ဖွင့်မည်
           </Link>
         </p>
       </div>

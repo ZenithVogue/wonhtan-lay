@@ -1,8 +1,8 @@
 /**
- * Demo account + plan store (localStorage).
+ * Demo account store (localStorage).
  *
- * Keeps the plan chosen on the pricing page (`?plan=`) through sign-up and
- * checkout, so the dashboard can show Free vs paid state.
+ * Sign-up creates a plan-agnostic account (Free). The stored plan/unlock
+ * fields are only touched later by the dashboard billing flow.
  * NOTE: demo-grade persistence — a real backend (Supabase Auth + a
  * profiles/subscriptions table) should replace this before production.
  */
@@ -10,7 +10,6 @@
 import { PLAN_META, type Plan } from "./plans";
 
 export type { Plan };
-export { parsePlanParam, planBadgeText } from "./plans";
 
 export type Account = {
   name: string;

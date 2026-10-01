@@ -31,7 +31,7 @@ function CheckoutForm() {
   useEffect(() => {
     const account = getAccount();
     if (!account) {
-      router.replace(isPro ? "/sign-up?plan=pro" : "/sign-up?plan=free");
+      router.replace("/sign-up");
       return;
     }
     if (account.plan === target && account.proUnlocked) {
@@ -96,7 +96,7 @@ function CheckoutForm() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-slate-950 px-4 py-10 text-white">
       <Link
-        href={isPro ? "/sign-up?plan=pro" : "/dashboard/settings"}
+        href="/dashboard/settings"
         className="mb-6 inline-flex items-center gap-2 text-xs text-slate-400 transition hover:text-white"
       >
         <ArrowLeft className="size-3.5" /> နောက်သို့ ပြန်သွားမည်
