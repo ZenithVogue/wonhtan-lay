@@ -465,13 +465,13 @@ function PlayIcon() {
 }
 
 function FooterColumn({ title, links, onClick }: { title: string; links: string[]; onClick: (link: string) => void }) {
-  const linkClass = "block w-fit text-left text-sm text-slate-500 transition-colors duration-200 hover:text-indigo-600 active:text-emerald-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 dark:hover:text-emerald-300 dark:active:text-emerald-200 dark:focus-visible:ring-offset-slate-950";
+  const linkClass = "inline-block w-fit cursor-pointer text-left text-sm text-slate-600 transition-colors duration-200 hover:text-indigo-600 active:scale-95 active:text-indigo-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 dark:text-slate-400 dark:hover:text-indigo-400 dark:active:text-indigo-300 dark:focus-visible:ring-offset-slate-950";
   const sectionIds: Record<string, string> = { Features: "features", Pricing: "pricing", Demo: "demo" };
 
   return (
     <div>
       <h3 className="text-xs font-bold uppercase tracking-[0.14em] text-slate-400">{title}</h3>
-      <div className="mt-5 space-y-3">
+      <div className="mt-5 flex flex-col items-start gap-3">
         {links.map((link) => {
           if (link === "Talk to us") {
             return (
