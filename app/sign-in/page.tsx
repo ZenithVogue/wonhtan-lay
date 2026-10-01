@@ -1,7 +1,7 @@
 "use client";
 
 import { getAccount, landingRouteFor } from "@/lib/account";
-import { ArrowLeft, Bot, Loader2 } from "lucide-react";
+import { ArrowLeft, Bot, Eye, EyeOff, Loader2, Lock, Phone } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
@@ -11,6 +11,7 @@ export default function SignInPage() {
   const router = useRouter();
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const submit = (event: FormEvent) => {
@@ -51,25 +52,44 @@ export default function SignInPage() {
         <form onSubmit={submit} className="space-y-4 px-6 py-6 sm:px-8">
           <label className="block">
             <span className="form-label">ဖုန်းနံပါတ်</span>
-            <input
-              className="form-input mt-1.5"
-              value={phone}
-              onChange={event => setPhone(event.target.value)}
-              placeholder="09XXXXXXXXX"
-              inputMode="tel"
-              autoComplete="tel"
-            />
+            <span className="relative mt-1.5 block">
+              <Phone className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-500" />
+              <input
+                className="form-input pl-10"
+                name="username"
+                type="tel"
+                value={phone}
+                onChange={event => setPhone(event.target.value)}
+                placeholder="09XXXXXXXXX"
+                inputMode="tel"
+                autoComplete="username"
+              />
+            </span>
           </label>
+
           <label className="block">
             <span className="form-label">Password</span>
-            <input
-              className="form-input mt-1.5"
-              type="password"
-              value={password}
-              onChange={event => setPassword(event.target.value)}
-              placeholder="Password"
-              autoComplete="current-password"
-            />
+            <span className="relative mt-1.5 block">
+              <Lock className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-500" />
+              <input
+                className="form-input pl-10 pr-11"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={event => setPassword(event.target.value)}
+                placeholder="Password"
+                autoComplete="current-password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(value => !value)}
+                aria-label={showPassword ? "Password ကို ဖျောက်မည်" : "Password ကို ပြမည်"}
+                aria-pressed={showPassword}
+                className="absolute right-2 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-lg text-slate-400 transition-all hover:text-white active:scale-95"
+              >
+                {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+              </button>
+            </span>
           </label>
           <button type="submit" disabled={submitting} className="button-primary h-12 w-full">
             {submitting ? (

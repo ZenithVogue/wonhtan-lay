@@ -92,3 +92,11 @@ export function landingRouteFor(account: Account): string {
   }
   return "/dashboard";
 }
+
+/** Password must contain at least one English letter and at least one digit. */
+export const PASSWORD_COMPLEXITY_REGEX = /^(?=.*[A-Za-z])(?=.*\d)/;
+export const PASSWORD_COMPLEXITY_MESSAGE = "Password တွင် အင်္ဂလိပ်စာလုံးနှင့် ကိန်းဂဏန်း အနည်းဆုံး တစ်လုံးစီ ပါဝင်ရပါမည်";
+
+export function isPasswordComplex(password: string): boolean {
+  return PASSWORD_COMPLEXITY_REGEX.test(password);
+}

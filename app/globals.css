@@ -365,13 +365,16 @@ html:not(.dark) .dashboard-shell .border-sky-400\/20 { border-color: #bae6fd; }
 .dark .dashboard-shell .receipt-paper .text-slate-600 { color: #475569; }
 .dark .dashboard-shell .receipt-paper .text-slate-500 { color: #64748b; }
 
-.form-label { display: block; margin-bottom: 0.45rem; color: #334155; font-size: 0.7rem; font-weight: 700; }
-.form-input { width: 100%; border: 1px solid #cbd5e1; border-radius: 0.75rem; background: #fff; color: #0f172a; padding: 0.7rem 0.8rem; font-size: 0.75rem; outline: none; transition: 180ms ease; }
-.form-input:focus { border-color: #818cf8; box-shadow: 0 0 0 3px rgb(99 102 241 / 0.12); }
-.form-input::placeholder { color: #94a3b8; }
-.dark .form-label { color: #e2e8f0; }
-.dark .form-input { border-color: #475569; background: #0f172a; color: #f8fafc; }
-.dark .form-input::placeholder { color: #64748b; }
+/* Kept in the components layer so Tailwind utilities (e.g. pl-10) can override the default padding. */
+@layer components {
+  .form-label { display: block; margin-bottom: 0.45rem; color: #334155; font-size: 0.7rem; font-weight: 700; }
+  .form-input { width: 100%; border: 1px solid #cbd5e1; border-radius: 0.75rem; background: #fff; color: #0f172a; padding: 0.7rem 0.8rem; font-size: 0.75rem; outline: none; transition: 180ms ease; }
+  .form-input:focus { border-color: #818cf8; box-shadow: 0 0 0 3px rgb(99 102 241 / 0.12); }
+  .form-input::placeholder { color: #94a3b8; }
+  .dark .form-label { color: #e2e8f0; }
+  .dark .form-input { border-color: #475569; background: #0f172a; color: #f8fafc; }
+  .dark .form-input::placeholder { color: #64748b; }
+}
 
 
 @media print {

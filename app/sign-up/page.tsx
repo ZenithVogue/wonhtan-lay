@@ -1,7 +1,7 @@
 "use client";
 
-import { landingRouteFor, saveAccount, type Account } from "@/lib/account";
-import { ArrowLeft, Bot, Loader2, Store, UserRound } from "lucide-react";
+import { PASSWORD_COMPLEXITY_MESSAGE, isPasswordComplex, landingRouteFor, saveAccount, type Account } from "@/lib/account";
+import { ArrowLeft, Bot, Eye, EyeOff, Loader2, Lock, Phone, Store, UserRound } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
@@ -14,6 +14,7 @@ export default function SignUpPage() {
   const [shop, setShop] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const submit = (event: FormEvent) => {
@@ -35,6 +36,10 @@ export default function SignUpPage() {
     }
     if (password.length < 6) {
       toast("Password တိုလွန်းပါတယ်", { description: "အနည်းဆုံး စာလုံး ၆ လုံး ထားပေးပါ။" });
+      return;
+    }
+    if (!isPasswordComplex(password)) {
+      toast("Password မလုံလောက်သေးပါ", { description: PASSWORD_COMPLEXITY_MESSAGE });
       return;
     }
 
@@ -79,10 +84,11 @@ export default function SignUpPage() {
             <span className="relative mt-1.5 block">
               <UserRound className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-500" />
               <input
-                className="form-input pl-9"
+                className="form-input pl-10"
                 value={name}
                 onChange={event => setName(event.target.value)}
                 placeholder="ဥပမာ — May Thu"
+                name="name"
                 autoComplete="name"
               />
             </span>
@@ -93,10 +99,11 @@ export default function SignUpPage() {
             <span className="relative mt-1.5 block">
               <Store className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-500" />
               <input
-                className="form-input pl-9"
+                className="form-input pl-10"
                 value={shop}
                 onChange={event => setShop(event.target.value)}
                 placeholder="ဥပမာ — May Fashion Shop"
+                name="organization"
                 autoComplete="organization"
               />
             </span>
@@ -104,26 +111,44 @@ export default function SignUpPage() {
 
           <label className="block">
             <span className="form-label">ဖုန်းနံပါတ်</span>
-            <input
-              className="form-input mt-1.5"
-              value={phone}
-              onChange={event => setPhone(event.target.value)}
-              placeholder="09XXXXXXXXX"
-              inputMode="tel"
-              autoComplete="tel"
-            />
+            <span className="relative mt-1.5 block">
+              <Phone className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-500" />
+              <input
+                className="form-input pl-10"
+                name="username"
+                type="tel"
+                value={phone}
+                onChange={event => setPhone(event.target.value)}
+                placeholder="09XXXXXXXXX"
+                inputMode="tel"
+                autoComplete="username"
+              />
+            </span>
           </label>
 
           <label className="block">
             <span className="form-label">Password</span>
-            <input
-              className="form-input mt-1.5"
-              type="password"
-              value={password}
-              onChange={event => setPassword(event.target.value)}
-              placeholder="အနည်းဆုံး ၆ လုံး"
-              autoComplete="new-password"
-            />
+            <span className="relative mt-1.5 block">
+              <Lock className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-500" />
+              <input
+                className="form-input pl-10 pr-11"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={event => setPassword(event.target.value)}
+                placeholder="အနည်းဆုံး ၆ လုံး (စာလုံး + ဂဏန်း)"
+                autoComplete="new-password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(value => !value)}
+                aria-label={showPassword ? "Password ကို ဖျောက်မည်" : "Password ကို ပြမည်"}
+                aria-pressed={showPassword}
+                className="absolute right-2 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-lg text-slate-400 transition-all hover:text-white active:scale-95"
+              >
+                {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+              </button>
+            </span>
           </label>
 
           <button type="submit" disabled={submitting} className="button-primary h-12 w-full">
