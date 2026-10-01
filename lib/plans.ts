@@ -2,7 +2,7 @@
  * Single source of truth for subscription plans.
  *
  * - Landing page shows both Free and Pro tiers.
- * - Sign-up accepts free|pro (`?plan=`).
+ * - Sign-up is plan-agnostic — every new account starts on Free.
  * - Checkout sells the paid tiers basic|pro (`?plan=`).
  * - Dashboard > Settings > Billing shows the full Basic/Pro/Enterprise table.
  *
@@ -84,20 +84,7 @@ export function formatPlanPrice(plan: Plan): string {
   return price.toLocaleString("en-US");
 }
 
-/** Sign-up accepts free|pro only: `?plan=pro` (any case) selects Pro, everything else is Free. */
-export function parsePlanParam(value: string | null | undefined): "free" | "pro" {
-  return typeof value === "string" && value.trim().toLowerCase() === "pro" ? "pro" : "free";
-}
-
 /** Checkout sells paid tiers: `?plan=basic` selects Basic, everything else defaults to Pro. */
 export function parseCheckoutPlan(value: string | null | undefined): "basic" | "pro" {
   return typeof value === "string" && value.trim().toLowerCase() === "basic" ? "basic" : "pro";
-}
-
-/** Badge line shown at the top of the sign-up form. */
-export function planBadgeText(plan: "free" | "pro"): string {
-  if (plan === "pro") {
-    return `Pro Plan (${formatPlanPrice("pro")} MMK / လ) အတွက် အကောင့်ဖွင့်နေသည်`;
-  }
-  return "Free Plan အတွက် အကောင့်ဖွင့်နေသည်";
 }

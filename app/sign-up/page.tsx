@@ -1,17 +1,14 @@
 "use client";
 
-import { landingRouteFor, parsePlanParam, planBadgeText, saveAccount, type Account } from "@/lib/account";
-import { ArrowLeft, BadgeCheck, Bot, Crown, Loader2, Store, UserRound } from "lucide-react";
+import { landingRouteFor, saveAccount, type Account } from "@/lib/account";
+import { ArrowLeft, Bot, Loader2, Store, UserRound } from "lucide-react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useState, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
+import { useState, type FormEvent } from "react";
 import { toast } from "sonner";
 
-function SignUpForm() {
+export default function SignUpPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const plan = parsePlanParam(searchParams.get("plan"));
-  const isPro = plan === "pro";
 
   const [name, setName] = useState("");
   const [shop, setShop] = useState("");
@@ -47,16 +44,12 @@ function SignUpForm() {
       shop: cleanShop,
       phone: cleanPhone,
       password,
-      plan,
-      proUnlocked: !isPro,
+      plan: "free",
+      proUnlocked: true,
       createdAt: new Date().toISOString(),
     };
     saveAccount(account);
-    toast(isPro ? "အကောင့်ဖွင့်ပြီးပါပြီ — ငွေချေဖို့ ဆက်သွားပါ" : "အကောင့်ဖွင့်ပြီးပါပြီ", {
-      description: isPro
-        ? "Pro Plan အတွက် KPay / WavePay နဲ့ ငွေချေရန် Checkout ကို ပို့ပေးပါမယ်။"
-        : "Free Dashboard ကို တိုက်ရိုက်ဝင်ရောက်နိုင်ပါပြီ။",
-    });
+    toast("အကောင့်ဖွင့်ပြီးပါပြီ", { description: "Dashboard ကို ဖွင့်ပေးပါမယ်။" });
     router.push(landingRouteFor(account));
   };
 
@@ -81,18 +74,6 @@ function SignUpForm() {
         </div>
 
         <form onSubmit={submit} className="space-y-4 px-6 py-6 sm:px-8">
-          {/* Selected-plan badge — always at the very top of the form. */}
-          <div
-            className={`flex items-center gap-2.5 rounded-xl border px-3.5 py-3 text-xs font-semibold leading-5 ${
-              isPro
-                ? "border-amber-300/25 bg-amber-300/10 text-amber-200"
-                : "border-emerald-300/25 bg-emerald-300/10 text-emerald-200"
-            }`}
-          >
-            {isPro ? <Crown className="size-4 shrink-0" /> : <BadgeCheck className="size-4 shrink-0" />}
-            {planBadgeText(plan)}
-          </div>
-
           <label className="block">
             <span className="form-label">သင့်နာမည်</span>
             <span className="relative mt-1.5 block">
@@ -150,30 +131,10 @@ function SignUpForm() {
               <>
                 <Loader2 className="size-4 animate-spin" /> ခဏစောင့်ပါ...
               </>
-            ) : isPro ? (
-              "ဆက်လက်ပြီး ငွေချေမည်"
             ) : (
-              "Free နဲ့ စတင်မည်"
+              "အကောင့်သစ်ဖွင့်မည်"
             )}
           </button>
-
-          <p className="text-center text-xs leading-5 text-slate-400">
-            {isPro ? (
-              <>
-                Free နဲ့ပဲ စမ်းချင်လား?{" "}
-                <Link href="/sign-up?plan=free" className="font-semibold text-emerald-300 hover:text-emerald-200">
-                  Free Plan ကို ပြောင်းမည်
-                </Link>
-              </>
-            ) : (
-              <>
-                Pro features လိုချင်လား?{" "}
-                <Link href="/sign-up?plan=pro" className="font-semibold text-amber-300 hover:text-amber-200">
-                  Pro Plan ကို ပြောင်းမည်
-                </Link>
-              </>
-            )}
-          </p>
         </form>
 
         <p className="border-t border-white/[0.07] px-6 py-4 text-center text-xs text-slate-400 sm:px-8">
@@ -184,19 +145,5 @@ function SignUpForm() {
         </p>
       </div>
     </div>
-  );
-}
-
-export default function SignUpPage() {
-  return (
-    <Suspense
-      fallback={
-        <div className="flex min-h-screen items-center justify-center bg-slate-950 text-sm text-slate-400">
-          <Loader2 className="size-5 animate-spin" />
-        </div>
-      }
-    >
-      <SignUpForm />
-    </Suspense>
   );
 }

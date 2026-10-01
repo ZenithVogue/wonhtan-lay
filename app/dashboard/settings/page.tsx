@@ -22,7 +22,7 @@ export default function SettingsPage() {
 
   const changePlan = (tier: Plan) => {
     if (!account) {
-      router.push("/sign-up?plan=free");
+      router.push("/sign-up");
       return;
     }
     if (tier === plan) return;
@@ -218,8 +218,8 @@ export default function SettingsPage() {
             <div className="py-8 text-center">
               <UserRound className="mx-auto size-8 text-slate-600" />
               <p className="mt-3 text-sm text-slate-400">အကောင့်မရှိသေးပါ</p>
-              <Link href="/sign-up?plan=free" className="button-primary mt-5">
-                Free နဲ့ အကောင့်ဖွင့်မည်
+              <Link href="/sign-up" className="button-primary mt-5">
+                အကောင့်ဖွင့်မည်
               </Link>
             </div>
           )}
