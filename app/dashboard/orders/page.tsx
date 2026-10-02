@@ -7,7 +7,6 @@ import { formatDateTime, formatMMK, initialsOf, shortOrderId, timeAgo } from "@/
 import { type Order } from "@/lib/orders";
 import {
   Check,
-  ChevronRight,
   Download,
   FileText,
   Printer,
@@ -16,7 +15,6 @@ import {
   X,
   Zap,
 } from "lucide-react";
-import Link from "next/link";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -102,13 +100,6 @@ export default function OrdersPage() {
     <DashboardShell>
           <div className="mb-7 flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
             <div>
-              <div className="mb-2 flex items-center gap-2 text-xs text-slate-500">
-                <Link href="/dashboard" className="transition hover:text-indigo-600 dark:hover:text-indigo-400">
-                  Dashboard
-                </Link>
-                <ChevronRight className="size-3" />
-                <span className="text-emerald-300">Orders</span>
-              </div>
               <div className="flex items-center gap-3">
                 <h2 className="font-display text-2xl font-bold tracking-tight text-white sm:text-3xl">
                   အော်ဒါများ <span className="text-indigo-300">(Orders)</span>
