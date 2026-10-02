@@ -10,15 +10,18 @@ import {
   LayoutDashboard,
   LifeBuoy,
   Menu,
+  Moon,
   Settings,
   ShoppingBag,
   Store,
+  Sun,
   X,
 } from "lucide-react";
 import Link from "next/link";
+import { useTheme } from "@/contexts/ThemeContext";
 import { usePlan } from "@/hooks/usePlan";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ShopSwitcher from "@/components/ShopSwitcher";
 
 const NAV_ITEMS = [
@@ -64,6 +67,24 @@ export default function DashboardShell({ children, title, actions }: DashboardSh
   const [mobileNav, setMobileNav] = useState(false);
   const { account, plan, planLabel } = usePlan();
   const [collapsed, setCollapsed] = useState(false);
+  const { theme, toggleTheme } = useTheme();
+  const [profileMenu, setProfileMenu] = useState(false);
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  // Close the profile dropdown on outside click / Escape.
+  useEffect(() => {
+    if (!profileMenu) return;
+    const onPointerDown = (event: PointerEvent) => {
+      if (!profileRef.current?.contains(event.target as Node)) setProfileMenu(false);
+    };
+    const onKey = (event: KeyboardEvent) => event.key === "Escape" && setProfileMenu(false);
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [profileMenu]);
   const [isDesktop, setIsDesktop] = useState(
     () => typeof window !== "undefined" && window.matchMedia("(min-width: 1024px)").matches,
   );
@@ -155,9 +176,16 @@ export default function DashboardShell({ children, title, actions }: DashboardSh
             </nav>
           </div>
 
-          <div className="mx-4 mt-auto rounded-2xl border border-white/[0.08] bg-white/[0.035] p-3.5">
-            <div className="flex items-center gap-2.5">
-              <span className="flex size-9 items-center justify-center rounded-xl bg-emerald-400/10 text-emerald-300">
+          <div className="relative mx-4 mt-auto rounded-2xl border border-white/[0.08] bg-white/[0.035] p-3.5" ref={profileRef}>
+            <button
+              type="button"
+              onClick={() => setProfileMenu(value => !value)}
+              aria-haspopup="menu"
+              aria-expanded={profileMenu}
+              aria-label="Profile menu"
+              className="flex w-full items-center gap-2.5 text-left"
+            >
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-emerald-400/10 text-emerald-300">
                 <Store className="size-4" />
               </span>
               <span className="min-w-0">
@@ -168,8 +196,37 @@ export default function DashboardShell({ children, title, actions }: DashboardSh
                   <span className={`size-1.5 rounded-full ${planStyles.dot}`} /> {planLabel}
                 </span>
               </span>
-              <ChevronDown className="ml-auto size-4 text-slate-500" />
-            </div>
+              <ChevronDown className={`ml-auto size-4 shrink-0 text-slate-500 transition-transform ${profileMenu ? "rotate-180" : ""}`} />
+            </button>
+            {profileMenu && (
+              <div
+                role="menu"
+                className="absolute inset-x-0 bottom-full z-50 mb-2 rounded-xl border border-slate-200 bg-white p-2 shadow-2xl dark:border-white/10 dark:bg-slate-900"
+              >
+                <button
+                  type="button"
+                  role="menuitemcheckbox"
+                  aria-checked={theme === "dark"}
+                  onClick={() => toggleTheme?.()}
+                  className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-xs text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
+                >
+                  {theme === "dark" ? <Moon className="size-4" /> : <Sun className="size-4" />}
+                  <span className="flex-1">{theme === "dark" ? "Dark Mode" : "Light Mode"}</span>
+                  <span
+                    aria-hidden="true"
+                    className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors ${
+                      theme === "dark" ? "bg-indigo-500" : "bg-slate-300"
+                    }`}
+                  >
+                    <span
+                      className={`inline-block size-4 rounded-full bg-white shadow transition-transform ${
+                        theme === "dark" ? "translate-x-[18px]" : "translate-x-0.5"
+                      }`}
+                    />
+                  </span>
+                </button>
+              </div>
+            )}
             {(plan === "free" || plan === "basic") && <div className="my-3 h-px bg-white/[0.07]" />}
             {(plan === "free" || plan === "basic") && (
               <Link
