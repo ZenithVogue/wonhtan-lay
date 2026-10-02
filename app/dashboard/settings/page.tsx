@@ -54,7 +54,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <DashboardShell title="Settings" titleMyanmar="ဆက်တင်များ">
+    <DashboardShell>
       <div className="mb-7 flex items-start justify-between gap-4">
         <div className="min-w-0">
           <p className="dashboard-label">SETTINGS</p>

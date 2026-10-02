@@ -89,7 +89,7 @@ const LINKS = [
 
 export default function HelpPage() {
   return (
-    <DashboardShell title="Help & Support" titleMyanmar="အကူအညီနှင့် လမ်းညွှန်">
+    <DashboardShell>
       <div className="mb-7">
         <p className="dashboard-label">HELP &amp; SUPPORT</p>
         <h2 className="mt-2 font-display text-2xl font-bold tracking-tight text-white sm:text-3xl">

@@ -141,8 +141,6 @@ export default function DashboardPage() {
 
   return (
     <DashboardShell
-      title="Dashboard"
-      titleMyanmar="Dashboard"
       actions={
         <>
               <div className="relative hidden md:block">

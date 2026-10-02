@@ -99,10 +99,7 @@ export default function OrdersPage() {
   };
 
   return (
-    <DashboardShell
-      title="Orders"
-      titleMyanmar="အော်ဒါများ"
-    >
+    <DashboardShell>
           <div className="mb-7 flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
             <div>
               <div className="mb-2 flex items-center gap-2 text-xs text-slate-500">

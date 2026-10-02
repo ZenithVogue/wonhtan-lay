@@ -129,7 +129,7 @@ export default function BotConnections() {
   };
 
   return (
-    <DashboardShell title="Bot Connections" titleMyanmar="Bot ချိတ်ဆက်ရန်">
+    <DashboardShell>
       <div className="mx-auto max-w-6xl px-5 py-8 sm:px-8 sm:py-12">
         <div className="max-w-3xl"><div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-indigo-100 text-indigo-700 ring-1 ring-indigo-200 dark:bg-indigo-400/15 dark:text-indigo-300 dark:ring-indigo-300/15"><Bot className="size-6" /></div><div className="dashboard-label">BOT CONNECTIONS</div><h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">Bot ချိတ်ဆက်ရန် <span className="text-indigo-600 dark:text-indigo-400">(Bot Connections)</span></h2><p className="mt-4 max-w-2xl text-sm leading-7 text-slate-600 dark:text-slate-400">Telegram သို့မဟုတ် Messenger Bot Token ကို ဖြည့်စွက်၍ ဝန်ထမ်းလေးကို စတင် အသုံးပြုပါ။ နည်းပညာအတွေ့အကြုံ မလိုဘဲ အဆင့်သုံးဆင့်နဲ့ စတင်နိုင်ပါတယ်။</p></div>
 

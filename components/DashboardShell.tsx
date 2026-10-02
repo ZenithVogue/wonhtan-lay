@@ -4,7 +4,6 @@ import {
   Bot,
   ChevronDown,
   Crown,
-  ChevronRight,
   CircleHelp,
   ClipboardList,
   FileCheck2,
@@ -32,22 +31,22 @@ const NAV_ITEMS = [
   { label: "Help & Support", burmese: "အကူအညီနှင့် လမ်းညွှန်", icon: LifeBuoy, href: "/dashboard/help" },
 ] as const;
 
-const PATH_TITLES: Record<string, { title: string; myanmar: string }> = {
-  "/dashboard": { title: "Dashboard", myanmar: "Dashboard" },
-  "/dashboard/orders": { title: "Orders", myanmar: "အော်ဒါများ" },
-  "/dashboard/bot-settings": { title: "Bot Connections", myanmar: "Bot ချိတ်ဆက်ရန်" },
-  "/dashboard/bots": { title: "Bot Connections", myanmar: "Bot ချိတ်ဆက်ရန်" },
-  "/dashboard/products": { title: "Products", myanmar: "ပစ္စည်းစာရင်းများ" },
-  "/dashboard/slip-verifier": { title: "Slip Verifier", myanmar: "Slip Verifier" },
-  "/dashboard/help": { title: "Help & Support", myanmar: "အကူအညီနှင့် လမ်းညွှန်" },
+/** Bilingual (Burmese + English) page titles shown in the header. */
+const PATH_TITLES: Record<string, string> = {
+  "/dashboard": "ပင်မစာမျက်နှာ (Dashboard)",
+  "/dashboard/orders": "အော်ဒါများ (Orders)",
+  "/dashboard/bot-settings": "Bot ချိတ်ဆက်ရန် (Bot Connections)",
+  "/dashboard/bots": "Bot ချိတ်ဆက်ရန် (Bot Connections)",
+  "/dashboard/products": "ပစ္စည်းစာရင်းများ (Products)",
+  "/dashboard/slip-verifier": "ငွေလွှဲစလစ် စစ်ဆေးရန် (Slip Verifier)",
+  "/dashboard/settings": "ဆက်တင်များ (Settings)",
+  "/dashboard/help": "အကူအညီနှင့် လမ်းညွှန် (Help & Support)",
 };
 
 type DashboardShellProps = {
   children: React.ReactNode;
-  /** Breadcrumb label shown in the header (auto-derived from the route when omitted). */
+  /** Bilingual page title shown in the header (auto-derived from the route when omitted). */
   title?: string;
-  /** Title shown on small screens (auto-derived from the route when omitted). */
-  titleMyanmar?: string;
   /** Extra content for the right side of the header (search, notifications, …). */
   actions?: React.ReactNode;
 };
@@ -60,7 +59,7 @@ type DashboardShellProps = {
  * button is visible. On mobile the sidebar is a drawer; on desktop it
  * collapses/expands.
  */
-export default function DashboardShell({ children, title, titleMyanmar, actions }: DashboardShellProps) {
+export default function DashboardShell({ children, title, actions }: DashboardShellProps) {
   const pathname = usePathname();
   const [mobileNav, setMobileNav] = useState(false);
   const { account, plan, planLabel } = usePlan();
@@ -88,9 +87,7 @@ export default function DashboardShell({ children, title, titleMyanmar, actions 
   const openSidebar = () => (isDesktop ? setCollapsed(false) : setMobileNav(true));
   const closeSidebar = () => (isDesktop ? setCollapsed(true) : setMobileNav(false));
 
-  const fallback = PATH_TITLES[pathname] ?? { title: "Dashboard", myanmar: "Dashboard" };
-  const headerTitle = title ?? fallback.title;
-  const headerTitleMyanmar = titleMyanmar ?? fallback.myanmar;
+  const headerTitle = title ?? PATH_TITLES[pathname] ?? PATH_TITLES["/dashboard"];
   const isActive = (href: string) =>
     pathname === href ||
     (href !== "/dashboard" && pathname.startsWith(`${href}/`)) ||
@@ -131,8 +128,7 @@ export default function DashboardShell({ children, title, titleMyanmar, actions 
           </div>
 
           <div className="px-4 pt-5">
-            <div className="dashboard-label px-3">WORKSPACE</div>
-            <nav className="mt-3 space-y-1">
+            <nav className="space-y-1">
               {NAV_ITEMS.map(item => {
                 const Icon = item.icon;
                 const active = isActive(item.href);
@@ -208,15 +204,16 @@ export default function DashboardShell({ children, title, titleMyanmar, actions 
                 <Menu className="size-5" />
               </button>
             )}
-            <div className="hidden items-center gap-2 text-xs text-slate-500 sm:flex">
-              <Link href="/dashboard" className="cursor-pointer transition hover:text-indigo-600 dark:hover:text-indigo-400">
-                Workspace
+            {!sidebarOpen && (
+              <Link href="/" className="flex shrink-0 items-center gap-2" aria-label="WonHtan Lay home">
+                <span className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-400 to-emerald-400 shadow-[0_8px_24px_rgba(78,84,220,0.3)]">
+                  <Bot className="size-4 text-white" />
+                </span>
+                <span className="font-display text-[15px] font-bold tracking-tight text-white">WonHtan Lay</span>
               </Link>
-              <ChevronRight className="size-3" />
-              <span className="font-medium text-slate-700 dark:text-slate-300">{headerTitle}</span>
-            </div>
-            <h1 className="font-display text-base font-semibold text-slate-900 sm:hidden dark:text-white">
-              {headerTitleMyanmar}
+            )}
+            <h1 className="hidden min-w-0 truncate border-l border-white/10 pl-3 text-xs font-medium text-slate-300 sm:block">
+              {headerTitle}
             </h1>
           </div>
           <div className="ml-auto flex items-center gap-2.5">
