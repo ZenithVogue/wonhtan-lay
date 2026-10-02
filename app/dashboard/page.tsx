@@ -2,14 +2,12 @@
 
 import { LiveBadge, nextStatus, OrderStatusBadge, TelegramBadge } from "@/components/orders-ui";
 import DashboardShell from "@/components/DashboardShell";
-import ShopSwitcher from "@/components/ShopSwitcher";
 import { usePlan } from "@/hooks/usePlan";
 import { useOrders } from "@/hooks/useOrders";
 import { formatDateTime, formatMMK, initialsOf, isToday, shortOrderId, timeAgo, todayLabel } from "@/lib/format";
 import { type Order } from "@/lib/orders";
 import {
   ArrowUpRight,
-  Bell,
   Bot,
   Check,
   ChevronLeft,
@@ -58,7 +56,6 @@ function downloadCsv(filename: string, rows: Order[]) {
 
 export default function DashboardPage() {
   const [activeFilter, setActiveFilter] = useState<Filter>("All");
-  const [query, setQuery] = useState("");
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [page, setPage] = useState(1);
   const [botsOnline, setBotsOnline] = useState<boolean | null>(null);
@@ -82,13 +79,11 @@ export default function DashboardPage() {
   }, []);
 
   const filteredOrders = useMemo(() => {
-    const needle = query.toLowerCase();
     return orders.filter(order => {
       const matchesFilter = activeFilter === "All" || order.status === activeFilter;
-      const haystack = `${shortOrderId(order.id)} ${order.customer_name ?? ""} ${order.items ?? ""}`.toLowerCase();
-      return matchesFilter && haystack.includes(needle);
+      return matchesFilter;
     });
-  }, [orders, activeFilter, query]);
+  }, [orders, activeFilter]);
 
   const tabCounts = useMemo(() => {
     const counts: Record<Filter, number> = { All: orders.length, Pending: 0, Processing: 0, Completed: 0 };
@@ -140,31 +135,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <DashboardShell
-      actions={
-        <>
-              <div className="relative hidden md:block">
-                <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-500" />
-                <input
-                  value={query}
-                  onChange={event => setQuery(event.target.value)}
-                  className="dashboard-search"
-                  placeholder="Search orders..."
-                  aria-label="Search orders"
-                />
-              </div>
-              <button
-                className="dashboard-icon-button relative"
-                onClick={() => toast("You are all caught up", { description: "No new notification right now." })}
-                aria-label="Notifications"
-              >
-                <Bell className="size-[17px]" />
-                <span className="absolute right-2 top-2 size-1.5 rounded-full bg-emerald-300" />
-              </button>
-              <ShopSwitcher />
-        </>
-      }
-    >
+    <DashboardShell>
           <div className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <div className="mb-2 flex items-center gap-2 text-xs text-slate-500">
@@ -229,16 +200,6 @@ export default function DashboardPage() {
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <div className="relative md:hidden">
-                  <Search className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-slate-500" />
-                  <input
-                    value={query}
-                    onChange={event => setQuery(event.target.value)}
-                    className="dashboard-search dashboard-search-mobile"
-                    placeholder="Search"
-                    aria-label="Search orders"
-                  />
-                </div>
                 <button className="dashboard-filter-button" onClick={handleExport}>
                   <Download className="size-3.5" />
                   <span className="hidden sm:inline">Export</span>
@@ -350,24 +311,23 @@ export default function DashboardPage() {
               {!loading && filteredOrders.length === 0 && (
                 <div className="px-6 py-14 text-center">
                   <Search className="mx-auto size-7 text-slate-600" />
-                  <p className="mt-3 text-sm text-slate-400">No matching orders</p>
+                  <p className="mt-3 text-sm text-slate-400">No orders in this view</p>
                   <button
                     onClick={() => {
-                      setQuery("");
                       setActiveFilter("All");
                     }}
                     className="mt-2 text-xs text-indigo-300 hover:text-indigo-200"
                   >
-                    Clear filters
+                    Show all orders
                   </button>
                 </div>
               )}
             </div>
 
             <div className="flex items-center justify-between border-t border-white/[0.08] px-5 py-4 sm:px-6">
-              <span className="text-[11px] text-slate-600">
+              <span className="text-xs text-slate-400">
                 Showing{" "}
-                <span className="text-slate-400">
+                <span className="font-semibold text-slate-200">
                   {filteredOrders.length ? (safePage - 1) * PAGE_SIZE + 1 : 0}-
                   {Math.min(safePage * PAGE_SIZE, filteredOrders.length)}
                 </span>{" "}

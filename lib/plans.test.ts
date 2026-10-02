@@ -2,6 +2,9 @@ import { describe, expect, it } from "vitest";
 import {
   BILLING_TIERS,
   formatPlanPrice,
+  formatPlanPriceFor,
+  parseBillingCycle,
+  planUnitFor,
   isPlan,
   parseCheckoutPlan,
   PLAN_META,
@@ -52,5 +55,21 @@ describe("plan catalog", () => {
     expect(isPlan("basic")).toBe(true);
     expect(isPlan("startup")).toBe(false);
     expect(isPlan(null)).toBe(false);
+  });
+});
+
+describe("billing cycles", () => {
+  it("parses the cycle, defaulting to monthly", () => {
+    expect(parseBillingCycle("yearly")).toBe("yearly");
+    expect(parseBillingCycle("anything")).toBe("monthly");
+    expect(parseBillingCycle(null)).toBe("monthly");
+  });
+
+  it("charges 10 months for a year and keeps Enterprise custom", () => {
+    expect(formatPlanPriceFor("pro", "monthly")).toBe("15,000");
+    expect(formatPlanPriceFor("pro", "yearly")).toBe("150,000");
+    expect(formatPlanPriceFor("enterprise", "yearly")).toBe("Custom");
+    expect(planUnitFor("basic", "yearly")).toBe("MMK / နှစ်");
+    expect(planUnitFor("enterprise", "monthly")).toBe("");
   });
 });

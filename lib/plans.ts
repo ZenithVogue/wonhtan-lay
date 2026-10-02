@@ -88,3 +88,29 @@ export function formatPlanPrice(plan: Plan): string {
 export function parseCheckoutPlan(value: string | null | undefined): "basic" | "pro" {
   return typeof value === "string" && value.trim().toLowerCase() === "basic" ? "basic" : "pro";
 }
+
+export type BillingCycle = "monthly" | "yearly";
+
+/** Yearly billing = 10 × monthly price (2 months free). */
+export const YEARLY_MONTHS_CHARGED = 10;
+
+export function parseBillingCycle(value: string | null | undefined): BillingCycle {
+  return value === "yearly" ? "yearly" : "monthly";
+}
+
+/** Price in MMK for the cycle, or null for custom pricing. */
+export function planPriceFor(plan: Plan, cycle: BillingCycle): number | null {
+  const monthly = PLAN_META[plan].priceMMK;
+  if (monthly === null) return null;
+  return cycle === "yearly" ? monthly * YEARLY_MONTHS_CHARGED : monthly;
+}
+
+export function formatPlanPriceFor(plan: Plan, cycle: BillingCycle): string {
+  const price = planPriceFor(plan, cycle);
+  return price === null ? "Custom" : price.toLocaleString("en-US");
+}
+
+export function planUnitFor(plan: Plan, cycle: BillingCycle): string {
+  if (PLAN_META[plan].priceMMK === null) return "";
+  return cycle === "yearly" ? "MMK / နှစ်" : "MMK / လ";
+}

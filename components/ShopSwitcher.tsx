@@ -5,6 +5,7 @@ import { addShop, getActiveShop, setActiveShop, updateShop, type Shop } from "@/
 import { Check, ChevronDown, ImagePlus, Phone, Plus, QrCode, Settings2, Store, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { toast } from "sonner";
+import { OPEN_SHOP_MODAL_EVENT, type OpenShopModalDetail } from "@/lib/shop-events";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 
 type ModalMode = { kind: "create"; first: boolean } | { kind: "edit"; shop: Shop };
@@ -61,6 +62,22 @@ export default function ShopSwitcher() {
       document.removeEventListener("keydown", onKey);
     };
   }, [menuOpen]);
+
+  // Allow the global command palette to open the shop modal.
+  useEffect(() => {
+    const onOpen = (event: Event) => {
+      const detail = (event as CustomEvent<OpenShopModalDetail>).detail;
+      const current = getActiveShop(account);
+      if (detail.kind === "create") {
+        setModal({ kind: "create", first: !current });
+        return;
+      }
+      const target = (detail.shopId ? account?.shops?.find(item => item.id === detail.shopId) : null) ?? current;
+      setModal(target ? { kind: "edit", shop: target } : { kind: "create", first: true });
+    };
+    window.addEventListener(OPEN_SHOP_MODAL_EVENT, onOpen);
+    return () => window.removeEventListener(OPEN_SHOP_MODAL_EVENT, onOpen);
+  }, [account]);
 
   const openModal = (mode: ModalMode) => {
     setMenuOpen(false);

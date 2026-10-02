@@ -2,6 +2,7 @@
 
 import { LiveBadge, nextStatus, OrderStatusBadge, TelegramBadge } from "@/components/orders-ui";
 import DashboardShell from "@/components/DashboardShell";
+import { useSearchHandoff } from "@/hooks/useSearchHandoff";
 import { useOrders } from "@/hooks/useOrders";
 import { formatDateTime, formatMMK, initialsOf, shortOrderId, timeAgo } from "@/lib/format";
 import { type Order } from "@/lib/orders";
@@ -49,6 +50,11 @@ export default function OrdersPage() {
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<Filter>("All");
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+
+  useSearchHandoff("orders", term => {
+    setQuery(term);
+    setStatus("All");
+  });
 
   const { orders, loading, error, connection, lastUpdated, updateStatus, sendTestOrder } = useOrders();
 

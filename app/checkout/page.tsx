@@ -1,7 +1,7 @@
 "use client";
 
 import { getAccount, unlockPlan } from "@/lib/account";
-import { formatPlanPrice, parseCheckoutPlan, PLAN_META } from "@/lib/plans";
+import { formatPlanPriceFor, parseBillingCycle, parseCheckoutPlan, PLAN_META } from "@/lib/plans";
 import { ArrowLeft, BadgeCheck, Check, Crown, Loader2, ShieldCheck, Smartphone, Wallet, Zap } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -19,6 +19,7 @@ function CheckoutForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const target = parseCheckoutPlan(searchParams.get("plan"));
+  const cycle = parseBillingCycle(searchParams.get("cycle"));
   const meta = PLAN_META[target];
   const isPro = target === "pro";
 
@@ -57,7 +58,7 @@ function CheckoutForm() {
   }
 
   const active = METHODS[method];
-  const price = `${formatPlanPrice(target)} MMK`;
+  const price = `${formatPlanPriceFor(target, cycle)} MMK`;
   const accent = isPro ? "amber" : "sky";
 
   const confirmPaid = async () => {
@@ -125,7 +126,7 @@ function CheckoutForm() {
             }`}
           >
             <span className={`text-xs font-semibold ${accent === "amber" ? "text-amber-200" : "text-sky-200"}`}>
-              {meta.name} Plan · ၁ လ
+              {meta.name} Plan · {cycle === "yearly" ? "၁ နှစ်" : "၁ လ"}
             </span>
             <span className={`font-display text-lg font-bold ${accent === "amber" ? "text-amber-200" : "text-sky-200"}`}>
               {price}

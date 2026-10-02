@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Bell,
   Bot,
   ChevronDown,
   Crown,
@@ -11,6 +12,7 @@ import {
   LifeBuoy,
   Menu,
   Moon,
+  Search,
   Settings,
   ShoppingBag,
   Store,
@@ -22,7 +24,9 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { usePlan } from "@/hooks/usePlan";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import CommandPalette from "@/components/CommandPalette";
 import ShopSwitcher from "@/components/ShopSwitcher";
+import { toast } from "sonner";
 
 const NAV_ITEMS = [
   { label: "Dashboard", burmese: "ပင်မစာမျက်နှာ", icon: LayoutDashboard, href: "/dashboard" },
@@ -69,6 +73,21 @@ export default function DashboardShell({ children, title, actions }: DashboardSh
   const [collapsed, setCollapsed] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const [profileMenu, setProfileMenu] = useState(false);
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  const [shortcutLabel, setShortcutLabel] = useState("Ctrl K");
+
+  // Ctrl+K / ⌘+K toggles the global search palette from anywhere in the dashboard.
+  useEffect(() => {
+    setShortcutLabel(/Mac|iPhone|iPad/i.test(navigator.platform) ? "⌘K" : "Ctrl K");
+    const onKey = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        setPaletteOpen(value => !value);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
   const profileRef = useRef<HTMLDivElement>(null);
 
   // Close the profile dropdown on outside click / Escape.
@@ -253,6 +272,8 @@ export default function DashboardShell({ children, title, actions }: DashboardSh
         />
       )}
 
+      <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
+
       <div className="dashboard-main min-w-0">
         <header className="dashboard-header">
           <div className="flex min-w-0 items-center gap-3">
@@ -273,10 +294,36 @@ export default function DashboardShell({ children, title, actions }: DashboardSh
               {headerTitle}
             </h1>
           </div>
-          <div className="ml-auto flex items-center gap-2.5">
-            {actions ?? (
-              <ShopSwitcher />
-            )}
+          <div className="ml-auto flex items-center gap-3 sm:gap-4">
+            {actions}
+            <button
+              type="button"
+              onClick={() => setPaletteOpen(true)}
+              className="dashboard-search relative hidden items-center gap-2 text-left text-slate-500 md:flex"
+              aria-label="Search (Ctrl+K)"
+            >
+              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2" />
+              <span className="flex-1 truncate">ရှာဖွေရန်...</span>
+              <kbd className="rounded border border-white/10 px-1.5 py-0.5 font-mono text-[10px] text-slate-500">{shortcutLabel}</kbd>
+            </button>
+            <button
+              type="button"
+              onClick={() => setPaletteOpen(true)}
+              className="dashboard-icon-button md:hidden"
+              aria-label="Search"
+            >
+              <Search className="size-[17px]" />
+            </button>
+            <button
+              type="button"
+              className="dashboard-icon-button relative"
+              onClick={() => toast("You are all caught up", { description: "No new notification right now." })}
+              aria-label="Notifications"
+            >
+              <Bell className="size-[17px]" />
+              <span className="absolute right-2 top-2 size-1.5 rounded-full bg-emerald-300" />
+            </button>
+            <ShopSwitcher />
           </div>
         </header>
 

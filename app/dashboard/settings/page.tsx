@@ -3,7 +3,7 @@
 import DashboardShell from "@/components/DashboardShell";
 import { useAccount } from "@/hooks/usePlan";
 import { saveAccount } from "@/lib/account";
-import { BILLING_TIERS, formatPlanPrice, PLAN_META, PLAN_RANK, type Plan } from "@/lib/plans";
+import { BILLING_TIERS, formatPlanPriceFor, PLAN_META, PLAN_RANK, planUnitFor, type BillingCycle, type Plan } from "@/lib/plans";
 import { ArrowUpRight, BadgeCheck, Building2, Check, CreditCard, Crown, LogOut, Phone, Store, UserRound, Zap } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -18,6 +18,7 @@ export default function SettingsPage() {
   const router = useRouter();
   const [tab, setTab] = useState<Tab>("billing");
   const account = useAccount();
+  const [cycle, setCycle] = useState<BillingCycle>("monthly");
   const plan: Plan = account?.plan ?? "free";
   const currentRank = PLAN_RANK[plan];
 
@@ -36,7 +37,7 @@ export default function SettingsPage() {
     if (tier === "free") return; // Not offered on the billing table.
     if (PLAN_RANK[tier] > currentRank) {
       // Upgrade — always goes through KPay / WavePay checkout.
-      router.push(`/checkout?plan=${tier}`);
+      router.push(`/checkout?plan=${tier}&cycle=${cycle}`);
       return;
     }
     // Downgrade (demo): applies immediately, no proration in demo mode.
@@ -57,8 +58,7 @@ export default function SettingsPage() {
     <DashboardShell>
       <div className="mb-7 flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <p className="dashboard-label">SETTINGS</p>
-          <h2 className="mt-2 font-display text-2xl font-bold tracking-tight text-white sm:text-3xl">
+          <h2 className="font-display text-2xl font-bold tracking-tight text-white sm:text-3xl">
             ဆက်တင်များ <span className="text-indigo-300">(Settings)</span>
           </h2>
           <p className="mt-2 text-sm text-slate-500">အကောင့်အချက်အလက်နဲ့ Subscription Plan ကို စီမံပါ။</p>
@@ -118,6 +118,44 @@ export default function SettingsPage() {
             </p>
           </div>
 
+          <div className="mb-5 flex flex-col items-center gap-2">
+            <div
+              role="radiogroup"
+              aria-label="Billing cycle"
+              className="inline-flex gap-1 rounded-xl border border-white/10 bg-white/[0.03] p-1"
+            >
+              {(
+                [
+                  { id: "monthly", label: "လစဉ် (Monthly)" },
+                  { id: "yearly", label: "နှစ်စဉ် (Yearly)" },
+                ] as const
+              ).map(option => (
+                <button
+                  key={option.id}
+                  type="button"
+                  role="radio"
+                  aria-checked={cycle === option.id}
+                  onClick={() => setCycle(option.id)}
+                  className={`flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-semibold transition ${
+                    cycle === option.id
+                      ? "bg-indigo-500/20 text-indigo-200 shadow-[inset_0_0_0_1px_rgba(129,140,248,0.35)]"
+                      : "text-slate-500 hover:text-white"
+                  }`}
+                >
+                  {option.label}
+                  {option.id === "yearly" && (
+                    <span className="rounded-full bg-emerald-400/15 px-2 py-0.5 text-[10px] font-bold text-emerald-300">
+                      ၂ လ အခမဲ့
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+            {cycle === "yearly" && (
+              <p className="text-[11px] text-slate-500">နှစ်စဉ်ပေးချေရင် ၁၂ လအစား ၁၀ လစာသာ ပေးရပါတယ်။</p>
+            )}
+          </div>
+
           <div className="grid gap-4 lg:grid-cols-3">
             {BILLING_TIERS.map(tier => {
               const meta = PLAN_META[tier];
@@ -150,9 +188,9 @@ export default function SettingsPage() {
                   <p className="mt-0.5 text-xs text-slate-500">{meta.tagline}</p>
                   <div className="mt-4 flex items-baseline gap-1.5">
                     <span className="font-display text-3xl font-bold tracking-tight text-white">
-                      {formatPlanPrice(tier)}
+                      {formatPlanPriceFor(tier, cycle)}
                     </span>
-                    {meta.unit && <span className="text-xs text-slate-500">{meta.unit}</span>}
+                    {planUnitFor(tier, cycle) && <span className="text-xs text-slate-500">{planUnitFor(tier, cycle)}</span>}
                   </div>
                   <div className="my-5 h-px bg-white/[0.08]" />
                   <ul className="flex-1 space-y-3">
