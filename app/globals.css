@@ -45,7 +45,7 @@
   --secondary: oklch(0.96 0.008 250);
   --secondary-foreground: oklch(0.3 0.025 250);
   --muted: oklch(0.95 0.008 250);
-  --muted-foreground: oklch(0.47 0.03 250);
+  --muted-foreground: oklch(0.38 0.03 250);
   --accent: oklch(0.95 0.008 250);
   --accent-foreground: oklch(0.18 0.025 250);
   --destructive: oklch(0.62 0.22 25);
@@ -117,8 +117,8 @@ button:not(:disabled), a[href] { cursor: pointer; }
 .light-mode .page-surface .text-slate-100 { color: #142033; }
 .light-mode .page-surface .text-slate-200 { color: #26364d; }
 .light-mode .page-surface .text-slate-300 { color: #40516a; }
-.light-mode .page-surface .text-slate-400 { color: #60708a; }
-.light-mode .page-surface .text-slate-500 { color: #728198; }
+.light-mode .page-surface .text-slate-400 { color: #475569; }
+.light-mode .page-surface .text-slate-500 { color: #4b5b72; }
 .light-mode .page-surface .border-white\/\[0\.08\] { border-color: rgba(15,23,42,0.08); }
 .light-mode .page-surface .border-white\/\[0\.1\] { border-color: rgba(15,23,42,0.1); }
 .light-mode .page-surface .bg-white\/\[0\.035\] { background: rgba(255,255,255,0.72); }
@@ -138,8 +138,11 @@ button:not(:disabled), a[href] { cursor: pointer; }
 .dashboard-header { position: sticky; top: 0; z-index: 30; display: flex; height: 72px; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); background: rgba(7,17,31,0.84); padding: 0 32px; backdrop-filter: blur(18px); }
 .dashboard-content { margin: 0 auto; max-width: 1400px; padding: 34px 32px 64px; }
 .dashboard-label { color: #56667d; font-size: 9px; font-weight: 700; letter-spacing: .16em; }
-.dashboard-nav-item { display: flex; width: 100%; align-items: center; gap: 11px; border-radius: 12px; padding: 11px 12px; color: #718199; text-align: left; transition: 180ms ease; }
-.dashboard-nav-item:hover { background: rgba(255,255,255,0.04); color: #dbe5f2; }
+.dashboard-nav-item { display: flex; width: 100%; align-items: center; gap: 11px; border-radius: 12px; padding: 11px 12px; color: #cbd5e1; text-align: left; transition: 180ms ease; }
+.dashboard-nav-item:hover { background: rgba(255,255,255,0.07); color: #ffffff; text-shadow: 0 0 14px rgba(165,180,252,0.55); }
+.dashboard-nav-item:hover svg { filter: drop-shadow(0 0 5px rgba(165,180,252,0.6)); }
+.dashboard-nav-sub { color: #cbd5e1; transition: color 180ms ease; }
+.dashboard-nav-item:hover .dashboard-nav-sub { color: #ffffff; }
 .dashboard-nav-active { background: linear-gradient(90deg, rgba(99,102,241,0.18), rgba(99,102,241,0.05)); color: #c7d2fe; box-shadow: inset 3px 0 0 #818cf8; }
 .dashboard-nav-active svg { color: #a5b4fc; }
 .dashboard-close, .dashboard-menu { display: inline-flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,.1); border-radius: 10px; color: #94a3b8; background: rgba(255,255,255,.035); }
@@ -236,14 +239,14 @@ html:not(.dark) .page-surface .feature-card .text-slate-400,
 html:not(.dark) .page-surface .pricing-card .text-slate-400 { color: #475569; }
 html:not(.dark) .page-surface footer { border-color: #e2e8f0; background: #f8fafc; }
 html:not(.dark) .page-surface footer .text-white { color: #0f172a; }
-html:not(.dark) .page-surface footer .social-button { border-color: #e2e8f0; background: #ffffff; color: #64748b; }
+html:not(.dark) .page-surface footer .social-button { border-color: #e2e8f0; background: #ffffff; color: #475569; }
 html:not(.dark) .page-surface footer .social-button:hover { background: #f1f5f9; color: #0f172a; }
 html:not(.dark) .page-surface .border-white\/\[0\.08\],
 html:not(.dark) .page-surface .border-white\/\[0\.1\],
 html:not(.dark) .page-surface .border-white\/\[0\.12\] { border-color: #e2e8f0; }
-html:not(.dark) .page-surface .text-slate-400 { color: #64748b; }
-html:not(.dark) .page-surface .text-slate-500 { color: #64748b; }
-html:not(.dark) .page-surface .text-slate-600 { color: #475569; }
+html:not(.dark) .page-surface .text-slate-400 { color: #475569; }
+html:not(.dark) .page-surface .text-slate-500 { color: #475569; }
+html:not(.dark) .page-surface .text-slate-600 { color: #334155; }
 
 /* Dashboard and bot settings use the same light/dark contract. */
 html:not(.dark) .dashboard-shell,
@@ -254,15 +257,15 @@ html:not(.dark) .bot-settings-shell .dashboard-header { border-color: #e2e8f0; b
 /* Keep the always-visible hamburger readable in light mode. */
 html:not(.dark) .dashboard-shell .dashboard-menu { border-color: #e2e8f0; background: #f1f5f9; color: #475569; }
 html:not(.dark) .dashboard-shell .dashboard-menu:hover { background: #e2e8f0; color: #0f172a; }
-html:not(.dark) .dashboard-shell .dashboard-nav-item { color: #64748b; }
-html:not(.dark) .dashboard-shell .dashboard-nav-item:hover { background: #f1f5f9; color: #1e293b; }
+html:not(.dark) .dashboard-shell .dashboard-nav-item { color: #334155; }
+html:not(.dark) .dashboard-shell .dashboard-nav-item:hover { background: #f1f5f9; color: #0f172a; text-shadow: none; }
 html:not(.dark) .dashboard-shell .dashboard-nav-active { background: #eef2ff; color: #4338ca; box-shadow: inset 3px 0 0 #6366f1; }
 html:not(.dark) .dashboard-shell .dashboard-nav-active svg { color: #4f46e5; }
-html:not(.dark) .dashboard-shell .dashboard-label { color: #64748b; }
+html:not(.dark) .dashboard-shell .dashboard-label { color: #475569; }
 html:not(.dark) .dashboard-shell .dashboard-stat-card,
 html:not(.dark) .dashboard-shell .dashboard-panel { border-color: #e2e8f0; background: #f8fafc; }
 html:not(.dark) .dashboard-shell .dashboard-stat-card:hover { background: #ffffff; border-color: #cbd5e1; }
-html:not(.dark) .dashboard-shell .dashboard-table th { border-color: #e2e8f0; color: #64748b; }
+html:not(.dark) .dashboard-shell .dashboard-table th { border-color: #e2e8f0; color: #475569; }
 html:not(.dark) .dashboard-shell .dashboard-table td { border-color: #e2e8f0; }
 html:not(.dark) .dashboard-shell .dashboard-table tbody tr:hover { background: #f1f5f9; }
 html:not(.dark) .dashboard-shell .dashboard-search,
@@ -281,13 +284,13 @@ html:not(.dark) .bot-settings-shell .text-slate-100 { color: #0f172a; }
 html:not(.dark) .dashboard-shell .text-slate-200,
 html:not(.dark) .bot-settings-shell .text-slate-200 { color: #334155; }
 html:not(.dark) .dashboard-shell .text-slate-300,
-html:not(.dark) .bot-settings-shell .text-slate-300 { color: #475569; }
+html:not(.dark) .bot-settings-shell .text-slate-300 { color: #334155; }
 html:not(.dark) .dashboard-shell .text-slate-400,
-html:not(.dark) .bot-settings-shell .text-slate-400 { color: #64748b; }
+html:not(.dark) .bot-settings-shell .text-slate-400 { color: #475569; }
 html:not(.dark) .dashboard-shell .text-slate-500,
-html:not(.dark) .bot-settings-shell .text-slate-500 { color: #64748b; }
+html:not(.dark) .bot-settings-shell .text-slate-500 { color: #475569; }
 html:not(.dark) .dashboard-shell .text-slate-600,
-html:not(.dark) .bot-settings-shell .text-slate-600 { color: #64748b; }
+html:not(.dark) .bot-settings-shell .text-slate-600 { color: #334155; }
 html:not(.dark) .dashboard-shell .border-white\/\[0\.08\],
 html:not(.dark) .dashboard-shell .border-white\/\[0\.09\],
 html:not(.dark) .dashboard-shell .border-white\/\[0\.1\],
@@ -298,7 +301,7 @@ html:not(.dark) .dashboard-shell .bg-white\/\[0\.035\],
 html:not(.dark) .bot-settings-shell .bg-white\/\[0\.035\] { background: #f8fafc; }
 html:not(.dark) .dashboard-shell .dashboard-sidebar .bg-white\/\[0\.035\] { background: #ffffff; }
 html:not(.dark) .bot-settings-shell .bot-token-input { border-color: #cbd5e1; background: #ffffff; color: #1e293b; }
-html:not(.dark) .bot-settings-shell .bot-token-input::placeholder { color: #94a3b8; }
+html:not(.dark) .bot-settings-shell .bot-token-input::placeholder { color: #64748b; }
 html:not(.dark) .bot-settings-shell .rounded-2xl.border-white\/\[0\.09\] { border-color: #e2e8f0; background: #f8fafc; }
 html:not(.dark) .bot-settings-shell .rounded-xl.border-indigo-300\/15 { border-color: #c7d2fe; background: #eef2ff; }
 html:not(.dark) .bot-settings-shell .bg-amber-300\/\[0\.06\] { background: #fffbeb; }
@@ -330,8 +333,8 @@ html:not(.dark) .bot-settings-shell .text-amber-300 { color: #b45309; }
 html:not(.dark) .dashboard-shell .text-amber-100\/70,
 html:not(.dark) .bot-settings-shell .text-amber-100\/70 { color: #92400e; }
 html:not(.dark) .dashboard-shell .text-sky-400 { color: #0284c7; }
-html:not(.dark) .dashboard-shell .text-slate-400 { color: #64748b; }
-html:not(.dark) .dashboard-shell .text-slate-500 { color: #64748b; }
+html:not(.dark) .dashboard-shell .text-slate-400 { color: #475569; }
+html:not(.dark) .dashboard-shell .text-slate-500 { color: #475569; }
 html:not(.dark) .dashboard-shell .bg-indigo-400\/10 { background: #eef2ff; }
 html:not(.dark) .dashboard-shell .bg-emerald-400\/10 { background: #ecfdf5; }
 html:not(.dark) .dashboard-shell .bg-amber-400\/10 { background: #fffbeb; }
@@ -386,3 +389,18 @@ html:not(.dark) .dashboard-shell .border-sky-400\/20 { border-color: #bae6fd; }
   .waybill-modal > div:nth-child(2) { max-height: none !important; overflow: visible !important; padding: 0 !important; }
   .waybill-modal > div:nth-child(2) > div { border: 0 !important; box-shadow: none !important; }
 }
+
+/* Light-mode contrast for table pagination controls. */
+html:not(.dark) .dashboard-shell .pagination-button { border-color: #cbd5e1; color: #334155; }
+html:not(.dark) .dashboard-shell .pagination-button:hover:not(:disabled) { background: #e2e8f0; color: #0f172a; }
+html:not(.dark) .dashboard-shell .pagination-active { border-color: #6366f1; background: #eef2ff; color: #3730a3; }
+
+/* Sidebar "Upgrade to Pro": subtle in dark mode, solid high-contrast amber in light mode. */
+.upgrade-pro-button { background: rgba(252,211,77,0.15); color: #fde68a; font-weight: 600; transition: 180ms ease; }
+.upgrade-pro-button:hover { background: rgba(252,211,77,0.25); }
+html:not(.dark) .dashboard-shell .upgrade-pro-button { background: #fbbf24; color: #0f172a; font-weight: 700; box-shadow: 0 1px 2px rgba(15,23,42,0.18); }
+html:not(.dark) .dashboard-shell .upgrade-pro-button:hover { background: #f59e0b; }
+
+/* Active nav item: its sub-label follows the active colour (declared last so it wins in both themes). */
+html .dashboard-shell .dashboard-nav-active .dashboard-nav-sub { color: inherit; opacity: 0.8; text-shadow: none; }
+html .dashboard-shell .dashboard-nav-active:hover { text-shadow: none; }

@@ -198,7 +198,7 @@ export default function DashboardShell({ children, title, actions }: DashboardSh
                     <Icon className="size-[17px] shrink-0" />
                     <span className="min-w-0 flex-1 text-left">
                       <span className="block text-[13px] font-medium">{item.label}</span>
-                      {lang === "my" && <span className="mt-0.5 block text-[10px] text-slate-500">{t(item.key)}</span>}
+                      {lang === "my" && <span className="dashboard-nav-sub mt-0.5 block text-[10px]">{t(item.key)}</span>}
                     </span>
                     {item.badge && (
                       <span className="rounded-md bg-indigo-400/15 px-1.5 py-0.5 text-[10px] font-semibold text-indigo-300">
@@ -229,7 +229,7 @@ export default function DashboardShell({ children, title, actions }: DashboardSh
               {(plan === "free" || plan === "basic") && (
                 <Link
                   href="/dashboard/settings?tab=billing"
-                  className="flex h-9 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-lg bg-amber-300/15 px-2 text-[11px] font-semibold text-amber-200 transition hover:bg-amber-300/25"
+                  className="upgrade-pro-button flex h-9 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-lg px-2 text-[11px]"
                 >
                   <Crown className="size-3.5 shrink-0" /> <span className="truncate">{t("shell.upgrade")}</span>
                 </Link>
