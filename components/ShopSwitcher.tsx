@@ -4,7 +4,7 @@ import { useAccount } from "@/hooks/usePlan";
 import { addShop, getActiveShop, setActiveShop, updateShop, type Shop } from "@/lib/account";
 import { Check, ChevronDown, ImagePlus, Phone, Plus, QrCode, Settings2, Store, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { OPEN_SHOP_MODAL_EVENT, type OpenShopModalDetail } from "@/lib/shop-events";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 

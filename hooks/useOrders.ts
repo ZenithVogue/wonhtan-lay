@@ -172,5 +172,21 @@ export function useOrders(pollIntervalMs = 5000) {
     return order;
   }, []);
 
-  return { orders, loading, error, connection, lastUpdated, refresh, updateStatus, sendTestOrder };
+  const createOrder = useCallback(async (input: { customer_name?: string; items: string; total_amount: number }) => {
+    const response = await fetch("/api/orders", {
+      method: "POST",
+      headers: { "content-type": "application/json", accept: "application/json" },
+      body: JSON.stringify(input),
+    });
+    const body = (await response.json().catch(() => ({}))) as { ok?: boolean; order?: Order; description?: string };
+    if (!response.ok || body.ok !== true || !body.order) {
+      throw new Error(body.description || `Create order failed with HTTP ${response.status}.`);
+    }
+    const order = body.order;
+    setOrders(current => (current.some(o => o.id === order.id) ? current : [order, ...current]));
+    setLastUpdated(new Date());
+    return order;
+  }, []);
+
+  return { orders, loading, error, connection, lastUpdated, refresh, updateStatus, sendTestOrder, createOrder };
 }

@@ -10,7 +10,7 @@ import { ArrowUpRight, BadgeCheck, Building2, Check, CreditCard, Crown, Language
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 
 type Tab = "billing" | "profile";
 

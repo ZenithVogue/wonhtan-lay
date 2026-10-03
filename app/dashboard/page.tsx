@@ -2,6 +2,8 @@
 
 import { LiveBadge, nextStatus, OrderStatusBadge, TelegramBadge } from "@/components/orders-ui";
 import DashboardShell from "@/components/DashboardShell";
+import EmptyState from "@/components/EmptyState";
+import { downloadOrdersCsv } from "@/lib/orders-export";
 import { usePlan } from "@/hooks/usePlan";
 import { useOrders } from "@/hooks/useOrders";
 import { formatDateTime, formatMMK, initialsOf, isToday, shortOrderId, timeAgo, todayLabel } from "@/lib/format";
@@ -23,36 +25,12 @@ import {
   Zap,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 
 type Filter = "All" | "Pending" | "Processing" | "Completed";
 const FILTERS: Filter[] = ["All", "Pending", "Processing", "Completed"];
 const PAGE_SIZE = 10;
 
-
-function downloadCsv(filename: string, rows: Order[]) {
-  const header = ["Order ID", "Customer", "Telegram ID", "Items", "Total MMK", "Status", "Created"];
-  const lines = rows.map(order =>
-    [
-      shortOrderId(order.id),
-      order.customer_name ?? "",
-      order.customer_telegram_id ?? "",
-      order.items ?? "",
-      order.total_amount,
-      order.status,
-      order.created_at,
-    ]
-      .map(cell => `"${String(cell).replaceAll('"', '""')}"`)
-      .join(","),
-  );
-  const csv = [header.join(","), ...lines].join("\n");
-  const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
-  const anchor = document.createElement("a");
-  anchor.href = url;
-  anchor.download = filename;
-  anchor.click();
-  URL.revokeObjectURL(url);
-}
 
 export default function DashboardPage() {
   const [activeFilter, setActiveFilter] = useState<Filter>("All");
@@ -130,7 +108,7 @@ export default function DashboardPage() {
   };
 
   const handleExport = () => {
-    downloadCsv("wonhtan-lay-orders.csv", filteredOrders);
+    downloadOrdersCsv("wonhtan-lay-orders.csv", filteredOrders);
     toast("CSV export ပြီးပါပြီ", { description: `${filteredOrders.length} orders ကို download လုပ်လိုက်ပါပြီ။` });
   };
 
@@ -308,19 +286,23 @@ export default function DashboardPage() {
                   <p className="text-sm text-slate-400">Loading orders…</p>
                 </div>
               )}
-              {!loading && filteredOrders.length === 0 && (
-                <div className="px-6 py-14 text-center">
-                  <Search className="mx-auto size-7 text-slate-600" />
-                  <p className="mt-3 text-sm text-slate-400">No orders in this view</p>
-                  <button
-                    onClick={() => {
-                      setActiveFilter("All");
-                    }}
-                    className="mt-2 text-xs text-indigo-300 hover:text-indigo-200"
-                  >
-                    Show all orders
-                  </button>
-                </div>
+              {!loading && orders.length === 0 && (
+                <EmptyState
+                  compact
+                  icon={ClipboardList}
+                  title="ဒီနေ့ အော်ဒါ မရှိသေးပါ"
+                  description={botsOnline ? "Customer တွေ Bot ကနေ မှာယူတာနဲ့ ဒီမှာ ချက်ချင်းပေါ်လာပါမယ်။" : "Telegram Bot ချိတ်ဆက်ပြီးရင် customer အော်ဒါတွေ ဒီမှာ အလိုအလျောက် ဝင်လာပါမယ်။"}
+                  primary={botsOnline ? { label: "+ Manual အော်ဒါ ဖန်တီးရန်", href: "/dashboard/orders" } : { label: "Bot အား Telegram နှင့် ချိတ်ဆက်ရန်", href: "/dashboard/bot-settings" }}
+                  secondary={botsOnline ? undefined : { label: "+ Manual အော်ဒါ ဖန်တီးရန်", href: "/dashboard/orders" }}
+                />
+              )}
+              {!loading && orders.length > 0 && filteredOrders.length === 0 && (
+                <EmptyState
+                  compact
+                  icon={Search}
+                  title="ဒီ view မှာ အော်ဒါမရှိပါ"
+                  primary={{ label: "အော်ဒါအားလုံး ပြရန်", onClick: () => setActiveFilter("All") }}
+                />
               )}
             </div>
 

@@ -2,7 +2,7 @@
 
 import { FormEvent, ReactNode, useEffect, useState } from "react";
 import { ArrowRight, Bot, Check, CircleHelp, ExternalLink, Info, KeyRound, Link2, Loader2, MessageCircle, Send, ShieldCheck, Unlink, Webhook } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import DashboardShell from "@/components/DashboardShell";
 
 const tokenPattern = /^\d{7,12}:[A-Za-z0-9_-]{20,}$/;

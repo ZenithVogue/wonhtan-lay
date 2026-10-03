@@ -6,7 +6,7 @@ import { ArrowLeft, BadgeCheck, Check, Crown, Loader2, ShieldCheck, Smartphone, 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 
 type Method = "kpay" | "wave";
 

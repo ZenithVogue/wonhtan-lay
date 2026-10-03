@@ -3,6 +3,7 @@
 import {
   Bell,
   Bot,
+  Plus,
   Crown,
   CircleHelp,
   ClipboardList,
@@ -22,12 +23,13 @@ import Link from "next/link";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import type { TranslationKey } from "@/lib/i18n";
+import { sendQuickAction, type QuickAction } from "@/lib/quick-action";
 import { usePlan } from "@/hooks/usePlan";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import CommandPalette from "@/components/CommandPalette";
 import ShopSwitcher from "@/components/ShopSwitcher";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 
 const NAV_ITEMS: { key: TranslationKey; label: string; icon: typeof Bot; href: string; badge?: string }[] = [
   { key: "nav.dashboard", label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
@@ -69,6 +71,8 @@ type DashboardShellProps = {
  */
 export default function DashboardShell({ children, title, actions }: DashboardShellProps) {
   const pathname = usePathname();
+  const router = useRouter();
+  const [quickMenu, setQuickMenu] = useState(false);
   const [mobileNav, setMobileNav] = useState(false);
   const { account, plan, planLabel } = usePlan();
   const [collapsed, setCollapsed] = useState(false);
@@ -100,6 +104,33 @@ export default function DashboardShell({ children, title, actions }: DashboardSh
     query.addEventListener("change", sync);
     return () => query.removeEventListener("change", sync);
   }, []);
+
+  // Close the "+ New" menu on outside click / Escape.
+  useEffect(() => {
+    if (!quickMenu) return;
+    const onPointerDown = (event: PointerEvent) => {
+      if (!(event.target as Element | null)?.closest?.("[data-quick-menu]")) setQuickMenu(false);
+    };
+    const onKey = (event: KeyboardEvent) => event.key === "Escape" && setQuickMenu(false);
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [quickMenu]);
+
+  const runQuick = (target: "add-product" | "create-order" | "verify-slip") => {
+    setQuickMenu(false);
+    if (target === "verify-slip") {
+      router.push("/dashboard/slip-verifier");
+      return;
+    }
+    const action: QuickAction = target;
+    const href = target === "add-product" ? "/dashboard/products" : "/dashboard/orders";
+    if (pathname !== href) router.push(href);
+    sendQuickAction(action);
+  };
 
   /** Whether the sidebar is currently visible, for the active breakpoint. */
   const sidebarOpen = isDesktop ? !collapsed : mobileNav;
@@ -317,6 +348,42 @@ export default function DashboardShell({ children, title, actions }: DashboardSh
               <Bell className="size-[17px]" />
               <span className="absolute right-2 top-2 size-1.5 rounded-full bg-emerald-300" />
             </button>
+            <div className="relative" data-quick-menu>
+              <button
+                type="button"
+                onClick={() => setQuickMenu(value => !value)}
+                aria-haspopup="menu"
+                aria-expanded={quickMenu}
+                className="inline-flex h-[38px] items-center gap-1.5 rounded-[10px] bg-indigo-600 px-3 text-xs font-semibold text-white shadow-sm transition hover:bg-indigo-700 active:scale-95"
+              >
+                <Plus className="size-4" /> <span className="hidden sm:inline">New</span>
+              </button>
+              {quickMenu && (
+                <div
+                  role="menu"
+                  className="absolute right-0 top-12 z-50 w-64 rounded-xl border border-slate-200 bg-white p-2 shadow-2xl dark:border-white/10 dark:bg-slate-900"
+                >
+                  {(
+                    [
+                      { id: "add-product", label: "+ ပစ္စည်းအသစ်ထည့်မည် (Add Product)", icon: ShoppingBag },
+                      { id: "create-order", label: "+ Manual အော်ဒါဖန်တီးမည် (Create Order)", icon: ClipboardList },
+                      { id: "verify-slip", label: "ငွေလွှဲစလစ် စစ်မည် (Verify Slip)", icon: FileCheck2 },
+                    ] as const
+                  ).map(item => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      role="menuitem"
+                      onClick={() => runQuick(item.id)}
+                      className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-xs text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
+                    >
+                      <item.icon className="size-4 shrink-0 text-indigo-500" />
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
             <ShopSwitcher />
           </div>
         </header>

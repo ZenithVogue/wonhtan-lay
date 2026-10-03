@@ -5,7 +5,7 @@ import { ArrowLeft, Bot, Eye, EyeOff, Loader2, Lock, Phone } from "lucide-react"
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 
 export default function SignInPage() {
   const router = useRouter();
