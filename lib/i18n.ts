@@ -35,10 +35,8 @@ const DICT = {
   // Sidebar + header
   "shell.noShop": { my: "ဆိုင်အမည် မထည့်ရသေးပါ", en: "No shop name yet" },
   "shell.upgrade": { my: "Pro သို့ Upgrade လုပ်မည်", en: "Upgrade to Pro" },
-  "shell.theme": { my: "Theme", en: "Theme" },
-  "shell.light": { my: "Light Mode", en: "Light mode" },
-  "shell.dark": { my: "Dark Mode", en: "Dark mode" },
-  "shell.language": { my: "ဘာသာစကား", en: "Language" },
+  "shell.switchToLight": { my: "Light Mode သို့ ပြောင်းမည်", en: "Switch to light mode" },
+  "shell.switchToDark": { my: "Dark Mode သို့ ပြောင်းမည်", en: "Switch to dark mode" },
   "shell.needHelp": { my: "အကူအညီလိုလား?", en: "Need help?" },
   "shell.contact": { my: "Support ကို ဆက်သွယ်ရန်", en: "Contact support" },
   "shell.search": { my: "ရှာဖွေရန်...", en: "Search..." },

@@ -77,7 +77,7 @@ export default function DashboardShell({ children, title, actions }: DashboardSh
   const { account, plan, planLabel } = usePlan();
   const [collapsed, setCollapsed] = useState(false);
   const { theme, toggleTheme } = useTheme();
-  const { lang, setLang, t } = useLanguage();
+  const { lang, t } = useLanguage();
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [shortcutLabel, setShortcutLabel] = useState("Ctrl K");
 
@@ -225,60 +225,25 @@ export default function DashboardShell({ children, title, actions }: DashboardSh
                 </span>
               </span>
             </div>
-            {(plan === "free" || plan === "basic") && (
-              <Link
-                href="/dashboard/settings?tab=billing"
-                className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-lg bg-amber-300/15 px-2 py-2 text-[11px] font-semibold text-amber-200 transition hover:bg-amber-300/25"
+            <div className="mt-3 flex items-center gap-2">
+              {(plan === "free" || plan === "basic") && (
+                <Link
+                  href="/dashboard/settings?tab=billing"
+                  className="flex h-9 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-lg bg-amber-300/15 px-2 text-[11px] font-semibold text-amber-200 transition hover:bg-amber-300/25"
+                >
+                  <Crown className="size-3.5 shrink-0" /> <span className="truncate">{t("shell.upgrade")}</span>
+                </Link>
+              )}
+              {/* Single action button: shows the mode you will switch TO. */}
+              <button
+                type="button"
+                onClick={() => toggleTheme?.()}
+                aria-label={theme === "dark" ? t("shell.switchToLight") : t("shell.switchToDark")}
+                title={theme === "dark" ? t("shell.switchToLight") : t("shell.switchToDark")}
+                className="ml-auto flex size-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-black/10 text-slate-400 transition hover:bg-white/10 hover:text-white active:scale-95"
               >
-                <Crown className="size-3.5" /> {t("shell.upgrade")}
-              </Link>
-            )}
-            <div className="mt-3 grid grid-cols-2 gap-2">
-              <div role="group" aria-label={t("shell.theme")} className="flex rounded-lg border border-white/10 bg-black/10 p-0.5">
-                {(
-                  [
-                    { id: "light", icon: Sun, label: t("shell.light") },
-                    { id: "dark", icon: Moon, label: t("shell.dark") },
-                  ] as const
-                ).map(option => (
-                  <button
-                    key={option.id}
-                    type="button"
-                    aria-pressed={theme === option.id}
-                    aria-label={option.label}
-                    title={option.label}
-                    onClick={() => theme !== option.id && toggleTheme?.()}
-                    className={`flex h-7 flex-1 items-center justify-center rounded-md transition active:scale-95 ${
-                      theme === option.id ? "bg-indigo-500 text-white shadow-sm" : "text-slate-500 hover:text-slate-300"
-                    }`}
-                  >
-                    <option.icon className="size-3.5" />
-                  </button>
-                ))}
-              </div>
-              <div role="group" aria-label={t("shell.language")} className="flex rounded-lg border border-white/10 bg-black/10 p-0.5">
-                {(
-                  [
-                    { id: "my", flag: "🇲🇲", code: "MM" },
-                    { id: "en", flag: "🇬🇧", code: "EN" },
-                  ] as const
-                ).map(option => (
-                  <button
-                    key={option.id}
-                    type="button"
-                    aria-pressed={lang === option.id}
-                    aria-label={option.id === "my" ? "မြန်မာ" : "English"}
-                    title={option.id === "my" ? "မြန်မာ" : "English"}
-                    onClick={() => setLang(option.id)}
-                    className={`flex h-7 flex-1 items-center justify-center gap-1 rounded-md text-[10px] font-bold transition active:scale-95 ${
-                      lang === option.id ? "bg-indigo-500 text-white shadow-sm" : "text-slate-500 hover:text-slate-300"
-                    }`}
-                  >
-                    <span aria-hidden="true">{option.flag}</span>
-                    {option.code}
-                  </button>
-                ))}
-              </div>
+                {theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
+              </button>
             </div>
           </div>
           <div className="flex items-center gap-2 px-5 py-5 text-[10px] text-slate-600 lg:px-6">
