@@ -2,6 +2,7 @@ import ClientOnly from "@/components/ClientOnly";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
@@ -29,10 +30,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ClientOnly>
           <ErrorBoundary>
             <ThemeProvider defaultTheme="light" switchable>
-              <TooltipProvider>
-                <Toaster />
-                {children}
-              </TooltipProvider>
+              <LanguageProvider>
+                <TooltipProvider>
+                  <Toaster />
+                  {children}
+                </TooltipProvider>
+              </LanguageProvider>
             </ThemeProvider>
           </ErrorBoundary>
         </ClientOnly>

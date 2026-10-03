@@ -1,13 +1,15 @@
 "use client";
 
 import DashboardShell from "@/components/DashboardShell";
+import { useLanguage } from "@/contexts/LanguageContext";
+import type { Lang } from "@/lib/i18n";
 import { useAccount } from "@/hooks/usePlan";
 import { saveAccount } from "@/lib/account";
 import { BILLING_TIERS, formatPlanPriceFor, PLAN_META, PLAN_RANK, planUnitFor, type BillingCycle, type Plan } from "@/lib/plans";
-import { ArrowUpRight, BadgeCheck, Building2, Check, CreditCard, Crown, LogOut, Phone, Store, UserRound, Zap } from "lucide-react";
+import { ArrowUpRight, BadgeCheck, Building2, Check, CreditCard, Crown, Languages, LogOut, Phone, Store, UserRound, Zap } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
 import { toast } from "sonner";
 
 type Tab = "billing" | "profile";
@@ -15,8 +17,22 @@ type Tab = "billing" | "profile";
 const TIER_ICONS: Record<Plan, typeof Zap> = { free: BadgeCheck, basic: Zap, pro: Crown, enterprise: Building2 };
 
 export default function SettingsPage() {
+  // useSearchParams needs a Suspense boundary for the production build.
+  return (
+    <Suspense fallback={null}>
+      <SettingsContent />
+    </Suspense>
+  );
+}
+
+function SettingsContent() {
   const router = useRouter();
-  const [tab, setTab] = useState<Tab>("billing");
+  const searchParams = useSearchParams();
+  const { lang, setLang, t } = useLanguage();
+  // The active tab lives in the URL (?tab=billing|profile) so links such as
+  // the sidebar "Upgrade to Pro" button can open Billing / Subscription directly.
+  const tab: Tab = searchParams.get("tab") === "profile" ? "profile" : "billing";
+  const setTab = (next: Tab) => router.replace(`/dashboard/settings?tab=${next}`, { scroll: false });
   const account = useAccount();
   const [cycle, setCycle] = useState<BillingCycle>("monthly");
   const plan: Plan = account?.plan ?? "free";
@@ -59,24 +75,30 @@ export default function SettingsPage() {
       <div className="mb-7 flex items-start justify-between gap-4">
         <div className="min-w-0">
           <h2 className="font-display text-2xl font-bold tracking-tight text-white sm:text-3xl">
-            ဆက်တင်များ <span className="text-indigo-300">(Settings)</span>
+            {lang === "my" ? (
+              <>
+                {t("settings.heading")} <span className="text-indigo-300">(Settings)</span>
+              </>
+            ) : (
+              t("settings.heading")
+            )}
           </h2>
-          <p className="mt-2 text-sm text-slate-500">အကောင့်အချက်အလက်နဲ့ Subscription Plan ကို စီမံပါ။</p>
+          <p className="mt-2 text-sm text-slate-500">{t("settings.subtitle")}</p>
         </div>
         <button
           type="button"
           onClick={logout}
           className="inline-flex shrink-0 items-center gap-2 rounded-xl border border-red-400/30 bg-red-500/10 px-4 py-2.5 text-xs font-semibold text-red-500 transition hover:bg-red-500/20 active:scale-95 dark:text-red-400"
         >
-          <LogOut className="size-4" /> Logout
+          <LogOut className="size-4" /> {t("settings.logout")}
         </button>
       </div>
 
       <div className="mb-6 flex w-fit gap-1 rounded-xl border border-white/10 bg-white/[0.03] p-1">
         {(
           [
-            { id: "billing", label: "Billing / Subscription", icon: CreditCard },
-            { id: "profile", label: "Profile", icon: UserRound },
+            { id: "billing", label: t("settings.tab.billing"), icon: CreditCard },
+            { id: "profile", label: t("settings.tab.profile"), icon: UserRound },
           ] as const
         ).map(item => (
           <button
@@ -237,44 +259,90 @@ export default function SettingsPage() {
           </p>
         </>
       ) : (
-        <div className="max-w-2xl rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-          {account ? (
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <span className="flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-400 to-emerald-400 font-display text-lg font-bold text-white">
-                  {(account.name || "?").slice(0, 1).toUpperCase()}
-                </span>
-                <div>
-                  <p className="font-display text-lg font-bold text-white">{account.name || "အမည်မရှိသေးပါ"}</p>
-                  <p className="text-xs text-slate-500">
-                    {PLAN_META[plan].name} Plan · {new Date(account.createdAt).toLocaleDateString()}
-                  </p>
+        <div className="max-w-2xl space-y-4">
+          <div className="max-w-2xl rounded-2xl border border-white/10 bg-white/[0.03] p-6">
+            {account ? (
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <span className="flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-400 to-emerald-400 font-display text-lg font-bold text-white">
+                    {(account.name || "?").slice(0, 1).toUpperCase()}
+                  </span>
+                  <div>
+                    <p className="font-display text-lg font-bold text-white">{account.name || t("settings.noName")}</p>
+                    <p className="text-xs text-slate-500">
+                      {PLAN_META[plan].name} Plan · {new Date(account.createdAt).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-xl border border-white/[0.07] bg-slate-950/50 p-4">
+                    <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">
+                      <Store className="size-3.5" /> {t("settings.shopName")}
+                    </p>
+                    <p className="mt-1.5 text-sm font-semibold text-white">{account.shop || t("settings.noShop")}</p>
+                  </div>
+                  <div className="rounded-xl border border-white/[0.07] bg-slate-950/50 p-4">
+                    <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">
+                      <Phone className="size-3.5" /> {t("settings.phone")}
+                    </p>
+                    <p className="mt-1.5 font-mono text-sm font-semibold text-white">{account.phone}</p>
+                  </div>
                 </div>
               </div>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div className="rounded-xl border border-white/[0.07] bg-slate-950/50 p-4">
-                  <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">
-                    <Store className="size-3.5" /> ဆိုင်နာမည်
-                  </p>
-                  <p className="mt-1.5 text-sm font-semibold text-white">{account.shop || "ဆိုင်အမည် မထည့်ရသေးပါ"}</p>
-                </div>
-                <div className="rounded-xl border border-white/[0.07] bg-slate-950/50 p-4">
-                  <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">
-                    <Phone className="size-3.5" /> ဖုန်းနံပါတ်
-                  </p>
-                  <p className="mt-1.5 font-mono text-sm font-semibold text-white">{account.phone}</p>
-                </div>
+            ) : (
+              <div className="py-8 text-center">
+                <UserRound className="mx-auto size-8 text-slate-600" />
+                <p className="mt-3 text-sm text-slate-400">အကောင့်မရှိသေးပါ</p>
+                <Link href="/sign-up" className="button-primary mt-5">
+                  အကောင့်ဖွင့်မည်
+                </Link>
+              </div>
+            )}
+          </div>
+          <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-6" aria-labelledby="language-heading">
+            <div className="flex items-start gap-3">
+              <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-indigo-400/10 text-indigo-300">
+                <Languages className="size-5" />
+              </span>
+              <div>
+                <h3 id="language-heading" className="font-display text-base font-bold text-white">
+                  {t("settings.language.title")}
+                </h3>
+                <p className="mt-1 text-xs text-slate-500">{t("settings.language.desc")}</p>
               </div>
             </div>
-          ) : (
-            <div className="py-8 text-center">
-              <UserRound className="mx-auto size-8 text-slate-600" />
-              <p className="mt-3 text-sm text-slate-400">အကောင့်မရှိသေးပါ</p>
-              <Link href="/sign-up" className="button-primary mt-5">
-                အကောင့်ဖွင့်မည်
-              </Link>
+            <div role="radiogroup" aria-labelledby="language-heading" className="mt-4 grid gap-3 sm:grid-cols-2">
+              {(
+                [
+                  { id: "my", flag: "🇲🇲", label: t("settings.language.my"), native: "မြန်မာဘာသာ" },
+                  { id: "en", flag: "🇬🇧", label: t("settings.language.en"), native: "English" },
+                ] as { id: Lang; flag: string; label: string; native: string }[]
+              ).map(option => {
+                const selected = lang === option.id;
+                return (
+                  <button
+                    key={option.id}
+                    type="button"
+                    role="radio"
+                    aria-checked={selected}
+                    onClick={() => setLang(option.id)}
+                    className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left transition active:scale-[0.98] ${
+                      selected
+                        ? "border-indigo-400/50 bg-indigo-500/15 text-indigo-100 shadow-[inset_0_0_0_1px_rgba(129,140,248,0.25)]"
+                        : "border-white/10 bg-white/[0.03] text-slate-300 hover:bg-white/[0.06]"
+                    }`}
+                  >
+                    <span className="text-xl" aria-hidden="true">{option.flag}</span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-sm font-semibold">{option.label}</span>
+                      <span className="block text-[11px] text-slate-500">{option.native}</span>
+                    </span>
+                    {selected && <Check className="size-4 text-indigo-300" />}
+                  </button>
+                );
+              })}
             </div>
-          )}
+          </section>
         </div>
       )}
     </DashboardShell>

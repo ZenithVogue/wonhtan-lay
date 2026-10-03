@@ -3,7 +3,6 @@
 import {
   Bell,
   Bot,
-  ChevronDown,
   Crown,
   CircleHelp,
   ClipboardList,
@@ -20,34 +19,36 @@ import {
   X,
 } from "lucide-react";
 import Link from "next/link";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/contexts/ThemeContext";
+import type { TranslationKey } from "@/lib/i18n";
 import { usePlan } from "@/hooks/usePlan";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import CommandPalette from "@/components/CommandPalette";
 import ShopSwitcher from "@/components/ShopSwitcher";
 import { toast } from "sonner";
 
-const NAV_ITEMS = [
-  { label: "Dashboard", burmese: "ပင်မစာမျက်နှာ", icon: LayoutDashboard, href: "/dashboard" },
-  { label: "Orders", burmese: "အော်ဒါများ", icon: ClipboardList, href: "/dashboard/orders" },
-  { label: "Bot Connections", burmese: "Bot ချိတ်ဆက်ရန်", icon: Bot, href: "/dashboard/bot-settings", badge: "2" },
-  { label: "Products / Menu", burmese: "ပစ္စည်းစာရင်း", icon: ShoppingBag, href: "/dashboard/products" },
-  { label: "Slip Verifier", burmese: "ငွေလွှဲစလစ်စစ်ရန်", icon: FileCheck2, href: "/dashboard/slip-verifier" },
-  { label: "Settings", burmese: "ဆက်တင်များ", icon: Settings, href: "/dashboard/settings" },
-  { label: "Help & Support", burmese: "အကူအညီနှင့် လမ်းညွှန်", icon: LifeBuoy, href: "/dashboard/help" },
-] as const;
+const NAV_ITEMS: { key: TranslationKey; label: string; icon: typeof Bot; href: string; badge?: string }[] = [
+  { key: "nav.dashboard", label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
+  { key: "nav.orders", label: "Orders", icon: ClipboardList, href: "/dashboard/orders" },
+  { key: "nav.bots", label: "Bot Connections", icon: Bot, href: "/dashboard/bot-settings", badge: "2" },
+  { key: "nav.products", label: "Products / Menu", icon: ShoppingBag, href: "/dashboard/products" },
+  { key: "nav.slip", label: "Slip Verifier", icon: FileCheck2, href: "/dashboard/slip-verifier" },
+  { key: "nav.settings", label: "Settings", icon: Settings, href: "/dashboard/settings" },
+  { key: "nav.help", label: "Help & Support", icon: LifeBuoy, href: "/dashboard/help" },
+];
 
-/** Bilingual (Burmese + English) page titles shown in the header. */
-const PATH_TITLES: Record<string, string> = {
-  "/dashboard": "ပင်မစာမျက်နှာ (Dashboard)",
-  "/dashboard/orders": "အော်ဒါများ (Orders)",
-  "/dashboard/bot-settings": "Bot ချိတ်ဆက်ရန် (Bot Connections)",
-  "/dashboard/bots": "Bot ချိတ်ဆက်ရန် (Bot Connections)",
-  "/dashboard/products": "ပစ္စည်းစာရင်းများ (Products)",
-  "/dashboard/slip-verifier": "ငွေလွှဲစလစ် စစ်ဆေးရန် (Slip Verifier)",
-  "/dashboard/settings": "ဆက်တင်များ (Settings)",
-  "/dashboard/help": "အကူအညီနှင့် လမ်းညွှန် (Help & Support)",
+/** Header page titles per route (bilingual in Myanmar mode, English-only in English mode). */
+const PATH_TITLE_KEYS: Record<string, TranslationKey> = {
+  "/dashboard": "title.dashboard",
+  "/dashboard/orders": "title.orders",
+  "/dashboard/bot-settings": "title.bots",
+  "/dashboard/bots": "title.bots",
+  "/dashboard/products": "title.products",
+  "/dashboard/slip-verifier": "title.slip",
+  "/dashboard/settings": "title.settings",
+  "/dashboard/help": "title.help",
 };
 
 type DashboardShellProps = {
@@ -72,7 +73,7 @@ export default function DashboardShell({ children, title, actions }: DashboardSh
   const { account, plan, planLabel } = usePlan();
   const [collapsed, setCollapsed] = useState(false);
   const { theme, toggleTheme } = useTheme();
-  const [profileMenu, setProfileMenu] = useState(false);
+  const { lang, setLang, t } = useLanguage();
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [shortcutLabel, setShortcutLabel] = useState("Ctrl K");
 
@@ -88,22 +89,6 @@ export default function DashboardShell({ children, title, actions }: DashboardSh
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
-  const profileRef = useRef<HTMLDivElement>(null);
-
-  // Close the profile dropdown on outside click / Escape.
-  useEffect(() => {
-    if (!profileMenu) return;
-    const onPointerDown = (event: PointerEvent) => {
-      if (!profileRef.current?.contains(event.target as Node)) setProfileMenu(false);
-    };
-    const onKey = (event: KeyboardEvent) => event.key === "Escape" && setProfileMenu(false);
-    document.addEventListener("pointerdown", onPointerDown);
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("pointerdown", onPointerDown);
-      document.removeEventListener("keydown", onKey);
-    };
-  }, [profileMenu]);
   const [isDesktop, setIsDesktop] = useState(
     () => typeof window !== "undefined" && window.matchMedia("(min-width: 1024px)").matches,
   );
@@ -127,7 +112,7 @@ export default function DashboardShell({ children, title, actions }: DashboardSh
   const openSidebar = () => (isDesktop ? setCollapsed(false) : setMobileNav(true));
   const closeSidebar = () => (isDesktop ? setCollapsed(true) : setMobileNav(false));
 
-  const headerTitle = title ?? PATH_TITLES[pathname] ?? PATH_TITLES["/dashboard"];
+  const headerTitle = title ?? t(PATH_TITLE_KEYS[pathname] ?? "title.dashboard");
   const isActive = (href: string) =>
     pathname === href ||
     (href !== "/dashboard" && pathname.startsWith(`${href}/`)) ||
@@ -174,7 +159,7 @@ export default function DashboardShell({ children, title, actions }: DashboardSh
                 const active = isActive(item.href);
                 return (
                   <Link
-                    key={item.label}
+                    key={item.key}
                     href={item.href}
                     className={`dashboard-nav-item ${active ? "dashboard-nav-active" : ""}`}
                     onClick={() => setMobileNav(false)}
@@ -182,9 +167,9 @@ export default function DashboardShell({ children, title, actions }: DashboardSh
                     <Icon className="size-[17px] shrink-0" />
                     <span className="min-w-0 flex-1 text-left">
                       <span className="block text-[13px] font-medium">{item.label}</span>
-                      <span className="mt-0.5 block text-[10px] text-slate-500">{item.burmese}</span>
+                      {lang === "my" && <span className="mt-0.5 block text-[10px] text-slate-500">{t(item.key)}</span>}
                     </span>
-                    {"badge" in item && item.badge && (
+                    {item.badge && (
                       <span className="rounded-md bg-indigo-400/15 px-1.5 py-0.5 text-[10px] font-semibold text-indigo-300">
                         {item.badge}
                       </span>
@@ -195,71 +180,80 @@ export default function DashboardShell({ children, title, actions }: DashboardSh
             </nav>
           </div>
 
-          <div className="relative mx-4 mt-auto rounded-2xl border border-white/[0.08] bg-white/[0.035] p-3.5" ref={profileRef}>
-            <button
-              type="button"
-              onClick={() => setProfileMenu(value => !value)}
-              aria-haspopup="menu"
-              aria-expanded={profileMenu}
-              aria-label="Profile menu"
-              className="flex w-full items-center gap-2.5 text-left"
-            >
+          <div className="mx-4 mt-auto rounded-2xl border border-white/[0.08] bg-white/[0.035] p-3.5">
+            <div className="flex items-center gap-2.5">
               <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-emerald-400/10 text-emerald-300">
                 <Store className="size-4" />
               </span>
               <span className="min-w-0">
                 <span className="block truncate text-xs font-semibold text-white">
-                  {account?.shop || "ဆိုင်အမည် မထည့်ရသေးပါ"}
+                  {account?.shop || t("shell.noShop")}
                 </span>
                 <span className={`mt-1 flex items-center gap-1 text-[10px] ${planStyles.text}`}>
                   <span className={`size-1.5 rounded-full ${planStyles.dot}`} /> {planLabel}
                 </span>
               </span>
-              <ChevronDown className={`ml-auto size-4 shrink-0 text-slate-500 transition-transform ${profileMenu ? "rotate-180" : ""}`} />
-            </button>
-            {profileMenu && (
-              <div
-                role="menu"
-                className="absolute inset-x-0 bottom-full z-50 mb-2 rounded-xl border border-slate-200 bg-white p-2 shadow-2xl dark:border-white/10 dark:bg-slate-900"
-              >
-                <button
-                  type="button"
-                  role="menuitemcheckbox"
-                  aria-checked={theme === "dark"}
-                  onClick={() => toggleTheme?.()}
-                  className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-xs text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
-                >
-                  {theme === "dark" ? <Moon className="size-4" /> : <Sun className="size-4" />}
-                  <span className="flex-1">{theme === "dark" ? "Dark Mode" : "Light Mode"}</span>
-                  <span
-                    aria-hidden="true"
-                    className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors ${
-                      theme === "dark" ? "bg-indigo-500" : "bg-slate-300"
-                    }`}
-                  >
-                    <span
-                      className={`inline-block size-4 rounded-full bg-white shadow transition-transform ${
-                        theme === "dark" ? "translate-x-[18px]" : "translate-x-0.5"
-                      }`}
-                    />
-                  </span>
-                </button>
-              </div>
-            )}
-            {(plan === "free" || plan === "basic") && <div className="my-3 h-px bg-white/[0.07]" />}
+            </div>
             {(plan === "free" || plan === "basic") && (
               <Link
-                href="/checkout?plan=pro"
-                className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-amber-300/15 px-2 py-2 text-[11px] font-semibold text-amber-200 transition hover:bg-amber-300/25"
+                href="/dashboard/settings?tab=billing"
+                className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-lg bg-amber-300/15 px-2 py-2 text-[11px] font-semibold text-amber-200 transition hover:bg-amber-300/25"
               >
-                <Crown className="size-3.5" /> Upgrade to Pro
+                <Crown className="size-3.5" /> {t("shell.upgrade")}
               </Link>
             )}
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              <div role="group" aria-label={t("shell.theme")} className="flex rounded-lg border border-white/10 bg-black/10 p-0.5">
+                {(
+                  [
+                    { id: "light", icon: Sun, label: t("shell.light") },
+                    { id: "dark", icon: Moon, label: t("shell.dark") },
+                  ] as const
+                ).map(option => (
+                  <button
+                    key={option.id}
+                    type="button"
+                    aria-pressed={theme === option.id}
+                    aria-label={option.label}
+                    title={option.label}
+                    onClick={() => theme !== option.id && toggleTheme?.()}
+                    className={`flex h-7 flex-1 items-center justify-center rounded-md transition active:scale-95 ${
+                      theme === option.id ? "bg-indigo-500 text-white shadow-sm" : "text-slate-500 hover:text-slate-300"
+                    }`}
+                  >
+                    <option.icon className="size-3.5" />
+                  </button>
+                ))}
+              </div>
+              <div role="group" aria-label={t("shell.language")} className="flex rounded-lg border border-white/10 bg-black/10 p-0.5">
+                {(
+                  [
+                    { id: "my", flag: "🇲🇲", code: "MM" },
+                    { id: "en", flag: "🇬🇧", code: "EN" },
+                  ] as const
+                ).map(option => (
+                  <button
+                    key={option.id}
+                    type="button"
+                    aria-pressed={lang === option.id}
+                    aria-label={option.id === "my" ? "မြန်မာ" : "English"}
+                    title={option.id === "my" ? "မြန်မာ" : "English"}
+                    onClick={() => setLang(option.id)}
+                    className={`flex h-7 flex-1 items-center justify-center gap-1 rounded-md text-[10px] font-bold transition active:scale-95 ${
+                      lang === option.id ? "bg-indigo-500 text-white shadow-sm" : "text-slate-500 hover:text-slate-300"
+                    }`}
+                  >
+                    <span aria-hidden="true">{option.flag}</span>
+                    {option.code}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
           <div className="flex items-center gap-2 px-5 py-5 text-[10px] text-slate-600 lg:px-6">
-            <CircleHelp className="size-3.5" /> Need help?{" "}
+            <CircleHelp className="size-3.5" /> {t("shell.needHelp")}{" "}
             <Link href="/dashboard/help" className="text-slate-400 hover:text-white">
-              Contact support
+              {t("shell.contact")}
             </Link>
           </div>
         </div>
@@ -303,7 +297,7 @@ export default function DashboardShell({ children, title, actions }: DashboardSh
               aria-label="Search (Ctrl+K)"
             >
               <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2" />
-              <span className="flex-1 truncate">ရှာဖွေရန်...</span>
+              <span className="flex-1 truncate">{t("shell.search")}</span>
               <kbd className="rounded border border-white/10 px-1.5 py-0.5 font-mono text-[10px] text-slate-500">{shortcutLabel}</kbd>
             </button>
             <button
