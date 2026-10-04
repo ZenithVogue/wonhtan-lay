@@ -319,7 +319,7 @@ export default function DashboardShell({ children, title, actions }: DashboardSh
                 onClick={() => setQuickMenu(value => !value)}
                 aria-haspopup="menu"
                 aria-expanded={quickMenu}
-                className="inline-flex h-[38px] items-center gap-1.5 rounded-[10px] bg-indigo-600 px-3 text-xs font-semibold text-white shadow-sm transition hover:bg-indigo-700 active:scale-95"
+                className="on-primary inline-flex h-[38px] items-center gap-1.5 rounded-[10px] bg-indigo-600 px-3 text-xs font-semibold text-white shadow-sm transition hover:bg-indigo-700 active:scale-95"
               >
                 <Plus className="size-4" /> <span className="hidden sm:inline">New</span>
               </button>

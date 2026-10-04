@@ -229,8 +229,8 @@ function SettingsContent() {
                     className={`mt-6 flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-xs font-semibold transition ${
                       isCurrent
                         ? "cursor-default border border-emerald-300/25 bg-emerald-300/10 text-emerald-200"
-                        : featured || isUpgrade
-                          ? "bg-indigo-500 text-white hover:bg-indigo-400"
+                        : featured || isUpgrade || tier === "enterprise"
+                          ? "on-primary bg-indigo-500 text-white hover:bg-indigo-400"
                           : "border border-white/10 bg-white/[0.04] text-white hover:bg-white/[0.08]"
                     }`}
                   >
