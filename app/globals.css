@@ -431,3 +431,32 @@ html .bg-indigo-600.text-white svg,
 html .bg-indigo-700.text-white svg,
 html .bg-indigo-500\/20.text-white svg { color: #ffffff !important; }
 html .on-primary svg { stroke: currentColor; }
+
+/* ── Sidebar legibility ─────────────────────────────────────────────
+   Dark (default) values first, then crisp slate-700/800 for light mode.
+   Dedicated classes (not Tailwind utilities) so the theme remaps for
+   `.text-slate-*` / `.text-white` can never wash them out. */
+.sidebar-brand-sub { color: #94a3b8; }
+.sidebar-shop-name { color: #ffffff; }
+.sidebar-plan-free { color: #94a3b8; }
+.sidebar-plan-basic { color: #7dd3fc; }
+.sidebar-plan-pro { color: #6ee7b7; }
+.sidebar-help { color: #94a3b8; }
+.sidebar-help-link { color: #e2e8f0; }
+.sidebar-help-link:hover { color: #ffffff; }
+
+html:not(.dark) .dashboard-shell .dashboard-nav-sub { color: #334155; }
+html:not(.dark) .dashboard-shell .dashboard-nav-item:hover .dashboard-nav-sub { color: #0f172a; }
+html:not(.dark) .dashboard-shell .sidebar-brand-sub { color: #334155; }
+html:not(.dark) .dashboard-shell .sidebar-shop-name { color: #1e293b; }
+html:not(.dark) .dashboard-shell .sidebar-plan-free { color: #334155; font-weight: 600; }
+html:not(.dark) .dashboard-shell .sidebar-plan-basic { color: #0369a1; font-weight: 600; }
+html:not(.dark) .dashboard-shell .sidebar-plan-pro { color: #047857; font-weight: 600; }
+html:not(.dark) .dashboard-shell .sidebar-help { color: #475569; }
+html:not(.dark) .dashboard-shell .sidebar-help-link { color: #1e293b; text-decoration: underline; text-underline-offset: 2px; }
+html:not(.dark) .dashboard-shell .sidebar-help-link:hover { color: #4338ca; }
+html:not(.dark) .dashboard-shell .sidebar-theme-btn { color: #334155; border-color: #cbd5e1; background: #ffffff; }
+html:not(.dark) .dashboard-shell .sidebar-theme-btn:hover { color: #0f172a; background: #e2e8f0; }
+
+/* Active item sub-label keeps following the active colour (must stay last). */
+html .dashboard-shell .dashboard-nav-active .dashboard-nav-sub { color: inherit; opacity: 0.85; text-shadow: none; }

@@ -151,10 +151,10 @@ export default function DashboardShell({ children, title, actions }: DashboardSh
 
   const planStyles =
     plan === "free"
-      ? { text: "text-slate-400", dot: "bg-slate-500" }
+      ? { text: "sidebar-plan-free", dot: "bg-slate-500" }
       : plan === "basic"
-        ? { text: "text-sky-300", dot: "bg-sky-300" }
-        : { text: "text-emerald-300", dot: "bg-emerald-300" };
+        ? { text: "sidebar-plan-basic", dot: "bg-sky-300" }
+        : { text: "sidebar-plan-pro", dot: "bg-emerald-300" };
 
   return (
     <div
@@ -173,7 +173,7 @@ export default function DashboardShell({ children, title, actions }: DashboardSh
                 <span className="block font-display text-[15px] font-bold tracking-tight text-white">
                   WonHtan Lay
                 </span>
-                <span className="block text-[10px] font-medium tracking-[0.12em] text-slate-500">
+                <span className="sidebar-brand-sub block text-[10px] font-medium tracking-[0.12em]">
                   ဝန်ထမ်းလေး
                 </span>
               </span>
@@ -217,7 +217,7 @@ export default function DashboardShell({ children, title, actions }: DashboardSh
                 <Store className="size-4" />
               </span>
               <span className="min-w-0">
-                <span className="block truncate text-xs font-semibold text-white">
+                <span className="sidebar-shop-name block truncate text-xs font-semibold">
                   {account?.shop || t("shell.noShop")}
                 </span>
                 <span className={`mt-1 flex items-center gap-1 text-[10px] ${planStyles.text}`}>
@@ -240,15 +240,15 @@ export default function DashboardShell({ children, title, actions }: DashboardSh
                 onClick={() => toggleTheme?.()}
                 aria-label={theme === "dark" ? t("shell.switchToLight") : t("shell.switchToDark")}
                 title={theme === "dark" ? t("shell.switchToLight") : t("shell.switchToDark")}
-                className="ml-auto flex size-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-black/10 text-slate-400 transition hover:bg-white/10 hover:text-white active:scale-95"
+                className="sidebar-theme-btn ml-auto flex size-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-black/10 text-slate-400 transition hover:bg-white/10 hover:text-white active:scale-95"
               >
                 {theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
               </button>
             </div>
           </div>
-          <div className="flex items-center gap-2 px-5 py-5 text-[10px] text-slate-600 lg:px-6">
+          <div className="sidebar-help flex items-center gap-2 px-5 py-5 text-[10px] lg:px-6">
             <CircleHelp className="size-3.5" /> {t("shell.needHelp")}{" "}
-            <Link href="/dashboard/help" className="text-slate-400 hover:text-white">
+            <Link href="/dashboard/help" className="sidebar-help-link font-semibold">
               {t("shell.contact")}
             </Link>
           </div>
