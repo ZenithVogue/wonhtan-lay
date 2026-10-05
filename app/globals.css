@@ -494,9 +494,6 @@ html:not(.dark) .dashboard-shell .lang-option-selected .lang-option-sub { opacit
 /* ── Dark-mode card borders / backgrounds (Billing, Settings, Help) ──
    Default white/10 borders on translucent fills disappear on the navy
    app background, so cards get an explicit slate border + solid fill. */
-html.dark .dashboard-shell .surface-card { border-color: rgba(148,163,184,0.26); background-color: #0f1c30; }
-html.dark .dashboard-shell a.surface-card:hover { border-color: rgba(129,140,248,0.55); background-color: #13233b; }
-html.dark .dashboard-shell .surface-card-featured { border-color: rgba(110,231,183,0.5); }
 
 /* Pricing CTAs: pure white label + icon, any theme. */
 html .dashboard-shell .pricing-cta-primary,
@@ -555,3 +552,14 @@ html:not(.dark) .dashboard-shell .filter-count { background: #e2e8f0; color: #33
 html:not(.dark) .dashboard-shell .filter-tab-active .filter-count { background: rgba(255,255,255,0.22); color: #ffffff; }
 html .dashboard-shell .filter-tab-active,
 html .dashboard-shell .filter-tab-active * { color: #ffffff !important; }
+
+/* Language card flag / country code (renders as "MM"/"GB" text on Windows). */
+.lang-option-flag { color: #e2e8f0; font-weight: 700; letter-spacing: 0.02em; }
+html:not(.dark) .dashboard-shell .lang-option-flag { color: #1e293b; }
+html .dashboard-shell .lang-option-selected .lang-option-flag { color: #ffffff !important; }
+
+/* Softer dark-mode cards: hairline slate-800 border + solid fill + soft shadow
+   (replaces the heavier 26% slate border; must stay last to win the cascade). */
+html.dark .dashboard-shell .surface-card { border-color: rgba(30,41,59,0.8); background-color: #0d1a2d; box-shadow: 0 1px 2px rgba(0,0,0,0.25), 0 8px 24px -12px rgba(0,0,0,0.45); }
+html.dark .dashboard-shell a.surface-card:hover { border-color: rgba(99,102,241,0.45); background-color: #12213a; }
+html.dark .dashboard-shell .surface-card-featured { border-color: rgba(110,231,183,0.3); }

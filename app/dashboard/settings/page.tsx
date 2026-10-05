@@ -328,7 +328,7 @@ function SettingsContent() {
                       selected ? "lang-option-selected" : ""
                     }`}
                   >
-                    <span className="text-xl" aria-hidden="true">{option.flag}</span>
+                    <span className="lang-option-flag text-xl" aria-hidden="true">{option.flag}</span>
                     <span className="min-w-0 flex-1">
                       <span className="lang-option-label block text-sm font-semibold">{option.label}</span>
                       <span className="lang-option-sub block text-[11px]">{option.native}</span>
