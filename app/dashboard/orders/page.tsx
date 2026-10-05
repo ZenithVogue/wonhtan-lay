@@ -165,19 +165,19 @@ export default function OrdersPage() {
                 />
               </div>
             </div>
-            <div className="flex items-center gap-1 overflow-x-auto border-b border-white/[0.08] px-5 py-3 sm:px-6">
+            <div role="tablist" aria-label="Order status filters" className="flex items-center gap-2 overflow-x-auto border-b border-white/[0.08] px-5 py-3 sm:px-6">
               {FILTERS.map(filter => (
                 <button
                   key={filter}
+                  role="tab"
+                  aria-selected={status === filter}
                   onClick={() => setStatus(filter)}
-                  className={`rounded-lg px-3 py-2 text-xs font-medium transition ${
-                    status === filter
-                      ? "bg-white/[0.08] text-white"
-                      : "text-slate-500 hover:bg-white/[0.04] hover:text-slate-300"
+                  className={`filter-tab inline-flex shrink-0 items-center gap-2 rounded-lg border px-3 py-1.5 text-xs transition active:scale-95 ${
+                    status === filter ? "filter-tab-active font-bold" : "font-medium"
                   }`}
                 >
                   {filter === "All" ? "All Orders" : filter}
-                  <span className="ml-1.5 text-[10px] text-slate-600">{tabCounts[filter]}</span>
+                  <span className="filter-count">{tabCounts[filter]}</span>
                 </button>
               ))}
             </div>

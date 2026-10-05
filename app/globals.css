@@ -537,3 +537,21 @@ html.dark .dashboard-shell .lang-option:not(.lang-option-selected):hover { borde
 html.dark .dashboard-shell .lang-option:not(.lang-option-selected) .lang-option-label { color: #f1f5f9; }
 html:not(.dark) .dashboard-shell .lang-option:not(.lang-option-selected) { border-color: #cbd5e1; box-shadow: 0 1px 2px rgba(15,23,42,0.05); }
 html:not(.dark) .dashboard-shell .lang-option:not(.lang-option-selected):hover { border-color: #a5b4fc; background: #eef2ff; }
+
+/* ── Filter tabs (Orders status, Products category) ──────────────────
+   Dark: inactive = subtle outlined chip, active = solid indigo + white.
+   Count badge is flex-centred with line-height 1 so digits sit dead-centre. */
+.filter-tab { border-color: #1e293b; background: rgba(15,23,42,0.6); color: #94a3b8; }
+.filter-tab:hover { border-color: #475569; background: #1e293b; color: #e2e8f0; }
+.filter-tab-active, .filter-tab-active:hover { border-color: #6366f1; background: #4f46e5; color: #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.35); }
+.filter-count { display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; height: 20px; min-width: 20px; padding: 0 6px; border-radius: 9999px; font-size: 11px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; background: #1e293b; color: #cbd5e1; }
+.filter-tab-active .filter-count { background: rgba(255,255,255,0.22); color: #ffffff; }
+
+html:not(.dark) .dashboard-shell .filter-tab { border-color: #e2e8f0; background: #ffffff; color: #475569; }
+html:not(.dark) .dashboard-shell .filter-tab:hover { border-color: #a5b4fc; background: #eef2ff; color: #3730a3; }
+html:not(.dark) .dashboard-shell .filter-tab-active,
+html:not(.dark) .dashboard-shell .filter-tab-active:hover { border-color: #4338ca; background: #4f46e5; color: #ffffff; box-shadow: 0 1px 3px rgba(79,70,229,0.35); }
+html:not(.dark) .dashboard-shell .filter-count { background: #e2e8f0; color: #334155; }
+html:not(.dark) .dashboard-shell .filter-tab-active .filter-count { background: rgba(255,255,255,0.22); color: #ffffff; }
+html .dashboard-shell .filter-tab-active,
+html .dashboard-shell .filter-tab-active * { color: #ffffff !important; }
