@@ -94,7 +94,7 @@ function SettingsContent() {
         </button>
       </div>
 
-      <div className="mb-6 flex w-fit gap-1 rounded-xl border border-white/10 bg-white/[0.03] p-1">
+      <div role="tablist" aria-label="Settings sections" className="tab-list mb-6 flex w-fit gap-1 rounded-xl border p-1">
         {(
           [
             { id: "billing", label: t("settings.tab.billing"), icon: CreditCard },
@@ -103,11 +103,11 @@ function SettingsContent() {
         ).map(item => (
           <button
             key={item.id}
+            role="tab"
+            aria-selected={tab === item.id}
             onClick={() => setTab(item.id)}
-            className={`flex items-center gap-2 rounded-lg px-4 py-2.5 text-xs font-semibold transition ${
-              tab === item.id
-                ? "bg-indigo-500/20 text-indigo-200 shadow-[inset_0_0_0_1px_rgba(129,140,248,0.35)]"
-                : "text-slate-500 hover:text-white"
+            className={`tab-trigger flex items-center gap-2 rounded-lg border px-4 py-2.5 text-xs font-semibold transition active:scale-[0.98] ${
+              tab === item.id ? "tab-trigger-active" : ""
             }`}
           >
             <item.icon className="size-4" />
@@ -144,7 +144,7 @@ function SettingsContent() {
             <div
               role="radiogroup"
               aria-label="Billing cycle"
-              className="inline-flex gap-1 rounded-xl border border-white/10 bg-white/[0.03] p-1"
+              className="tab-list inline-flex gap-1 rounded-xl border p-1"
             >
               {(
                 [
@@ -158,15 +158,13 @@ function SettingsContent() {
                   role="radio"
                   aria-checked={cycle === option.id}
                   onClick={() => setCycle(option.id)}
-                  className={`flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-semibold transition ${
-                    cycle === option.id
-                      ? "bg-indigo-500/20 text-indigo-200 shadow-[inset_0_0_0_1px_rgba(129,140,248,0.35)]"
-                      : "text-slate-500 hover:text-white"
+                  className={`tab-trigger flex items-center gap-2 rounded-lg border px-4 py-2 text-xs font-semibold transition active:scale-[0.98] ${
+                    cycle === option.id ? "tab-trigger-active" : ""
                   }`}
                 >
                   {option.label}
                   {option.id === "yearly" && (
-                    <span className="rounded-full bg-emerald-400/15 px-2 py-0.5 text-[10px] font-bold text-emerald-300">
+                    <span className="tab-badge rounded-full px-2 py-0.5 text-[10px] font-bold">
                       ၂ လ အခမဲ့
                     </span>
                   )}
