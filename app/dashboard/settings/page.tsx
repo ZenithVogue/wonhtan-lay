@@ -275,17 +275,17 @@ function SettingsContent() {
                   </div>
                 </div>
                 <div className="grid gap-3 sm:grid-cols-2">
-                  <div className="rounded-xl border border-white/[0.07] bg-slate-950/50 p-4">
-                    <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">
+                  <div className="profile-info-card rounded-xl border p-4">
+                    <p className="profile-info-label flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em]">
                       <Store className="size-3.5" /> {t("settings.shopName")}
                     </p>
-                    <p className="mt-1.5 text-sm font-semibold text-white">{account.shop || t("settings.noShop")}</p>
+                    <p className="profile-info-value mt-1.5 text-sm font-semibold">{account.shop || t("settings.noShop")}</p>
                   </div>
-                  <div className="rounded-xl border border-white/[0.07] bg-slate-950/50 p-4">
-                    <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">
+                  <div className="profile-info-card rounded-xl border p-4">
+                    <p className="profile-info-label flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em]">
                       <Phone className="size-3.5" /> {t("settings.phone")}
                     </p>
-                    <p className="mt-1.5 font-mono text-sm font-semibold text-white">{account.phone}</p>
+                    <p className="profile-info-value mt-1.5 font-mono text-sm font-semibold">{account.phone}</p>
                   </div>
                 </div>
               </div>
@@ -326,18 +326,16 @@ function SettingsContent() {
                     role="radio"
                     aria-checked={selected}
                     onClick={() => setLang(option.id)}
-                    className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left transition active:scale-[0.98] ${
-                      selected
-                        ? "border-indigo-400/50 bg-indigo-500/15 text-indigo-100 shadow-[inset_0_0_0_1px_rgba(129,140,248,0.25)]"
-                        : "border-white/10 bg-white/[0.03] text-slate-300 hover:bg-white/[0.06]"
+                    className={`lang-option flex items-center gap-3 rounded-xl border px-4 py-3 text-left transition active:scale-[0.98] ${
+                      selected ? "lang-option-selected" : ""
                     }`}
                   >
                     <span className="text-xl" aria-hidden="true">{option.flag}</span>
                     <span className="min-w-0 flex-1">
-                      <span className="block text-sm font-semibold">{option.label}</span>
-                      <span className="block text-[11px] text-slate-500">{option.native}</span>
+                      <span className="lang-option-label block text-sm font-semibold">{option.label}</span>
+                      <span className="lang-option-sub block text-[11px]">{option.native}</span>
                     </span>
-                    {selected && <Check className="size-4 text-indigo-300" />}
+                    {selected && <Check className="lang-option-check size-4" />}
                   </button>
                 );
               })}
