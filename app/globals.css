@@ -490,3 +490,23 @@ html:not(.dark) .dashboard-shell .lang-option-selected .lang-option-label,
 html:not(.dark) .dashboard-shell .lang-option-selected .lang-option-sub,
 html:not(.dark) .dashboard-shell .lang-option-selected .lang-option-check { color: #ffffff !important; }
 html:not(.dark) .dashboard-shell .lang-option-selected .lang-option-sub { opacity: 0.9; }
+
+/* ── Dark-mode card borders / backgrounds (Billing, Settings, Help) ──
+   Default white/10 borders on translucent fills disappear on the navy
+   app background, so cards get an explicit slate border + solid fill. */
+html.dark .dashboard-shell .surface-card { border-color: rgba(148,163,184,0.26); background-color: #0f1c30; }
+html.dark .dashboard-shell a.surface-card:hover { border-color: rgba(129,140,248,0.55); background-color: #13233b; }
+html.dark .dashboard-shell .surface-card-featured { border-color: rgba(110,231,183,0.5); }
+
+/* Pricing CTAs: pure white label + icon, any theme. */
+html .dashboard-shell .pricing-cta-primary,
+html .dashboard-shell .pricing-cta-primary *,
+html .dashboard-shell .pricing-cta-primary svg { color: #ffffff !important; }
+
+/* Help › user-guide action links rendered as outline buttons. */
+.guide-link-button { border-color: #334155; background: rgba(30,41,59,0.8); color: #f1f5f9; }
+.guide-link-button svg { color: #f8fafc; }
+.guide-link-button:hover { border-color: #6366f1; background: #1e293b; color: #ffffff; }
+html:not(.dark) .dashboard-shell .guide-link-button { border-color: #cbd5e1; background: #ffffff; color: #1e293b; }
+html:not(.dark) .dashboard-shell .guide-link-button svg { color: #4338ca; }
+html:not(.dark) .dashboard-shell .guide-link-button:hover { border-color: #6366f1; background: #eef2ff; color: #3730a3; }
