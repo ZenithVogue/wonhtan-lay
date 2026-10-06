@@ -94,7 +94,7 @@ function SettingsContent() {
         </button>
       </div>
 
-      <div role="tablist" aria-label="Settings sections" className="tab-list mb-6 flex w-fit gap-1 rounded-xl border p-1">
+      <div role="tablist" aria-label="Settings sections" className="tab-list mb-6 flex w-fit max-w-full flex-wrap gap-1.5 rounded-2xl border p-1.5">
         {(
           [
             { id: "billing", label: t("settings.tab.billing"), icon: CreditCard },
@@ -106,7 +106,7 @@ function SettingsContent() {
             role="tab"
             aria-selected={tab === item.id}
             onClick={() => setTab(item.id)}
-            className={`tab-trigger flex items-center gap-2 rounded-lg border px-4 py-2.5 text-xs font-semibold transition active:scale-[0.98] ${
+            className={`tab-trigger flex items-center gap-2 whitespace-nowrap rounded-xl border px-4 py-2.5 text-xs font-semibold transition active:scale-[0.98] ${
               tab === item.id ? "tab-trigger-active" : ""
             }`}
           >
@@ -144,7 +144,7 @@ function SettingsContent() {
             <div
               role="radiogroup"
               aria-label="Billing cycle"
-              className="tab-list inline-flex gap-1 rounded-xl border p-1"
+              className="tab-list inline-flex max-w-full flex-wrap items-stretch justify-center gap-1.5 rounded-2xl border p-1.5"
             >
               {(
                 [
@@ -158,13 +158,13 @@ function SettingsContent() {
                   role="radio"
                   aria-checked={cycle === option.id}
                   onClick={() => setCycle(option.id)}
-                  className={`tab-trigger flex items-center gap-2 rounded-lg border px-4 py-2 text-xs font-semibold transition active:scale-[0.98] ${
+                  className={`tab-trigger flex items-center justify-center gap-2 whitespace-nowrap rounded-xl border px-4 py-2 text-xs font-semibold transition active:scale-[0.98] ${
                     cycle === option.id ? "tab-trigger-active" : ""
                   }`}
                 >
                   {option.label}
                   {option.id === "yearly" && (
-                    <span className="tab-badge rounded-full px-2 py-0.5 text-[10px] font-bold">
+                    <span className="tab-badge inline-flex h-5 shrink-0 items-center justify-center whitespace-nowrap rounded-full px-2 text-[10px] font-bold leading-none">
                       ၂ လ အခမဲ့
                     </span>
                   )}
