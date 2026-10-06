@@ -258,7 +258,7 @@ function SettingsContent() {
         </>
       ) : (
         <div className="max-w-2xl space-y-4">
-          <div className="surface-card max-w-2xl rounded-2xl border border-white/10 bg-white/[0.03] p-6">
+          <div className="section-card max-w-2xl rounded-2xl border p-6 shadow-sm">
             {account ? (
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
@@ -297,7 +297,7 @@ function SettingsContent() {
               </div>
             )}
           </div>
-          <section className="surface-card rounded-2xl border border-white/10 bg-white/[0.03] p-6" aria-labelledby="language-heading">
+          <section className="section-card rounded-2xl border p-6 shadow-sm" aria-labelledby="language-heading">
             <div className="flex items-start gap-3">
               <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-indigo-400/10 text-indigo-300">
                 <Languages className="size-5" />

@@ -563,3 +563,22 @@ html .dashboard-shell .lang-option-selected .lang-option-flag { color: #ffffff !
 html.dark .dashboard-shell .surface-card { border-color: rgba(30,41,59,0.8); background-color: #0d1a2d; box-shadow: 0 1px 2px rgba(0,0,0,0.25), 0 8px 24px -12px rgba(0,0,0,0.45); }
 html.dark .dashboard-shell a.surface-card:hover { border-color: rgba(99,102,241,0.45); background-color: #12213a; }
 html.dark .dashboard-shell .surface-card-featured { border-color: rgba(110,231,183,0.3); }
+
+/* ── Settings › Profile outer section cards ──────────────────────────
+   Outer wrapper = tinted panel with a visible outline + shadow so each
+   block separates from the page; inner cards stay white / slate-900. */
+.section-card { border-color: #1e293b; background: rgba(15,23,42,0.5); }
+html:not(.dark) .dashboard-shell .section-card { border-color: #cbd5e1; background: rgba(248,250,252,0.7); box-shadow: 0 1px 3px rgba(15,23,42,0.08); }
+html.dark .dashboard-shell .section-card { border-color: #1e293b; background: rgba(15,23,42,0.5); box-shadow: 0 1px 3px rgba(0,0,0,0.35); }
+html.dark .dashboard-shell .profile-info-card { border-color: #1e293b; background: #0f172a; }
+html.dark .dashboard-shell .lang-option:not(.lang-option-selected) { border-color: #1e293b; background: #0f172a; }
+html.dark .dashboard-shell .lang-option:not(.lang-option-selected):hover { border-color: #818cf8; background: #16263f; }
+html:not(.dark) .dashboard-shell .profile-info-card { border-color: #e2e8f0; background: #ffffff; }
+html:not(.dark) .dashboard-shell .lang-option:not(.lang-option-selected) { border-color: #e2e8f0; background: #ffffff; }
+
+/* Selected language card: solid indigo-600, white text/flag/check, md shadow (both themes). */
+html .dashboard-shell .lang-option-selected,
+html .dashboard-shell .lang-option-selected:hover { border-color: #4f46e5; background: #4f46e5; box-shadow: 0 4px 6px -1px rgba(79,70,229,0.35), 0 2px 4px -2px rgba(79,70,229,0.3); }
+html .dashboard-shell .lang-option-selected,
+html .dashboard-shell .lang-option-selected * { color: #ffffff !important; }
+html .dashboard-shell .lang-option-selected .lang-option-sub { opacity: 0.9; }
