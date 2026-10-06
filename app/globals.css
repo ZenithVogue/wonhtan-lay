@@ -617,3 +617,17 @@ html.dark .dashboard-shell .tab-trigger:not(.tab-trigger-active):hover { border-
 html:not(.dark) .dashboard-shell .surface-card-featured { border-color: #6366f1; background-color: rgba(238,242,255,0.2); }
 html.dark .dashboard-shell .surface-card-featured { border-color: #6366f1; background-color: #0f172a; }
 html .dashboard-shell .surface-card-featured:hover { border-color: #818cf8; }
+
+/* ── Filter-tab count badge: dead-centre digits ─────────────────────
+   Root cause of the off-centre digit: the body font stack starts with
+   "Noto Sans Myanmar", whose tall ascent/descent metrics push Latin digits
+   low inside the pill. Use a Latin font for the digit, reset line-height and
+   spacing, and size it as a true 20×20 circle (grows only for 2+ digits). */
+.filter-count {
+  display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+  box-sizing: border-box; height: 20px; min-width: 20px; width: auto; margin: 0; padding: 0 5px;
+  border-radius: 9999px; text-align: center; vertical-align: middle;
+  font-family: "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 12px; font-weight: 600; line-height: 1; font-variant-numeric: lining-nums tabular-nums;
+}
+.filter-tab { align-items: center; line-height: 1.25; }

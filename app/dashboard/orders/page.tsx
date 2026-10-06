@@ -172,12 +172,12 @@ export default function OrdersPage() {
                   role="tab"
                   aria-selected={status === filter}
                   onClick={() => setStatus(filter)}
-                  className={`filter-tab inline-flex shrink-0 items-center gap-2 rounded-lg border px-3 py-1.5 text-xs transition active:scale-95 ${
+                  className={`filter-tab inline-flex shrink-0 items-center gap-2 rounded-xl border px-4 py-2 text-xs transition active:scale-95 ${
                     status === filter ? "filter-tab-active font-bold" : "font-medium"
                   }`}
                 >
                   {filter === "All" ? "All Orders" : filter}
-                  <span className="filter-count">{tabCounts[filter]}</span>
+                  <span className="filter-count inline-flex shrink-0 items-center justify-center text-center text-xs font-semibold leading-none">{tabCounts[filter]}</span>
                 </button>
               ))}
             </div>
