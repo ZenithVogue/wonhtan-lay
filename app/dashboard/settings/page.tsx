@@ -118,7 +118,7 @@ function SettingsContent() {
 
       {tab === "billing" ? (
         <>
-          <div className="surface-card mb-6 flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="surface-card mb-6 flex flex-col gap-3 rounded-2xl border p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
               <span className="flex size-11 items-center justify-center rounded-xl bg-emerald-400/10 text-emerald-300">
                 <BadgeCheck className="size-5" />
@@ -188,8 +188,8 @@ function SettingsContent() {
                   key={tier}
                   className={`relative flex flex-col rounded-2xl border p-6 ${
                     featured
-                      ? "surface-card-featured border-emerald-300/30 bg-gradient-to-b from-emerald-400/[0.08] to-transparent shadow-[0_0_50px_rgba(16,185,129,0.12)]"
-                      : "surface-card border-white/10 bg-white/[0.03]"
+                      ? "surface-card-featured border-2 shadow-md"
+                      : "surface-card border shadow-sm"
                   }`}
                 >
                   {featured && (

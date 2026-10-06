@@ -105,7 +105,7 @@ export default function HelpPage() {
             href={item.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="surface-card group flex items-start gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-5 transition hover:border-indigo-400/40 hover:bg-white/[0.06] active:scale-[0.99]"
+            className="surface-card group flex items-start gap-4 rounded-2xl border p-5 shadow-sm transition active:scale-[0.99]"
           >
             <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-sky-400/10 text-sky-300">
               <item.icon className="size-5" />
@@ -128,7 +128,7 @@ export default function HelpPage() {
 
       <section className="grid gap-4 lg:grid-cols-2" aria-label="User guide">
         {GUIDES.map((guide, index) => (
-          <article key={guide.title} className="surface-card flex flex-col rounded-2xl border border-white/10 bg-white/[0.03] p-6">
+          <article key={guide.title} className="surface-card flex flex-col rounded-2xl border p-6 shadow-sm">
             <div className="flex items-center gap-3">
               <span className={`flex size-10 items-center justify-center rounded-xl ${guide.tone}`}>
                 <guide.icon className="size-5" />

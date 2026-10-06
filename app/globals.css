@@ -582,3 +582,24 @@ html .dashboard-shell .lang-option-selected:hover { border-color: #4f46e5; backg
 html .dashboard-shell .lang-option-selected,
 html .dashboard-shell .lang-option-selected * { color: #ffffff !important; }
 html .dashboard-shell .lang-option-selected .lang-option-sub { opacity: 0.9; }
+
+/* ── Unified card system (Billing, Settings, Help) ───────────────────
+   One border/background pair per theme so no card is ever borderless:
+   light = white + slate-200, dark = slate-900 + slate-800. Last in file. */
+.surface-card, .section-card { border-style: solid; border-width: 1px; }
+html:not(.dark) .dashboard-shell .surface-card,
+html:not(.dark) .dashboard-shell .section-card { border-color: #e2e8f0; background-color: #ffffff; box-shadow: 0 1px 3px rgba(15,23,42,0.1), 0 1px 2px rgba(15,23,42,0.06); }
+html:not(.dark) .dashboard-shell .section-card { background-color: rgba(248,250,252,0.7); }
+html:not(.dark) .dashboard-shell .surface-card:hover { border-color: #cbd5e1; }
+html:not(.dark) .dashboard-shell a.surface-card:hover { border-color: #818cf8; background-color: #f8fafc; }
+html.dark .dashboard-shell .surface-card,
+html.dark .dashboard-shell .section-card { border-color: #1e293b; background-color: #0f172a; box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+html.dark .dashboard-shell .section-card { background-color: rgba(15,23,42,0.5); }
+html.dark .dashboard-shell .surface-card:hover { border-color: #334155; }
+html.dark .dashboard-shell a.surface-card:hover { border-color: rgba(99,102,241,0.5); background-color: #131f36; }
+.surface-card { transition: border-color 180ms ease, background-color 180ms ease; }
+
+/* Featured (Pro) pricing card: 2px emerald outline + soft emerald wash. */
+html:not(.dark) .dashboard-shell .surface-card-featured { border-width: 2px; border-color: rgba(16,185,129,0.8); background-color: rgba(236,253,245,0.3); box-shadow: 0 4px 6px -1px rgba(15,23,42,0.1), 0 2px 4px -2px rgba(15,23,42,0.1); }
+html.dark .dashboard-shell .surface-card-featured { border-width: 2px; border-color: rgba(16,185,129,0.8); background-color: rgba(2,44,34,0.2); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.4); }
+html .dashboard-shell .surface-card-featured:hover { border-color: #10b981; }
