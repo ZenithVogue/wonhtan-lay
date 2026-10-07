@@ -6,7 +6,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 type LanguageContextType = {
   lang: Lang;
   setLang: (lang: Lang) => void;
-  t: (key: TranslationKey) => string;
+  t: (key: TranslationKey, vars?: Record<string, string | number>) => string;
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -39,7 +39,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const value = useMemo<LanguageContextType>(
-    () => ({ lang, setLang, t: key => translate(lang, key) }),
+    () => ({ lang, setLang, t: (key, vars) => translate(lang, key, vars) }),
     [lang, setLang],
   );
 

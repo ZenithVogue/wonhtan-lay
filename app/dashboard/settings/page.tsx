@@ -2,10 +2,10 @@
 
 import DashboardShell from "@/components/DashboardShell";
 import { useLanguage } from "@/contexts/LanguageContext";
-import type { Lang } from "@/lib/i18n";
+import type { Lang, TranslationKey } from "@/lib/i18n";
 import { useAccount } from "@/hooks/usePlan";
 import { saveAccount } from "@/lib/account";
-import { BILLING_TIERS, formatPlanPriceFor, PLAN_META, PLAN_RANK, planUnitFor, type BillingCycle, type Plan } from "@/lib/plans";
+import { BILLING_TIERS, planPriceFor, PLAN_META, PLAN_RANK, type BillingCycle, type Plan } from "@/lib/plans";
 import { ArrowUpRight, BadgeCheck, Building2, Check, CreditCard, Crown, Languages, LogOut, Phone, Store, UserRound, Zap } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -36,6 +36,16 @@ function SettingsContent() {
   const account = useAccount();
   const [cycle, setCycle] = useState<BillingCycle>("monthly");
   const plan: Plan = account?.plan ?? "free";
+  // Dynamic keys are built from known plan ids, so the cast is safe.
+  const k = (key: string) => key as TranslationKey;
+  const tagline = (p: Plan) => t(k(`plan.${p}.tagline`));
+  const features = (p: Plan) => PLAN_META[p].features.map((_, i) => t(k(`plan.${p}.f${i + 1}`)));
+  const priceLabel = (p: Plan) => {
+    const price = planPriceFor(p, cycle);
+    return price === null ? t("settings.price.custom") : price.toLocaleString("en-US");
+  };
+  const unitLabel = (p: Plan) =>
+    PLAN_META[p].priceMMK === null ? "" : t(cycle === "yearly" ? "settings.unit.year" : "settings.unit.month");
   const currentRank = PLAN_RANK[plan];
 
   const changePlan = (tier: Plan) => {
@@ -45,9 +55,7 @@ function SettingsContent() {
     }
     if (tier === plan) return;
     if (tier === "enterprise") {
-      toast("Enterprise အတွက် ဆက်သွယ်ပါ", {
-        description: "အဖွဲ့နဲ့ ဆွေးနွေးပြီး သင့်အတွက် သင့်တော်တဲ့ စျေးနှုန်းကို ရယူပါ။",
-      });
+      toast(t("settings.toast.enterprise.title"), { description: t("settings.toast.enterprise.desc") });
       return;
     }
     if (tier === "free") return; // Not offered on the billing table.
@@ -59,14 +67,14 @@ function SettingsContent() {
     // Downgrade (demo): applies immediately, no proration in demo mode.
     const updated = { ...account, plan: tier, proUnlocked: true };
     saveAccount(updated);
-    toast(`${PLAN_META[tier].name} Plan ကို ပြောင်းပြီးပါပြီ`, {
-      description: "Demo mode ဖြစ်သောကြောင့် ချက်ချင်း သက်ရောက်သွားပါတယ်။",
+    toast(t("settings.toast.switched.title", { name: PLAN_META[tier].name }), {
+      description: t("settings.toast.switched.desc"),
     });
     window.location.reload();
   };
 
   const logout = () => {
-    toast("Logged out", { description: "Demo account မှ ထွက်လိုက်ပါပြီ။" });
+    toast(t("settings.toast.logout.title"), { description: t("settings.toast.logout.desc") });
     router.push("/sign-in");
   };
 
@@ -124,19 +132,19 @@ function SettingsContent() {
                 <BadgeCheck className="size-5" />
               </span>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">လက်ရှိ Plan</p>
+                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">{t("settings.currentPlan")}</p>
                 <p className="mt-1 font-display text-lg font-bold text-white">
-                  {PLAN_META[plan].name} Plan
+                  {t("settings.planName", { name: PLAN_META[plan].name })}
                   <span className="ml-2 rounded-full bg-emerald-400/10 px-2.5 py-1 align-middle text-[10px] font-bold text-emerald-300">
-                    Active
+                    {t("settings.active")}
                   </span>
                 </p>
               </div>
             </div>
             <p className="text-xs text-slate-500">
               {account
-                ? `${account.shop || "ဆိုင်အမည် မရှိသေးပါ"} · ${account.phone}`
-                : "အကောင့်မရှိသေးပါ — Plan ရွေးပြီး အကောင့်ဖွင့်ပါ။"}
+                ? `${account.shop || t("settings.banner.noShop")} · ${account.phone}`
+                : t("settings.banner.noAccount")}
             </p>
           </div>
 
@@ -148,8 +156,8 @@ function SettingsContent() {
             >
               {(
                 [
-                  { id: "monthly", label: "လစဉ် (Monthly)" },
-                  { id: "yearly", label: "နှစ်စဉ် (Yearly)" },
+                  { id: "monthly", label: t("settings.cycle.monthly") },
+                  { id: "yearly", label: t("settings.cycle.yearly") },
                 ] as const
               ).map(option => (
                 <button
@@ -165,14 +173,14 @@ function SettingsContent() {
                   {option.label}
                   {option.id === "yearly" && (
                     <span className="tab-badge inline-flex h-5 shrink-0 items-center justify-center whitespace-nowrap rounded-full px-2 text-[10px] font-bold leading-none">
-                      ၂ လ အခမဲ့
+                      {t("settings.cycle.badge")}
                     </span>
                   )}
                 </button>
               ))}
             </div>
             {cycle === "yearly" && (
-              <p className="text-[11px] text-slate-500">နှစ်စဉ်ပေးချေရင် ၁၂ လအစား ၁၀ လစာသာ ပေးရပါတယ်။</p>
+              <p className="text-[11px] text-slate-500">{t("settings.cycle.note")}</p>
             )}
           </div>
 
@@ -194,7 +202,7 @@ function SettingsContent() {
                 >
                   {featured && (
                     <div className="absolute right-4 top-4 rounded-full bg-emerald-300 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-emerald-950">
-                      Popular
+                      {t("settings.popular")}
                     </div>
                   )}
                   <span
@@ -205,16 +213,16 @@ function SettingsContent() {
                     <Icon className="size-5" />
                   </span>
                   <h3 className="mt-4 font-display text-xl font-bold text-white">{meta.name}</h3>
-                  <p className="mt-0.5 text-xs text-slate-500">{meta.tagline}</p>
+                  <p className="mt-0.5 text-xs text-slate-500">{tagline(tier)}</p>
                   <div className="mt-4 flex items-baseline gap-1.5">
                     <span className="font-display text-3xl font-bold tracking-tight text-white">
-                      {formatPlanPriceFor(tier, cycle)}
+                      {priceLabel(tier)}
                     </span>
-                    {planUnitFor(tier, cycle) && <span className="text-xs text-slate-500">{planUnitFor(tier, cycle)}</span>}
+                    {unitLabel(tier) && <span className="text-xs text-slate-500">{unitLabel(tier)}</span>}
                   </div>
                   <div className="my-5 h-px bg-white/[0.08]" />
                   <ul className="flex-1 space-y-3">
-                    {meta.features.map(feature => (
+                    {features(tier).map(feature => (
                       <li key={feature} className="flex items-start gap-2.5 text-[13px] text-slate-300">
                         <Check className="mt-0.5 size-4 shrink-0 text-emerald-300" />
                         {feature}
@@ -234,18 +242,18 @@ function SettingsContent() {
                   >
                     {isCurrent ? (
                       <>
-                        <Check className="size-4" /> လက်ရှိအသုံးပြုနေသည်
+                        <Check className="size-4" /> {t("settings.btn.current")}
                       </>
                     ) : tier === "enterprise" ? (
                       <>
-                        အဖွဲ့နဲ့ ဆက်သွယ်မည် <ArrowUpRight className="size-4" />
+                        {t("settings.btn.contact")} <ArrowUpRight className="size-4" />
                       </>
                     ) : isUpgrade ? (
                       <>
-                        {meta.name} ကို Upgrade မည် <ArrowUpRight className="size-4" />
+                        {t("settings.btn.upgrade", { name: meta.name })} <ArrowUpRight className="size-4" />
                       </>
                     ) : (
-                      <>{meta.name} ကို ပြောင်းမည်</>
+                      <>{t("settings.btn.switch", { name: meta.name })}</>
                     )}
                   </button>
                 </article>
@@ -253,7 +261,7 @@ function SettingsContent() {
             })}
           </div>
           <p className="mt-5 text-center text-xs text-slate-600">
-            Upgrade လုပ်ရင် KPay / WavePay Checkout ကို ပို့ပေးပါမယ်။ Downgrade က Demo mode မှာ ချက်ချင်းသက်ရောက်ပါတယ်။
+            {t("settings.disclaimer")}
           </p>
         </>
       ) : (
@@ -268,7 +276,7 @@ function SettingsContent() {
                   <div>
                     <p className="font-display text-lg font-bold text-white">{account.name || t("settings.noName")}</p>
                     <p className="text-xs text-slate-500">
-                      {PLAN_META[plan].name} Plan · {new Date(account.createdAt).toLocaleDateString()}
+                      {t("settings.planName", { name: PLAN_META[plan].name })} · {new Date(account.createdAt).toLocaleDateString()}
                     </p>
                   </div>
                 </div>
@@ -290,9 +298,9 @@ function SettingsContent() {
             ) : (
               <div className="py-8 text-center">
                 <UserRound className="mx-auto size-8 text-slate-600" />
-                <p className="mt-3 text-sm text-slate-400">အကောင့်မရှိသေးပါ</p>
+                <p className="mt-3 text-sm text-slate-400">{t("settings.noAccount")}</p>
                 <Link href="/sign-up" className="button-primary mt-5">
-                  အကောင့်ဖွင့်မည်
+                  {t("settings.createAccount")}
                 </Link>
               </div>
             )}
